@@ -1,8 +1,10 @@
 package Java;
+import Java.Classes.Student;
 
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        Student student = new Student("Francisco", 19);
+        student.sayHello();
     }
 }

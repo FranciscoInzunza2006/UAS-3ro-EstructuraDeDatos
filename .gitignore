@@ -1,1 +1,6 @@
 *.exe
+.idea
+out
+*.iml
+obj
+.sln

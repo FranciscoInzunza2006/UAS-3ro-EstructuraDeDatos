@@ -1,7 +1,8 @@
 
-#include <iostream>
+#include "Student.cpp"
 
 int main () {
-    std::cout << "Hello, World!" << std::endl;
+    Student student = Student("Francisco", 19);
+    student.sayHello();
     return 0;
 }
