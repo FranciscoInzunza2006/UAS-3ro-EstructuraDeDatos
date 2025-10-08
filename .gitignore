@@ -1,1 +1,17 @@
+# IDE
+.vscode
+.idea
+
+# C++
+*.obj
 *.exe
+out/
+
+# C#
+
+# Java
+*.class
+
+# Python
+
+# JavaScript
