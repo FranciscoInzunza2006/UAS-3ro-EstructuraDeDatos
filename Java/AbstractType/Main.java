@@ -1,5 +1,5 @@
-package Java;
-import Java.Classes.Student;
+package AbstractType;
+import AbstractType.Classes.Student;
 
 public class Main {
 

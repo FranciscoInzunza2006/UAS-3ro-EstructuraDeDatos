@@ -1,4 +1,4 @@
-package Java.Classes;
+package AbstractType.Classes;
 
 public class Student {
     String name;

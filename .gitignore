@@ -1,6 +1,17 @@
-*.exe
+# IDE
+.vscode
 .idea
-out
-*.iml
-obj
-.sln
+
+# C++
+*.obj
+*.exe
+out/
+
+# C#
+
+# Java
+*.class
+
+# Python
+
+# JavaScript
