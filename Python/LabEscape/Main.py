@@ -1,9 +1,8 @@
-from Game import Game
+import Game
 
 
 def main():
-    game = Game()
-    game.loop()
+    Game.loop()
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import Colors
+import Game
 import Tile
 import Tiles
 from typing import List
@@ -19,7 +20,19 @@ class Maze:
 
             for column in range(self.width):
                 tile = self.maze[column][row]
-                print(f" {tile} ", end="")
+                if column == Game.player.x and row == Game.player.y:
+                    if tile == Tiles.EMPTY:
+                        print(f" {Tiles.PLAYER} ", end="")
+                    else:
+                        print(f"{Tiles.PLAYER} {tile}", end="")
+                    continue
+
+                if tile == Tiles.KEY:
+                    print(f" {tile}", end="")
+                else:
+                    print(f" {tile} ", end="")
+
+
 
             print(f" {Tiles.WALL}")
         print(separator)

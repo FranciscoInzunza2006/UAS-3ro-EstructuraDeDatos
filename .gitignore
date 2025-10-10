@@ -14,5 +14,7 @@ obj/
 *.class
 
 # Python
+__pycache__/
+.venv
 
 # JavaScript

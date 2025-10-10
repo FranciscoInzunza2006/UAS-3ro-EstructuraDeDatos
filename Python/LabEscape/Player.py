@@ -8,20 +8,12 @@ class Player:
     UP_KEY: int = 72
     DOWN_KEY: int = 80
 
-    def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
+    def __init__(self, start_x: int, start_y:int, maze_width:int, maze_height:int):
+        self.x = start_x
+        self.y = start_y
+        self.know_maze = Maze(maze_width, maze_height)
 
-    def update(self, maze: Maze):
-        lastX = self.x
-        lastY = self.y
-
-        self.action(maze)
-
-        if (lastX != self.x or lastY != self.y):
-            maze.move(lastX, lastY, self.x, self.y)
-
-    def action(self, maze: Maze):
+    def action(self):
         while True:
             event = keyboard.read_event()
             if event.event_type == keyboard.KEY_DOWN:

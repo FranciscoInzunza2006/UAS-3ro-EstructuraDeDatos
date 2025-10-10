@@ -1,30 +1,35 @@
+from time import sleep
 from typing import List
+
+import Tiles
 import Util
 from Maze import Maze
 from Player import Player
 
-class Game:
-    def __init__(self):
-        self.maze = Maze(12, 12)
-        self.messages: List[str] = []
-        self.player = Player(0, 0)
+maze = Maze(12, 12)
+messages: List[str] = []
+player = Player(0, 0, 12, 12)
+player.know_maze = maze
 
-    def loop(self):
-        while True:
-            Util.printSeparator()
-            print("Inventario")
-            Util.printSeparator()
+maze.set(2, 2, Tiles.KEY)
 
-            self.maze.draw()
+def loop():
+    while True:
+        Util.printSeparator()
+        print("Inventario")
+        Util.printSeparator()
 
-            Util.printSeparator()
+        player.know_maze.draw()
 
-            self.printMessages()
-            self.player.update(self.maze)
+        Util.printSeparator()
+        printMessages()
 
-    def printMessages(self):
-        if len(self.messages) > 0:
-            for message in self.messages:
-                print(message)
-            self.messages.clear()
-            Util.printSeparator()
+        player.action()
+        sleep(0.1)
+
+def printMessages():
+    if len(messages) > 0:
+        for message in messages:
+            print(message)
+        messages.clear()
+        Util.printSeparator()
