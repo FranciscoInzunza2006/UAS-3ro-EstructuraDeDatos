@@ -1,33 +1,38 @@
 import keyboard
 from Maze import Maze
+from enum import IntEnum
+
+class Controls(IntEnum):
+    RIGHT_KEY = 77
+    LEFT_KEY = 75
+    UP_KEY = 72
+    DOWN_KEY = 80
+
+
+def getInput() -> int:
+    while True:
+        event = keyboard.read_event()
+        if event.event_type == keyboard.KEY_DOWN:
+            key: int = event.scan_code
+            if key in Controls:
+                return key
+            else:
+                print(f"Key: {event.name}, ScanCode: {event.scan_code}")
 
 
 class Player:
-    RIGHT_KEY: int = 77
-    LEFT_KEY: int = 75
-    UP_KEY: int = 72
-    DOWN_KEY: int = 80
-
     def __init__(self, start_x: int, start_y:int, maze_width:int, maze_height:int):
         self.x = start_x
         self.y = start_y
         self.know_maze = Maze(maze_width, maze_height)
 
-    def action(self):
-        while True:
-            event = keyboard.read_event()
-            if event.event_type == keyboard.KEY_DOWN:
-                key: int = event.scan_code
-                if key == self.RIGHT_KEY:
-                    self.x = self.x + 1
-                elif key == self.LEFT_KEY:
-                    self.x = self.x - 1
-                elif key == self.UP_KEY:
-                    self.y = self.y - 1
-                elif key == self.DOWN_KEY:
-                    self.y = self.y + 1
-                else:
-                    print(f"Key: {event.name}, ScanCode: {event.scan_code}")
-                    continue
+    def update(self):
+        pressed_key = getInput()
+        self.action(pressed_key)
 
-                break
+    def action(self, pressed_key):
+        match pressed_key:
+            case Controls.RIGHT_KEY:
+                self.x = (self.x + 1) % self.know_maze.width
+
+

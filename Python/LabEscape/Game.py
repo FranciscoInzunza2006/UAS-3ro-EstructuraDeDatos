@@ -24,7 +24,7 @@ def loop():
         Util.printSeparator()
         printMessages()
 
-        player.action()
+        player.update()
         sleep(0.1)
 
 def printMessages():
