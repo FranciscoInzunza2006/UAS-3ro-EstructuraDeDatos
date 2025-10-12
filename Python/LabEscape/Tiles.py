@@ -1,7 +1,7 @@
 import Colors
 from Tile import Tile
 
-EMPTY = Tile("·", Colors.WHITE)
+EMPTY = Tile("•", Colors.WHITE)
 WALL = Tile("#", Colors.CYAN)
 KEY = Tile("🗝", Colors.YELLOW)
 TRAP = Tile("🪤", Colors.RED)

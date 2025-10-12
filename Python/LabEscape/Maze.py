@@ -4,19 +4,20 @@ import Tile
 import Tiles
 from typing import List
 
+
 class Maze:
-    def __init__(self, width:int = None, height:int = None):
-        self.width:int = width
-        self.height:int = height
+    def __init__(self, width: int = None, height: int = None):
+        self.width: int = width
+        self.height: int = height
 
         self.maze: List[List[Tile]] = [[Tiles.EMPTY] * self.width for _ in range(self.height)]
 
     @classmethod
-    def empty(cls, width:int, height:int):
+    def empty(cls, width: int, height: int):
         return cls(width, height)
 
     @classmethod
-    def fromString(cls, maze_map:List[str]):
+    def fromString(cls, maze_map: List[str]):
         width = len(maze_map[0])
         height = len(maze_map)
 
@@ -45,36 +46,37 @@ class Maze:
         return maze
 
     def draw(self):
-        separator: str = "\t" + str(Tiles.WALL) * (self.width * 3 + 4)
+        tile_width = 3
+        offset: str = " " * 2
 
-        print(separator)
-        for row in range(self.height):
-            print(f"\t{Tiles.WALL}", end=" ")
+        maze_str: str = ""
+        for y in range(self.height):
+            maze_str += f"{offset}{Tiles.WALL} "
+            for x in range(self.width):
+                tile: Tile = self.maze[y][x]
+                tile_str: str = str(tile)
 
-            for column in range(self.width):
-                tile = self.maze[row][column]
-                if column == Game.player.x and row == Game.player.y:
+                left_pad = tile_width // 2
+                right_pad = tile_width - left_pad - 1
+                if x == Game.player.x and y == Game.player.y:
                     if tile == Tiles.EMPTY:
-                        print(f" {Tiles.PLAYER} ", end="")
+                        tile_str = str(Tiles.PLAYER)
                     else:
-                        print(f"{Tiles.PLAYER} {tile}", end="")
-                    continue
+                        tile_str = str(Tiles.PLAYER) + tile_str
+                        left_pad -= 1
 
-                if tile == Tiles.KEY:
-                    print(f" {tile}", end="")
-                else:
-                    print(f" {tile} ", end="")
+                maze_str += " " * left_pad + tile_str + " " * right_pad
+            maze_str += f"{Tiles.WALL}\n"
 
+        top_bottom_walls: str = offset + Tiles.WALL.color + Tiles.WALL.char * (self.width * tile_width + 3)
+        print(f"{top_bottom_walls}\n"
+              f"{maze_str}"
+              f"{top_bottom_walls}{Colors.RESET}")
 
-
-            print(f" {Tiles.WALL}")
-        print(separator)
-        print(Colors.RESET)
-
-    def get(self, x:int, y:int):
+    def get(self, x: int, y: int):
         if (x < 0 or x >= self.width) or (y < 0 or y >= self.height):
             return Tiles.WALL
         return self.maze[y][x]
 
-    def set(self, x:int, y:int, tile:str):
-        self.maze[x][y] = tile
+    def set(self, x: int, y: int, tile: str):
+        self.maze[y][x] = tile
