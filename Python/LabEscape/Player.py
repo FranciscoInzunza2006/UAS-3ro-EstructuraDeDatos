@@ -1,4 +1,6 @@
 import keyboard
+
+import Tiles
 from Maze import Maze
 from enum import IntEnum
 
@@ -24,15 +26,31 @@ class Player:
     def __init__(self, start_x: int, start_y:int, maze_width:int, maze_height:int):
         self.x = start_x
         self.y = start_y
-        self.know_maze = Maze(maze_width, maze_height)
+        self.know_maze = Maze.empty(maze_width, maze_height)
 
     def update(self):
         pressed_key = getInput()
         self.action(pressed_key)
 
     def action(self, pressed_key):
+        last_x = self.x
+        last_y = self.y
         match pressed_key:
             case Controls.RIGHT_KEY:
-                self.x = (self.x + 1) % self.know_maze.width
+                self.x = self.x + 1
+            case Controls.LEFT_KEY:
+                self.x = self.x - 1
+            case Controls.UP_KEY:
+                self.y = self.y - 1
+            case Controls.DOWN_KEY:
+                self.y = self.y + 1
+
+        new_tile = self.know_maze.get(self.x, self.y)
+        if new_tile == Tiles.WALL:
+                self.x = last_x
+                self.y = last_y
+
+
+
 
 

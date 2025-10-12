@@ -6,26 +6,32 @@ import Util
 from Maze import Maze
 from Player import Player
 
-maze = Maze(12, 12)
+maze_map = [
+    " #    ",
+    " #K # ",
+    "    # ",
+    "#####D",
+    "E     ",
+]
+maze = Maze.fromString(maze_map)
+
 messages: List[str] = []
-player = Player(0, 0, 12, 12)
+player = Player(0, 0, maze.width, maze.height)
 player.know_maze = maze
-
-maze.set(2, 2, Tiles.KEY)
-
 def loop():
     while True:
         Util.printSeparator()
         print("Inventario")
         Util.printSeparator()
 
+        #maze.draw()
         player.know_maze.draw()
 
         Util.printSeparator()
         printMessages()
 
         player.update()
-        sleep(0.1)
+
 
 def printMessages():
     if len(messages) > 0:
