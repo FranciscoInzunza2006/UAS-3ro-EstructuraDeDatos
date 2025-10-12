@@ -1,9 +1,14 @@
 import keyboard
 
+import Colors
 import Game
 import Tiles
+import Util
 from Maze import Maze
 from enum import IntEnum
+
+from Util import BOX_WIDTH
+
 
 class Controls(IntEnum):
     RIGHT_KEY = 77
@@ -24,19 +29,38 @@ def getInput() -> int:
 
 
 class Player:
-    def __init__(self, start_x: int, start_y:int, maze_width:int, maze_height:int):
+    MAX_LIVES: int = 3
+
+    def __init__(self, start_x: int, start_y: int, maze_width: int, maze_height: int):
         self.x = start_x
         self.y = start_y
         self.know_maze = Maze.empty(maze_width, maze_height)
 
         # Inventory
-        self.lives: int = 3
+        self.lives: int = Player.MAX_LIVES - 1
         self.has_key: bool = False
+
+    def drawInventory(self):
+        padding: int = BOX_WIDTH
+        color_code_len:int = len(Colors.GRAY) # The color codes messes up with the length
+
+        lives: str = "Lives: "
+        lives += Tiles.LIFE.color +  (str(Tiles.LIFE.char) + " ") * self.lives
+
+        missing_lives: int = Player.MAX_LIVES - self.lives
+        lives += Colors.GRAY + (Tiles.LIFE.char + " ") * missing_lives
+
+        padding -= len(lives) - color_code_len * (2 if missing_lives > 0 else 1)
+
+        inventory: str = ""
+        inventory += (Tiles.KEY.color if self.has_key else Colors.GRAY) + Tiles.KEY.char + " "
+        padding -= len(inventory) - color_code_len * 1
+
+        Util.drawTopBox([f"{lives}{' ' * padding}{inventory}{Colors.RESET}"])
 
     def update(self):
         pressed_key = getInput()
         self.action(pressed_key)
-
     def action(self, pressed_key):
         last_x = self.x
         last_y = self.y
@@ -72,11 +96,3 @@ class Player:
                     Game.messages.append("¡Conseguiste una llave!")
                 else:
                     Game.messages.append("No puedes llevar más llaves.")
-
-
-
-
-
-
-
-

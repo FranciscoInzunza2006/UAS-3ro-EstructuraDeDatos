@@ -1,7 +1,6 @@
-from time import sleep
+import os
 from typing import List
 
-import Tiles
 import Util
 from Maze import Maze
 from Player import Player
@@ -20,22 +19,17 @@ player = Player(0, 0, maze.width, maze.height)
 player.know_maze = maze
 def loop():
     while True:
-        Util.printSeparator()
-        print("Inventario")
-        Util.printSeparator()
+        os.system("cls" if os.name == "nt" else "clear")
 
-        #maze.draw()
+        player.drawInventory()
         player.know_maze.draw()
-
-        Util.printSeparator()
         printMessages()
+        Util.drawBottom()
 
         player.update()
 
 
 def printMessages():
     if len(messages) > 0:
-        for message in messages:
-            print(message)
+        Util.drawMiddleBox(messages)
         messages.clear()
-        Util.printSeparator()

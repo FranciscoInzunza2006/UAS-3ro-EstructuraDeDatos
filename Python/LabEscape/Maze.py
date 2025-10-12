@@ -4,6 +4,8 @@ import Tile
 import Tiles
 from typing import List
 
+import Util
+
 
 class Maze:
     def __init__(self, width: int = None, height: int = None):
@@ -47,8 +49,12 @@ class Maze:
 
     def draw(self):
         tile_width = 3
-        offset: str = " " * 2
+        offset_length = 2
+        row_width = tile_width * self.width + 3
 
+        row_right_padding: int = Util.BOX_WIDTH - offset_length - row_width
+
+        offset: str = " " * offset_length
         maze_str: str = ""
         for y in range(self.height):
             maze_str += f"{offset}{Tiles.WALL} "
@@ -66,12 +72,13 @@ class Maze:
                         left_pad -= 1
 
                 maze_str += " " * left_pad + tile_str + " " * right_pad
-            maze_str += f"{Tiles.WALL}\n"
+            maze_str += str(Tiles.WALL) + Colors.RESET + (" " * row_right_padding) + "\n"
 
-        top_bottom_walls: str = offset + Tiles.WALL.color + Tiles.WALL.char * (self.width * tile_width + 3)
-        print(f"{top_bottom_walls}\n"
-              f"{maze_str}"
-              f"{top_bottom_walls}{Colors.RESET}")
+        top_bottom_walls: str = offset + Tiles.WALL.color + (Tiles.WALL.char * row_width) + Colors.RESET + (" " * row_right_padding) + "\n"
+        maze_str = top_bottom_walls + maze_str + top_bottom_walls
+
+        Util.drawMiddleBox(maze_str.splitlines())
+        print(Colors.RESET, end="")
 
     def get(self, x: int, y: int):
         if (x < 0 or x >= self.width) or (y < 0 or y >= self.height):
