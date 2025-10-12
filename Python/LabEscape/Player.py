@@ -1,5 +1,6 @@
 import keyboard
 
+import Game
 import Tiles
 from Maze import Maze
 from enum import IntEnum
@@ -28,6 +29,10 @@ class Player:
         self.y = start_y
         self.know_maze = Maze.empty(maze_width, maze_height)
 
+        # Inventory
+        self.lives: int = 3
+        self.has_key: bool = False
+
     def update(self):
         pressed_key = getInput()
         self.action(pressed_key)
@@ -46,9 +51,30 @@ class Player:
                 self.y = self.y + 1
 
         new_tile = self.know_maze.get(self.x, self.y)
-        if new_tile == Tiles.WALL:
+        match new_tile:
+            case Tiles.WALL:
                 self.x = last_x
                 self.y = last_y
+            case Tiles.DOOR:
+                if self.has_key:
+                    self.know_maze.set(self.x, self.y, Tiles.EMPTY)
+                    self.has_key = False
+                    Game.messages.append("Usaste la llave para abrir la puerta.")
+                else:
+                    self.x = last_x
+                    self.y = last_y
+                    Game.messages.append("Necesitas una llave para abrir la puerta.")
+
+            case Tiles.KEY:
+                if not self.has_key:
+                    self.know_maze.set(self.x, self.y, Tiles.EMPTY)
+                    self.has_key = True
+                    Game.messages.append("¡Conseguiste una llave!")
+                else:
+                    Game.messages.append("No puedes llevar más llaves.")
+
+
+
 
 
 
