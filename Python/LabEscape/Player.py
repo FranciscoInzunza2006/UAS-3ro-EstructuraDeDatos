@@ -6,16 +6,13 @@ import Tiles
 import Util
 from Maze import Maze
 from enum import IntEnum
-
 from Util import BOX_WIDTH
-
 
 class Controls(IntEnum):
     RIGHT_KEY = 77
     LEFT_KEY = 75
     UP_KEY = 72
     DOWN_KEY = 80
-
 
 def getInput() -> int:
     while True:
@@ -31,13 +28,13 @@ def getInput() -> int:
 class Player:
     MAX_LIVES: int = 3
 
-    def __init__(self, start_x: int, start_y: int, maze_width: int, maze_height: int):
-        self.x = start_x
-        self.y = start_y
-        self.know_maze = Maze.empty(maze_width, maze_height)
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.know_maze = None
 
         # Inventory
-        self.lives: int = Player.MAX_LIVES - 1
+        self.lives: int = Player.MAX_LIVES
         self.has_key: bool = False
 
     def drawInventory(self):
