@@ -1,7 +1,7 @@
 import Colors
-import Game
 import Textbox
 import Tiles
+from Game import Game
 from Input import getInput, Controls
 from Textbox import BOX_WIDTH
 
@@ -35,7 +35,7 @@ class Player:
             case Controls.DOWN_KEY:
                 y += 1
 
-            #DEBUG
+            # DEBUG
             case Controls.ONE:
                 Game.nextLevel()
                 return
@@ -121,7 +121,7 @@ class Player:
         color_code_len: int = len(Colors.GRAY)  # The color codes messes up with the length
 
         health_display: str = "Lives: "
-        health_display += Colors.BRIGHT_RED  + (str(Tiles.LIFE.char) + " ") * Player.health
+        health_display += Colors.BRIGHT_RED + (str(Tiles.LIFE.char) + " ") * Player.health
 
         missing_health: int = Player.MAX_HEALTH - Player.health
         health_display += Colors.GRAY + (Tiles.LIFE.char + " ") * missing_health

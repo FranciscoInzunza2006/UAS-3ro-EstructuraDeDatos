@@ -4,7 +4,7 @@ import Textbox
 from Maze import Maze
 from Player import Player
 
-levels: List[List[str]] = [
+LEVELS: List[List[str]] = [
     [
         " #    ",
         " #K # ",
@@ -13,52 +13,71 @@ levels: List[List[str]] = [
         "E     ",
     ],
     [
-        "P      T    H    E", # <-- Max width
+        "P      T    H    E",  # <-- Max width
     ],
     [
         "         *    * DE",
         "* *****     *   *#",
         "      *  *   *****",
-        " ******  *   *    ",
+        " ******  * * *    ",
         " *   H*  ***** ** ",
-        " * ******      *  ",
+        " * *****       *  ",
         " * **   ******** *",
         " * ** *       **  ",
         "K*    *P*****     ",
     ]
 ]
 
-current_level: int = -1
-maze = None
-messages: List[str] = []
 
-def loop():
-    nextLevel()
-    while Player.health > 0:
-        # os.system("cls" if os.name == "nt" else "clear")
+class Game:
+    current_level: int = -1
+    maze = None
+    messages: List[str] = []
+    keep_going: bool = True
 
-        Player.drawInventory()
-        Player.know_maze.draw()
-        printMessages()
-        Textbox.drawBottom()
+    @staticmethod
+    def loop():
+        Game.nextLevel()
+        while True:
+            # os.system("cls" if os.name == "nt" else "clear")
 
-        Player.update()
+            Player.drawInventory()
+            Player.know_maze.draw()
+            Game.printMessages()
+            Textbox.drawBottom()
 
-    Player.drawInventory()
-    Player.know_maze.draw()
-    printMessages()
-    Textbox.drawBottom()
+            if not Game.keep_going:
+                break
 
-def printMessages():
-    if len(messages) > 0:
-        Textbox.drawMiddleBox(messages)
-        messages.clear()
+            Player.update()
 
-def nextLevel():
-    global current_level
-    current_level += 1
+    @staticmethod
+    def printMessages():
+        if len(Game.messages) > 0:
+            Textbox.drawMiddleBox(Game.messages)
+            Game.messages.clear()
 
-    global maze
-    maze = Maze.fromString(levels[current_level])
+    @staticmethod
+    def nextLevel():
+        Game.current_level += 1
 
-    Player.know_maze = maze
+        if Game.current_level < len(LEVELS):
+            Game.maze = Maze.fromString(LEVELS[Game.current_level])
+
+            Player.know_maze = Game.maze
+        else:
+            Game.addMessage("GG")
+            Game.keep_going = False
+
+    @staticmethod
+    def gameOver():
+        Game.keep_going = False
+
+    @staticmethod
+    def addMessage(message: str) -> None:
+        Game.messages.append(message)
+
+    @staticmethod
+    def addMessages(messages: List[str]) -> None:
+        for message in messages:
+            Game.addMessage(message)
