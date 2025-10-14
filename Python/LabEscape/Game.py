@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 import Textbox
@@ -40,17 +41,17 @@ class Game:
     def loop(self):
         self.nextLevel()
         while True:
-            # os.system("cls" if os.name == "nt" else "clear")
+            os.system("cls" if os.name == "nt" else "clear")
 
             self.player.drawInventory()
-            self.player.discovered_maze.draw(self.player.x, self.player.y)
+            self.player.discovered_maze.draw(self.player)
             self.printMessages()
             Textbox.drawBottom()
 
             if not self.keep_going:
                 break
 
-            self.player.update()
+            self.player.update(self)
 
     def printMessages(self):
         if len(self.messages) > 0:
@@ -61,10 +62,11 @@ class Game:
         self.current_level += 1
 
         if self.current_level < len(LEVELS):
-            self.maze, self.player.x, self.player.y = Maze.fromString(LEVELS[self.current_level])
+            self.maze = Maze.fromString(LEVELS[self.current_level], self.player)
             self.player.discovered_maze = self.maze
 
-            Player.know_maze = self.maze
+            self.addMessage("Entras en un portal...")
+            self.addMessage(f"Nivel {self.current_level + 1}")
         else:
             self.addMessage("GG")
             self.keep_going = False

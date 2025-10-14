@@ -13,7 +13,7 @@ KEY = Tile("K", Colors.YELLOW)
 TRAP = Tile("*", Colors.DARK_GRAY)
 LIFE = Tile("H", Colors.BRIGHT_GREEN)
 
-ASCII: bool = False
+ASCII: bool = True
 if ASCII:
     PLAYER.char = "Ϫ"
 

@@ -2,9 +2,9 @@ import Colors
 import Textbox
 import Tiles
 from Input import getInput, Controls
-from Maze import Maze
+import Maze
 from Textbox import BOX_WIDTH
-
+import Game
 
 class Player:
     MAX_HEALTH: int = 3
@@ -13,7 +13,7 @@ class Player:
         # Maze stuff
         self.x: int = 0
         self.y: int = 0
-        self.discovered_maze = None
+        self.discovered_maze: Maze.Maze = None
 
         # Inventory
         self.health: int = Player.MAX_HEALTH
@@ -21,7 +21,7 @@ class Player:
 
     # noinspection SpellCheckingInspection
     # FIXME: Pass maze, return messages
-    def update(self):
+    def update(self, game):
         pressed_key = getInput()
 
         next_x = self.x  # Readability
@@ -38,7 +38,7 @@ class Player:
 
             # DEBUG
             case Controls.ONE:
-                # game.nextLevel()
+                game.nextLevel()
                 return
 
             case Controls.TWO:
@@ -61,56 +61,55 @@ class Player:
                         self.has_key = False
                         self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
 
-                        #game.addMessage("Usaste la llave para abrir la puerta.")
+                        game.addMessage("Usaste la llave para abrir la puerta.")
                     else:
                         next_x = self.x
                         next_y = self.y
 
-                        #game.addMessage("Necesitas una llave para abrir la puerta.")
+                        game.addMessage("Necesitas una llave para abrir la puerta.")
 
                 case Tiles.KEY:
                     if not self.has_key:
                         self.has_key = True
                         self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
 
-                        #game.addMessage("¡Conseguiste una llave!")
+                        game.addMessage("¡Conseguiste una llave!")
                     else:
-                        pass#game.addMessage("No puedes llevar más llaves.")
+                        game.addMessage("No puedes llevar más llaves.")
 
                 case Tiles.TRAP:
-                    if self.health > 1:
-                        self.health -= 1
+                    self.health -= 1
+                    if self.health > 0:
                         self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
 
-                        #game.addMessage("¡Caiste en una trampa! Sigues con tu vida.")
-                        #game.addMessage("Perdiste 1 de salud.")
+                        game.addMessage("¡Caiste en una trampa! Sigues con tu vida.")
+                        game.addMessage("Perdiste 1 de salud.")
                     else:
-                        pass#game.addMessage("¿PORQUÉ?")
-                        #game.addMessage("¿PORQUÉ HICISTE ESO?")
-                        #game.addMessage("¿HOLA? ¿SÍ? ¿ASOCIACIÓN DE GENTE QUE TIENE OJOS?")
-                        #game.addMessage("¡NUMERO EQUIVOCADO!")
-                        #game.addMessage("PORQUE NO ME CREO QUE EL QUE TENGO AQUÍ ENFRENTE")
-                        #game.addMessage("PUEDA SER TAN IMBECIL")
-                        #game.addMessage("EN SERIO. ¿COMO HICISTE ESO?")
-                        #game.addMessage("USA TUS OJOS")
-                        #game.addMessage("ES POR TU CULPA QUE BRONCE EXISTE PEDAZO DE MANCO")
-                        #game.addMessage("NO TE QUIERO VER OTRA VEZ")
+                        game.gameOver()
+
+                        game.addMessage("¿PORQUÉ?")
+                        game.addMessage("¿PORQUÉ HICISTE ESO?")
+                        game.addMessage("¿HOLA? ¿SÍ? ¿ASOCIACIÓN DE GENTE QUE TIENE OJOS?")
+                        game.addMessage("¡NUMERO EQUIVOCADO!")
+                        game.addMessage("PORQUE NO ME CREO QUE EL QUE TENGO AQUÍ ENFRENTE")
+                        game.addMessage("PUEDA SER TAN IMBECIL")
+                        game.addMessage("EN SERIO. ¿COMO HICISTE ESO?")
+                        game.addMessage("USA TUS OJOS")
+                        game.addMessage("ES POR TU CULPA QUE BRONCE EXISTE PEDAZO DE MANCO")
+                        game.addMessage("NO TE QUIERO VER OTRA VEZ")
 
                 case Tiles.LIFE:
                     if self.health < Player.MAX_HEALTH:
                         self.health += 1
                         self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
 
-                        #game.addMessage("Encontraste un pan duro del soriana...")
-                        #game.addMessage("Recuperaste 1 de salud.")
+                        game.addMessage("Encontraste un pan duro del soriana...")
+                        game.addMessage("Recuperaste 1 de salud.")
                     else:
-                        pass#game.addMessage("Pinche golosa, deja de tragar.")
+                        game.addMessage("Pinche golosa, deja de tragar.")
 
                 case Tiles.EXIT:
-                    #game.nextLevel()
-
-                    #game.addMessage("Entras en un portal...")
-                    #game.addMessage(f"Nivel {game.current_level + 1}")
+                    game.nextLevel()
                     return
 
             self.x = next_x

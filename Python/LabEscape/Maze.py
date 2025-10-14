@@ -4,7 +4,7 @@ import Colors
 import Textbox
 import Tile
 import Tiles
-
+from Player import Player
 
 class Maze:
     def __init__(self, width: int = None, height: int = None):
@@ -18,14 +18,12 @@ class Maze:
         return cls(width, height)
 
     @classmethod
-    def fromString(cls, maze_map: List[str]):
+    def fromString(cls, maze_map: List[str], player: Player = None):
         width = len(maze_map[0])
         height = len(maze_map)
 
         maze = cls(width, height)
 
-        player_x = None
-        player_y = None
         for y in range(height):
             if len(maze_map[y]) != width:
                 raise ValueError(f"The maze has a wrong width in the row: {y}")
@@ -49,15 +47,15 @@ class Maze:
                 if tile is None:
                     raise ValueError(f"Unknown character {tile_char}")
 
-                if  tile == Tiles.PLAYER:
-                    player_x = x
-                    player_y = y
+                if player is not None and tile == Tiles.PLAYER:
+                    player.x = x
+                    player.y = y
                 else:
                     maze.maze[y][x] = tile
 
-        return maze, player_x, player_y
+        return maze
 
-    def draw(self, player_x, player_y):
+    def draw(self, player: Player = None):
         tile_width = 3
         offset_length = 2
         row_width = tile_width * self.width + 3
@@ -74,12 +72,13 @@ class Maze:
 
                 left_pad = tile_width // 2
                 right_pad = tile_width - left_pad - 1
-                if x == player_x and y == player_y:
-                    if tile == Tiles.EMPTY:
-                        tile_str = str(Tiles.PLAYER)
-                    else:
-                        tile_str = str(Tiles.PLAYER) + tile_str
-                        left_pad -= 1
+                if player is not None:
+                    if x == player.x and y == player.y:
+                        if tile == Tiles.EMPTY:
+                            tile_str = str(Tiles.PLAYER)
+                        else:
+                            tile_str = str(Tiles.PLAYER) + tile_str
+                            left_pad -= 1
 
                 maze_str += " " * left_pad + tile_str + " " * right_pad
             maze_str += str(Tiles.WALL) + Colors.RESET + (" " * row_right_padding) + "\n"
