@@ -2,7 +2,9 @@ from Game import Game
 
 
 def main():
-    Game.loop()
+    labyrinth_escape: Game = Game()
+    labyrinth_escape.loop()
+
     exit(0)
 
 

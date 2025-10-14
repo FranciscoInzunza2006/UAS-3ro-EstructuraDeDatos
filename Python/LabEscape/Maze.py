@@ -1,7 +1,6 @@
 from typing import List
 
 import Colors
-from Player import Player
 import Textbox
 import Tile
 import Tiles
@@ -25,6 +24,8 @@ class Maze:
 
         maze = cls(width, height)
 
+        player_x = None
+        player_y = None
         for y in range(height):
             if len(maze_map[y]) != width:
                 raise ValueError(f"The maze has a wrong width in the row: {y}")
@@ -48,15 +49,15 @@ class Maze:
                 if tile is None:
                     raise ValueError(f"Unknown character {tile_char}")
 
-                if tile == Tiles.PLAYER:
-                    Player.x = x
-                    Player.y = y
+                if  tile == Tiles.PLAYER:
+                    player_x = x
+                    player_y = y
                 else:
                     maze.maze[y][x] = tile
 
-        return maze
+        return maze, player_x, player_y
 
-    def draw(self):
+    def draw(self, player_x, player_y):
         tile_width = 3
         offset_length = 2
         row_width = tile_width * self.width + 3
@@ -73,7 +74,7 @@ class Maze:
 
                 left_pad = tile_width // 2
                 right_pad = tile_width - left_pad - 1
-                if x == Player.x and y == Player.y:
+                if x == player_x and y == player_y:
                     if tile == Tiles.EMPTY:
                         tile_str = str(Tiles.PLAYER)
                     else:
