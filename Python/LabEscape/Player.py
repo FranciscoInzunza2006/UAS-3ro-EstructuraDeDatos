@@ -105,7 +105,7 @@ class Player:
         color_code_len: int = len(Colors.GRAY)  # The color codes messes up with the length
 
         health_display: str = "Lives: "
-        health_display += Tiles.LIFE.color + (str(Tiles.LIFE.char) + " ") * Player.health
+        health_display += Colors.BRIGHT_RED  + (str(Tiles.LIFE.char) + " ") * Player.health
 
         missing_health: int = Player.MAX_HEALTH - Player.health
         health_display += Colors.GRAY + (Tiles.LIFE.char + " ") * missing_health
