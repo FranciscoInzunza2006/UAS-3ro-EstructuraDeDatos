@@ -13,8 +13,19 @@ levels: List[List[str]] = [
         "E     ",
     ],
     [
-        "P      T    H   E",
+        "P      T    H    E", # <-- Max width
     ],
+    [
+        "         *    * DE",
+        "* *****     *   *#",
+        "      *  *   *****",
+        " ******  *   *    ",
+        " *   H*  ***** ** ",
+        " * ******      *  ",
+        " * **   ******** *",
+        " * ** *       **  ",
+        "K*    *P*****     ",
+    ]
 ]
 
 current_level: int = -1
@@ -23,7 +34,7 @@ messages: List[str] = []
 
 def loop():
     nextLevel()
-    while True:
+    while Player.health > 0:
         # os.system("cls" if os.name == "nt" else "clear")
 
         Player.drawInventory()
@@ -32,6 +43,11 @@ def loop():
         Textbox.drawBottom()
 
         Player.update()
+
+    Player.drawInventory()
+    Player.know_maze.draw()
+    printMessages()
+    Textbox.drawBottom()
 
 def printMessages():
     if len(messages) > 0:

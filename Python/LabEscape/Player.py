@@ -38,6 +38,7 @@ class Player:
             #DEBUG
             case Controls.ONE:
                 Game.nextLevel()
+                return
 
             case Controls.TWO:
                 Player.health -= 1
@@ -76,18 +77,33 @@ class Player:
                         Game.messages.append("No puedes llevar más llaves.")
 
                 case Tiles.TRAP:
-                    Player.health -= 1
-                    Player.know_maze.set(x, y, Tiles.EMPTY)
+                    if Player.health > 1:
+                        Player.health -= 1
+                        Player.know_maze.set(x, y, Tiles.EMPTY)
 
-                    Game.messages.append("¡Caiste en una trampa!")
-                    Game.messages.append("Perdiste 1 de salud.")
+                        Game.messages.append("¡Caiste en una trampa! Sigues con tu vida.")
+                        Game.messages.append("Perdiste 1 de salud.")
+                    else:
+                        Game.messages.append("¿PORQUÉ?")
+                        Game.messages.append("¿PORQUÉ HICISTE ESO?")
+                        Game.messages.append("¿HOLA? ¿SI? ¿ASOCIACIÓN DE GENTE QUE TIENE OJOS?")
+                        Game.messages.append("¡NUMERO EQUIVOCADO!")
+                        Game.messages.append("PORQUE NO ME CREO QUE EL QUE TENGO AQUI ENFRENTE")
+                        Game.messages.append("PUEDA SER TAN IMBECIL")
+                        Game.messages.append("ENSERIO. ¿COMO HICISTE ESO?")
+                        Game.messages.append("USA TUS OJOS")
+                        Game.messages.append("ES POR TU CULPA QUE BRONCE EXISTE PEDAZO DE MANCO")
+                        Game.messages.append("NO TE QUIERO VER OTRA VEZ")
 
                 case Tiles.LIFE:
-                    Player.health += 1
-                    Player.know_maze.set(x, y, Tiles.EMPTY)
+                    if Player.health < Player.MAX_HEALTH:
+                        Player.health += 1
+                        Player.know_maze.set(x, y, Tiles.EMPTY)
 
-                    Game.messages.append("Encontraste un pan duro del soriana...")
-                    Game.messages.append("Recuperaste 1 de salud.")
+                        Game.messages.append("Encontraste un pan duro del soriana...")
+                        Game.messages.append("Recuperaste 1 de salud.")
+                    else:
+                        Game.messages.append("Pinche golosa, deja de tragar.")
 
                 case Tiles.EXIT:
                     Game.nextLevel()

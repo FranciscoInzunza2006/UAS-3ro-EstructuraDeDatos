@@ -38,7 +38,10 @@ class Maze:
                     "P": Tiles.PLAYER,
                     "D": Tiles.DOOR,
                     "E": Tiles.EXIT,
+
                     "T": Tiles.TRAP,
+                    "*": Tiles.TRAP,
+
                     "H": Tiles.LIFE
                 }.get(tile_char, None)
 
