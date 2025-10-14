@@ -1,35 +1,48 @@
-import os
 from typing import List
 
-import Util
+import Textbox
 from Maze import Maze
 from Player import Player
 
-maze_map = [
-    " #    ",
-    " #K # ",
-    "    # ",
-    "#####D",
-    "E     ",
+levels: List[List[str]] = [
+    [
+        " #    ",
+        " #K # ",
+        "    # ",
+        "#####D",
+        "E     ",
+    ],
+    [
+        "P      T    H   E",
+    ],
 ]
-maze = Maze.fromString(maze_map)
 
+current_level: int = -1
+maze = None
 messages: List[str] = []
-player = Player(0, 0, maze.width, maze.height)
-player.know_maze = maze
+
 def loop():
+    nextLevel()
     while True:
-        os.system("cls" if os.name == "nt" else "clear")
+        # os.system("cls" if os.name == "nt" else "clear")
 
-        player.drawInventory()
-        player.know_maze.draw()
+        Player.drawInventory()
+        Player.know_maze.draw()
         printMessages()
-        Util.drawBottom()
+        Textbox.drawBottom()
 
-        player.update()
-
+        Player.update()
 
 def printMessages():
     if len(messages) > 0:
-        Util.drawMiddleBox(messages)
+        Textbox.drawMiddleBox(messages)
         messages.clear()
+
+def nextLevel():
+    global current_level
+    current_level += 1
+
+    global maze
+    maze = Maze.fromString(levels[current_level])
+
+    Player.know_maze = maze
