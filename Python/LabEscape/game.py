@@ -1,9 +1,9 @@
 import os
 from typing import List
 
-import Textbox
-from Maze import Maze
-from Player import Player
+import textbox
+from maze import Maze
+from player import Player
 
 LEVELS: List[List[str]] = [
     [
@@ -46,7 +46,7 @@ class Game:
             self.player.drawInventory()
             self.player.discovered_maze.draw(self.player)
             self.printMessages()
-            Textbox.drawBottom()
+            textbox.drawBottom()
 
             if not self.keep_going:
                 break
@@ -55,7 +55,7 @@ class Game:
 
     def printMessages(self):
         if len(self.messages) > 0:
-            Textbox.drawMiddleBox(self.messages)
+            textbox .drawMiddleBox(self.messages)
             self.messages.clear()
 
     def nextLevel(self):

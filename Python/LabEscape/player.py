@@ -1,10 +1,12 @@
-import Colors
-import Textbox
-import Tiles
-from Input import getInput, Controls
-import Maze
-from Textbox import BOX_WIDTH
-import Game
+import colors
+import tiles
+from input import getInput, Controls
+import textbox
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from game import Game
+    from maze import Maze
 
 class Player:
     MAX_HEALTH: int = 3
@@ -13,7 +15,7 @@ class Player:
         # Maze stuff
         self.x: int = 0
         self.y: int = 0
-        self.discovered_maze: Maze.Maze = None
+        self.discovered_maze: Maze|None = None
 
         # Inventory
         self.health: int = Player.MAX_HEALTH
@@ -21,7 +23,7 @@ class Player:
 
     # noinspection SpellCheckingInspection
     # FIXME: Pass maze, return messages
-    def update(self, game):
+    def update(self, game: 'Game') -> None:
         pressed_key = getInput()
 
         next_x = self.x  # Readability
@@ -52,14 +54,14 @@ class Player:
         if next_x != self.x or next_y != self.y:
             new_tile = self.discovered_maze.get(next_x, next_y)
             match new_tile:
-                case Tiles.WALL:
+                case tiles.WALL:
                     next_x = self.x
                     next_y = self.y
 
-                case Tiles.DOOR:
+                case tiles.DOOR:
                     if self.has_key:
                         self.has_key = False
-                        self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
+                        self.discovered_maze.set(next_x, next_y, tiles.EMPTY)
 
                         game.addMessage("Usaste la llave para abrir la puerta.")
                     else:
@@ -68,19 +70,19 @@ class Player:
 
                         game.addMessage("Necesitas una llave para abrir la puerta.")
 
-                case Tiles.KEY:
+                case tiles.KEY:
                     if not self.has_key:
                         self.has_key = True
-                        self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
+                        self.discovered_maze.set(next_x, next_y, tiles.EMPTY)
 
                         game.addMessage("¡Conseguiste una llave!")
                     else:
                         game.addMessage("No puedes llevar más llaves.")
 
-                case Tiles.TRAP:
+                case tiles.TRAP:
                     self.health -= 1
                     if self.health > 0:
-                        self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
+                        self.discovered_maze.set(next_x, next_y, tiles.EMPTY)
 
                         game.addMessage("¡Caiste en una trampa! Sigues con tu vida.")
                         game.addMessage("Perdiste 1 de salud.")
@@ -98,17 +100,17 @@ class Player:
                         game.addMessage("ES POR TU CULPA QUE BRONCE EXISTE PEDAZO DE MANCO")
                         game.addMessage("NO TE QUIERO VER OTRA VEZ")
 
-                case Tiles.LIFE:
+                case tiles.LIFE:
                     if self.health < Player.MAX_HEALTH:
                         self.health += 1
-                        self.discovered_maze.set(next_x, next_y, Tiles.EMPTY)
+                        self.discovered_maze.set(next_x, next_y, tiles.EMPTY)
 
                         game.addMessage("Encontraste un pan duro del soriana...")
                         game.addMessage("Recuperaste 1 de salud.")
                     else:
                         game.addMessage("Pinche golosa, deja de tragar.")
 
-                case Tiles.EXIT:
+                case tiles.EXIT:
                     game.nextLevel()
                     return
 
@@ -116,19 +118,19 @@ class Player:
             self.y = next_y
 
     def drawInventory(self):
-        padding: int = BOX_WIDTH
-        color_code_len: int = len(Colors.GRAY)  # The color codes messes up with the length
+        padding: int = textbox.BOX_WIDTH
+        color_code_len: int = len(colors.GRAY)  # The color codes messes up with the length
 
         health_display: str = "Lives: "
-        health_display += Colors.BRIGHT_RED + (str(Tiles.LIFE.char) + " ") * self.health
+        health_display += colors.BRIGHT_RED + (str(tiles.LIFE.char) + " ") * self.health
 
         missing_health: int = self.MAX_HEALTH - self.health
-        health_display += Colors.GRAY + (Tiles.LIFE.char + " ") * missing_health
+        health_display += colors.GRAY + (tiles.LIFE.char + " ") * missing_health
 
         padding -= len(health_display) - color_code_len * 2
 
         inventory: str = ""
-        inventory += (Tiles.KEY.color if self.has_key else Colors.GRAY) + Tiles.KEY.char + " "
+        inventory += (tiles.KEY.color if self.has_key else colors.GRAY) + tiles.KEY.char + " "
         padding -= len(inventory) - color_code_len * 1
 
-        Textbox.drawTopBox([f"{health_display}{' ' * padding}{inventory}{Colors.RESET}"])
+        textbox.drawTopBox([f"{health_display}{' ' * padding}{inventory}{colors.RESET}"])
