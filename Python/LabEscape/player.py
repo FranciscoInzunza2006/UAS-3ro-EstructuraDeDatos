@@ -54,6 +54,7 @@ class Player:
                 self.has_key = not self.has_key
 
         if next_x != self.x or next_y != self.y:
+            game.step_count += 1
             self.move(game, next_x, next_y)
 
     # noinspection SpellCheckingInspection

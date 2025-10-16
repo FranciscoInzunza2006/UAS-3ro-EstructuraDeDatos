@@ -37,6 +37,8 @@ class Game:
         self.messages: List[str] = []
         self.keep_going: bool = True
 
+        self.step_count = 0
+
 
     def loop(self):
         self.nextLevel()
@@ -68,7 +70,11 @@ class Game:
             self.addMessage("Entras en un portal...")
             self.addMessage(f"Nivel {self.current_level + 1}")
         else:
-            self.addMessage("GG")
+            self.addMessages([
+                "GG",
+                f"Pasos dados: {self.step_count}",
+            ])
+
             self.keep_going = False
 
     def gameOver(self):
