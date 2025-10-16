@@ -138,6 +138,15 @@ class Player:
 
                 self.discovered_maze.set(surround_x, surround_y, maze.get(surround_x, surround_y))
 
+    def changeMaze(self, maze: 'Maze', reveal_all: bool) -> None:
+        if reveal_all:
+            self.discovered_maze = maze
+        else:
+            from maze import Maze # <- Fucking Sin
+            self.discovered_maze = Maze.empty(maze.width, maze.height)
+            self.revealMazeAround(maze)
+
+
     def drawInventory(self):
         padding: int = textbox.BOX_WIDTH
         color_code_len: int = len(colors.GRAY)  # The color codes messes up with the length

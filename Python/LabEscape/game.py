@@ -63,7 +63,7 @@ class Game:
 
         if self.current_level < len(LEVELS):
             self.maze = Maze.fromString(LEVELS[self.current_level], self.player)
-            self.player.discovered_maze = Maze.empty(self.maze.width, self.maze.height)
+            self.player.changeMaze(self.maze, False)
 
             self.addMessage("Entras en un portal...")
             self.addMessage(f"Nivel {self.current_level + 1}")
