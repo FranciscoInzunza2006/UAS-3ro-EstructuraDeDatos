@@ -50,7 +50,7 @@ class Maze:
                     player.x = x
                     player.y = y
                 else:
-                    maze_o.maze[y][x] = tile
+                    maze_o.set(x, y, tile)
 
         return maze_o
 
