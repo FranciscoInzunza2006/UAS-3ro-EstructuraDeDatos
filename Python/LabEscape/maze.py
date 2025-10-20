@@ -7,6 +7,11 @@ from tiles import *
 
 
 class Maze:
+    MIN_WIDTH = 5
+    MIN_HEIGHT = 5
+    MAX_WIDTH = 20
+    MAX_HEIGHT = 25
+
     def __init__(self, width: int = None, height: int = None):
         self.width: int = width
         self.height: int = height

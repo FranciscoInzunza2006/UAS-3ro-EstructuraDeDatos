@@ -14,7 +14,7 @@ LEVELS: List[List[str]] = [
         "E     ",
     ],
     [
-        "P      T    H    E",  # <-- Max width
+        "P      T    H    E",
     ],
     [
         "         *    * DE",
