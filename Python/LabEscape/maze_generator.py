@@ -4,21 +4,35 @@ import random
 
 
 def placePath(_maze: Maze, start_x: int, start_y: int, length: int, vertical: bool, direction: int):
-    end_x = start_x + ((length * direction) if not vertical else 0)
-    end_y = start_y + ((length * direction) if vertical else 0)
+    if length == 0:
+        return
+    x: int = start_x
+    y: int = start_y
+    placed_paths = 0
 
-    for x in range(start_x, end_x):
-        for y in range(start_y, end_y):
-            if _maze.get(x, y) == tiles.EMPTY: return
+    while placed_paths < length:
+        if _maze.get(x, y) == tiles.EMPTY: return
 
-            in_bounds = _maze.set(x, y, tiles.EMPTY)
-            if not in_bounds:
-                return
+        in_bounds = _maze.set(x, y, tiles.EMPTY)
+        if not in_bounds:
+            direction *= -1
 
-    new_start_x = random.randint(start_x, end_x) if vertical else start_x
-    new_start_y = random.randint(start_y, end_y) if not vertical else start_y
+        if vertical: y += direction
+        else: x += direction
+
+        placed_paths += 1
+
+        if not in_bounds:
+            break
+
+    sx = x
+    sy = y
+    if random.random() < 0.5:
+        if vertical: sy = start_y + random.randrange(0, length)
+        else: sx = start_x + random.randrange(0, length)
+
     new_length = random.randint(3, 8)
-    placePath(_maze, new_start_x, new_start_y, new_length, not vertical, random.choice([-1, 1]))
+    placePath(_maze, sx, sy, new_length, not vertical, random.choice([-1, 1]))
 
 
 def generateMaze(width: int = random.randint(Maze.MIN_WIDTH, Maze.MAX_WIDTH),
@@ -33,11 +47,13 @@ def generateMaze(width: int = random.randint(Maze.MIN_WIDTH, Maze.MAX_WIDTH),
     start_x = random.randint(0, width - 1)
     start_y = random.randint(0, height - 1)
 
-    placePath(generated_maze, start_x, start_y, 20, True, 1)
+    placePath(generated_maze, start_x, start_y, random.randint(5, 10), random.choice([True, False]), random.choice([-1, 1]) )
+
+    generated_maze.set(start_x, start_y, tiles.LIFE)
 
     return generated_maze
 
 
 if __name__ == "__main__":
-    maze = generateMaze()
+    maze = generateMaze(20, 20)
     maze.draw()
