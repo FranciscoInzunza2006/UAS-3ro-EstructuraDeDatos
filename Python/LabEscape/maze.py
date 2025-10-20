@@ -99,5 +99,8 @@ class Maze:
             return tiles.WALL
         return self.maze[y][x]
 
-    def set(self, x: int, y: int, tile: str):
+    def set(self, x: int, y: int, tile: str) -> bool:
+        if (x < 0 or x >= self.width) or (y < 0 or y >= self.height): return False
+
         self.maze[y][x] = tile
+        return True
