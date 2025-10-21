@@ -1,38 +1,58 @@
+from enum import Enum
 import tiles
 from maze import Maze
 import random
 
 
-def placePath(_maze: Maze, start_x: int, start_y: int, length: int, vertical: bool, direction: int):
-    if length == 0:
-        return
-    x: int = start_x
-    y: int = start_y
-    placed_paths = 0
+class Directions(Enum):
+    UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
 
-    while placed_paths < length:
-        if _maze.get(x, y) == tiles.EMPTY: return
 
-        in_bounds = _maze.set(x, y, tiles.EMPTY)
-        if not in_bounds:
-            direction *= -1
+def generate(grid: Maze, cx: int, cy: int):
+    grid.set(cx, cy, tiles.EMPTY)
 
-        if vertical: y += direction
-        else: x += direction
+    if (grid.get(cx - 2, cy) != tiles.EMPTY or
+            grid.get(cx + 2, cy) != tiles.EMPTY or
+            grid.get(cx, cy - 2) != tiles.EMPTY or
+            grid.get(cx, cy + 2) != tiles.EMPTY):
+        li = [1, 2, 3, 4]
+        while len(li) > 0:
+            dir = random.choice(li)
+            li.remove(dir)
 
-        placed_paths += 1
+            if dir == Directions.UP.value:
+                nx = cx
+                mx = cx
+                ny = cy - 2
+                my = cy - 1
+            elif dir == Directions.DOWN.value:
+                nx = cx
+                mx = cx
+                ny = cy + 2
+                my = cy + 1
+            elif dir == Directions.LEFT.value:
+                nx = cx - 2
+                mx = cx - 1
+                ny = cy
+                my = cy
+            elif dir == Directions.RIGHT.value:
+                nx = cx + 2
+                mx = cx + 1
+                ny = cy
+                my = cy
+            else:
+                nx = cx
+                mx = cx
+                ny = cy
+                my = cy
 
-        if not in_bounds:
-            break
-
-    sx = x
-    sy = y
-    if random.random() < 0.5:
-        if vertical: sy = start_y + random.randrange(0, length)
-        else: sx = start_x + random.randrange(0, length)
-
-    new_length = random.randint(3, 8)
-    placePath(_maze, sx, sy, new_length, not vertical, random.choice([-1, 1]))
+            if grid.get(nx, ny) != tiles.EMPTY:
+                if not grid.set(mx, my, tiles.EMPTY):
+                    return
+                generate(grid, nx, ny)
 
 
 def generateMaze(width: int = random.randint(Maze.MIN_WIDTH, Maze.MAX_WIDTH),
@@ -42,12 +62,18 @@ def generateMaze(width: int = random.randint(Maze.MIN_WIDTH, Maze.MAX_WIDTH),
     # Fill maze
     for row in range(height):
         for column in range(width):
-            generated_maze.set(column, row, tiles.WALL)
+            if row % 2 == 1 or column % 2 == 1:
+                generated_maze.set(column, row, tiles.WALL)
 
     start_x = random.randint(0, width - 1)
     start_y = random.randint(0, height - 1)
 
-    placePath(generated_maze, start_x, start_y, random.randint(5, 10), random.choice([True, False]), random.choice([-1, 1]) )
+    if start_x % 2 == 1:
+        start_x += 1
+    if start_y % 2 == 1:
+        start_y += 1
+
+    generate(generated_maze, start_x, start_y)
 
     generated_maze.set(start_x, start_y, tiles.LIFE)
 
@@ -55,5 +81,5 @@ def generateMaze(width: int = random.randint(Maze.MIN_WIDTH, Maze.MAX_WIDTH),
 
 
 if __name__ == "__main__":
-    maze = generateMaze(20, 20)
+    maze = generateMaze(11, 11)
     maze.draw()
