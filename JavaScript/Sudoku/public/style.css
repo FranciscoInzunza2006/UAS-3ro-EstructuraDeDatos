@@ -1,0 +1,36 @@
+
+body {
+    overflow: hidden;
+}
+
+#sudoku_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 1rem;
+
+    width: fit-content;
+}
+
+.sudoku-region {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: inherit;
+
+    background-color: gainsboro;
+
+    overflow: hidden;
+
+    width: fit-content;
+    aspect-ratio: 1;
+}
+
+.sudoku-region > * {
+    text-align: center;
+    background-color: cyan;
+
+    padding: 1rem;
+    width: 1rem;
+    height: 1rem;
+}
