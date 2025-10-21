@@ -1,13 +1,18 @@
 
+:root {
+    --sudoku-regions-per-row: 3;
+    --sudoku-blocks-per-row: 3;
+}
+
 body {
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-#sudoku_grid {
+#sudoku {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--sudoku-regions-per-row), 1fr);
+    grid-template-rows: repeat(var(--sudoku-regions-per-row), 1fr);
     grid-gap: 1rem;
 
     width: fit-content;
@@ -17,8 +22,8 @@ body {
 
 .sudoku-region {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--sudoku-blocks-per-row), 1fr);
+    grid-template-rows: repeat(var(--sudoku-blocks-per-row), 1fr);
     grid-gap: inherit;
 
     background-color: gainsboro;
