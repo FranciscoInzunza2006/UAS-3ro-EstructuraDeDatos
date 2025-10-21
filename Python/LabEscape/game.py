@@ -45,7 +45,7 @@ class Game:
     def loop(self):
         self.nextLevel()
         while True:
-            os.system("cls" if os.name == "nt" else "clear")
+            #os.system("cls" if os.name == "nt" else "clear")
 
             self.player.drawInventory()
             self.player.discovered_maze.draw(self.player)
@@ -76,9 +76,9 @@ class Game:
             height: int = random.randint(Maze.MIN_HEIGHT, Maze.MAX_HEIGHT)
 
             self.maze, px, py = generateMaze(width, height)
-            self.player.changeMaze(self.maze, False)
             self.player.x = px
             self.player.y = py
+            self.player.changeMaze(self.maze, False)
 
             self.addMessage("El calabozo se siente infinito...")
             self.addMessage(f"Nivel {self.current_level + 1}")
