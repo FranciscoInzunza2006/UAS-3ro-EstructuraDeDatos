@@ -1,8 +1,10 @@
 import os
+import random
 from typing import List
 
 import textbox
 from maze import Maze
+from maze_generator import generateMaze
 from player import Player
 
 LEVELS: List[List[str]] = [
@@ -70,12 +72,16 @@ class Game:
             self.addMessage("Entras en un portal...")
             self.addMessage(f"Nivel {self.current_level + 1}")
         else:
-            self.addMessages([
-                "GG",
-                f"Pasos dados: {self.step_count}",
-            ])
+            width: int = random.randint(Maze.MIN_WIDTH, Maze.MAX_WIDTH)
+            height: int = random.randint(Maze.MIN_HEIGHT, Maze.MAX_HEIGHT)
 
-            self.keep_going = False
+            self.maze, px, py = generateMaze(width, height)
+            self.player.changeMaze(self.maze, False)
+            self.player.x = px
+            self.player.y = py
+
+            self.addMessage("El calabozo se siente infinito...")
+            self.addMessage(f"Nivel {self.current_level + 1}")
 
     def gameOver(self):
         self.keep_going = False

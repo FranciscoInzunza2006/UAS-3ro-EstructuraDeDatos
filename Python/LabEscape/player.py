@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class Player:
     MAX_HEALTH: int = 3
-    VISION_RADIUS: int = 5
+    VISION_RADIUS: int = 2
 
     def __init__(self):
         # Maze stuff
