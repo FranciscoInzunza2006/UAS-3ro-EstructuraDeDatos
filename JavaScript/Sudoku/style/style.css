@@ -1,6 +1,7 @@
 
 body {
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #sudoku_grid {
@@ -10,6 +11,8 @@ body {
     grid-gap: 1rem;
 
     width: fit-content;
+
+    float:left;
 }
 
 .sudoku-region {
@@ -33,4 +36,8 @@ body {
     padding: 1rem;
     width: 1rem;
     height: 1rem;
+}
+
+#debug_output {
+    float: right;
 }
