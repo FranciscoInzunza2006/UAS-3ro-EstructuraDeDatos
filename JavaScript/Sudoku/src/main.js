@@ -82,7 +82,23 @@ function init_sudoku() {
     // HTML Page and styling
     applySudokuStyleDimensions();
 
-    createSudokuRegions();
+    for (let region_index = 0; region_index < TOTAL_REGIONS; region_index++) {
+        const sudoku_region = document.createElement("div");
+        sudoku_region.dataset.index = region_index.toString();
+        sudoku_region.classList.add("sudoku-region");
+
+        for (let block_index = 0; block_index < BLOCKS_PER_REGION; block_index++) {
+            const sudoku_block = document.createElement("div");
+            sudoku_block.dataset.index = block_index.toString();
+            sudoku_block.onclick = block_position;
+
+            const sudoku_cell_value = sudoku[region_index][block_index];
+            sudoku_block.innerText = sudoku_cell_value.toString();
+
+            sudoku_region.appendChild(sudoku_block);
+        }
+        SUDOKU_ELEMENT.appendChild(sudoku_region);
+    }
 }
 
 window.onload = init_sudoku;
