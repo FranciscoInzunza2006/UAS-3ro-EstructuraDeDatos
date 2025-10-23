@@ -27,36 +27,28 @@ for (let i = 0; i < SUDOKU_SIZE; i++) {
     }
 }
 
-shuffle(available_digits[0]);
+//shuffle(available_digits[0]);
 sudoku[0] = available_digits[0];
 for (let row = 1; row < SUDOKU_SIZE; row++) {
     let test_row = available_digits[row]
-    shuffle(test_row)
+//    shuffle(test_row)
 
-    // Make that the number isn't already in the column
-    let try_again;
-    do {
-        try_again = false;
-        for (let col = 0; col < SUDOKU_SIZE; col++) {
+    for (let col = 0; col < SUDOKU_SIZE; col++) {
+        next_test:
+        for (let i = 0; i < test_row.length; i++) {
+            const n = test_row[i];
+
             for (let row_check = 0; row_check < row; row_check++) {
-                if (test_row[col] === sudoku[row_check][col]) {
-                    try_again = true;
-
-                    // FIXME: This causes and infinite loop, get another way to get a valid digit
-                    // Swap with next value and keep trying till we get a valid combination
-                    const next = (col+1) % SUDOKU_SIZE;
-                    const next_val = test_row[next]
-                    test_row[next] = test_row[col];
-                    test_row[col] = next_val;
-
-                    break;
+                if (n === sudoku[row_check][col]) {
+                    continue next_test;
                 }
             }
-        }
-    } while(try_again)
 
-    console.log(test_row.join(" "))
-    sudoku[row] = test_row;
+            sudoku[row][col] = n;
+            test_row.splice(i, 1)
+            break;
+        }
+    }
 }
 
 
