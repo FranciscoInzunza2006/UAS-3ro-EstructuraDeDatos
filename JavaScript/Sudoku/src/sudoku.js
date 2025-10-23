@@ -27,6 +27,16 @@ for (let i = 0; i < SUDOKU_SIZE; i++) {
     }
 }
 
+function isInRows(value, col, row) {
+    for (let row_check = 0; row_check < row; row_check++) {
+        if (value === sudoku[row_check][col]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 //shuffle(available_digits[0]);
 sudoku[0] = available_digits[0];
 for (let row = 1; row < SUDOKU_SIZE; row++) {
@@ -34,20 +44,19 @@ for (let row = 1; row < SUDOKU_SIZE; row++) {
 //    shuffle(test_row)
 
     for (let col = 0; col < SUDOKU_SIZE; col++) {
-        next_test:
-        for (let i = 0; i < test_row.length; i++) {
+        for (let i = 0; i < test_row.length - 2; i++) {
             const n = test_row[i];
 
-            for (let row_check = 0; row_check < row; row_check++) {
-                if (n === sudoku[row_check][col]) {
-                    continue next_test;
-                }
-            }
+            if (isInRows(n, col, row))
+                continue;
 
             sudoku[row][col] = n;
             test_row.splice(i, 1)
             break;
         }
+
+        let last = test_row[test_row.length - 1];
+        if (last)
     }
 }
 
