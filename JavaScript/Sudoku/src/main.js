@@ -1,5 +1,7 @@
 "use strict"
 
+let sudoku = generateSudoku()
+
 // HTML Elements
 const SUDOKU_ELEMENT = document.getElementById("sudoku");
 const DEBUG_ELEMENT = document.getElementById("debug_output");
@@ -16,7 +18,7 @@ function createSudokuElements() {
                     //cell.dataset.index = block_index.toString();
                     cell.onclick = block_position;
 
-                    const sudoku_cell_value = 0;
+                    const sudoku_cell_value = sudoku[region_y * 3 + cell_y][region_x * 3 + cell_x];
                     cell.innerText = sudoku_cell_value.toString();
 
                     region.appendChild(cell);
@@ -41,11 +43,10 @@ function block_position(event) {
 }
 
 function init() {
-    generateSudoku();
-
     // HTML Page and styling
     //applySudokuStyleDimensions();
     createSudokuElements();
+    printSudoku(sudoku);
 }
 
 window.onload = init;

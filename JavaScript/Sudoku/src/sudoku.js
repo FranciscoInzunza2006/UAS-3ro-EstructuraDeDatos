@@ -5,9 +5,6 @@ const EMPTY_CELL = 0;
 const ROWS = 9;
 const COLUMNS = 9; // TODO: Test for rectangles
 
-// Sudoku puzzle
-let sudoku = [[1]];
-
 function shuffle(array) {
     let current_index = array.length-1;
 
@@ -21,7 +18,7 @@ function shuffle(array) {
 
 function generateSudoku() {
     // Empty sudoku
-    sudoku = new Array(ROWS);
+    let sudoku = new Array(ROWS);
     for (let row = 0; row < ROWS; row++) {
         sudoku[row] = new Array(COLUMNS).fill(EMPTY_CELL);
     }
@@ -39,9 +36,11 @@ function generateSudoku() {
     }
 
     solveSudoku(sudoku);
+
+    return sudoku;
 }
 
-function solveSudoku() {
+function solveSudoku(sudoku) {
     for (let row = 0; row < ROWS; row++) {
         for (let col = 0; col < COLUMNS; col++) {
             if (sudoku[row][col] === EMPTY_CELL) {
@@ -49,9 +48,9 @@ function solveSudoku() {
                 shuffle(nums);
 
                 for (const num of nums) {
-                    if (isValidCell(row, col, num)) {
+                    if (isValidCell(sudoku, row, col, num)) {
                         sudoku[row][col] = num;
-                        if (solveSudoku()) return true;
+                        if (solveSudoku(sudoku)) return true;
                         sudoku[row][col] = EMPTY_CELL;
                     }
                 }
@@ -62,7 +61,7 @@ function solveSudoku() {
     return true;
 }
 
-function isValidCell(row, col, num) {
+function isValidCell(sudoku, row, col, num) {
     for (let x = 0; x < COLUMNS; x++) {
         if (sudoku[row][x] === num) return false;
     }
@@ -83,7 +82,7 @@ function isValidCell(row, col, num) {
     return true;
 }
 
-function printSudoku() {
+function printSudoku(sudoku) {
     for (let i = 0; i < ROWS; i++) {
         const row = sudoku[i];
         console.log(row.join(" "));
