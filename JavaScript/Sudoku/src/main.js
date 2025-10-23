@@ -13,12 +13,16 @@ function createSudokuElements() {
             region.classList.add("sudoku-region");
 
             for (let cell_y = 0; cell_y < 3; cell_y++) {
+                const row = region_y * 3 + cell_y;
                 for (let cell_x = 0; cell_x < 3; cell_x++) {
                     const cell = document.createElement("div");
-                    //cell.dataset.index = block_index.toString();
-                    cell.onclick = block_position;
+                    const col = region_x * 3 + cell_x;
 
-                    const sudoku_cell_value = sudoku[region_y * 3 + cell_y][region_x * 3 + cell_x];
+                    cell.dataset.row = row.toString();
+                    cell.dataset.column = col.toString();
+                    cell.onclick = cellClicked;
+
+                    const sudoku_cell_value = sudoku[row][col];
                     cell.innerText = sudoku_cell_value.toString();
 
                     region.appendChild(cell);
@@ -36,10 +40,13 @@ function applySudokuStyleDimensions() {
 }
 
 // Functionality
-function block_position(event) {
-    let block_element = event.target;
-    DEBUG_ELEMENT.innerText += "Block index: " + block_element.dataset.index + "\n";
-    DEBUG_ELEMENT.innerText += "Region index: " + block_element.parentElement.dataset.index + "\n";
+function cellClicked(event) {
+    const cell = event.target;
+    const row = cell.dataset.row;
+    const column = cell.dataset.column;
+
+    DEBUG_ELEMENT.innerText += "Row: " + row + "\n";
+    DEBUG_ELEMENT.innerText += "Column : " + column + "\n\n";
 }
 
 function init() {
