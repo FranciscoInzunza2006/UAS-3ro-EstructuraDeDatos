@@ -6,15 +6,27 @@
 
     <link rel="stylesheet" href="style/style.css">
 
-    <script src="src/sudoku.js"></script>
+    <script src="src/sudoku_generator.js"></script>
+    <script src="src/sudoku_drawer.js"></script>
+    <script src="src/sudoku_game.js"></script>
 
     <title>Sudoku</title>
 </head>
 <body>
-    <main id="sudoku">
-    </main>
-    <aside id="debug_output">Debug:<br></aside>
 
-    <script src="src/main.js"></script>
+<main id="sudoku">
+</main>
+
+<section id="debug">
+    <div id="sudokus" style="display: flex; flex-direction:row; justify-content: space-between;">
+        <div id="solution"></div>
+        <div id="puzzle"></div>
+    </div>
+    <p id="temu_console">
+
+    </p>
+</section>
+
+<script src="src/main.js"></script>
 </body>
 </html>
