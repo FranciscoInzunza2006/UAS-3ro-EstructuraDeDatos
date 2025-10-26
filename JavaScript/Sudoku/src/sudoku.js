@@ -90,7 +90,7 @@ function isValidCell(sudoku, row, col, num) {
 
     for (let y = 0; y < ROWS; y++) {
         if (sudoku[y][col] === num) return false;
-    }
+    }7
 
     // Check region
     const start_row = Math.floor(row / 3) * 3;

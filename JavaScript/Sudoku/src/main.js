@@ -1,5 +1,11 @@
 "use strict"
 
+/** TODO:
+ * Hacer que la página se vea bien perrona
+ * Qué no puedas modificar el sudoku inicial
+ * El señalar de alguna manera cuando el sudoku se vuelve invalido (Señalar las celdas que tú modificaste)
+ */
+
 let solution = generateSudoku();
 let puzzle = generateSudokuPuzzle(solution);
 
@@ -17,15 +23,20 @@ function createSudokuElements() {
                 const row = region_y * 3 + cell_y;
                 for (let cell_x = 0; cell_x < 3; cell_x++) {
                     const cell = document.createElement("div");
-                    const col = region_x * 3 + cell_x;
+                    cell.classList.add("sudoku-cell");
 
+                    const col = region_x * 3 + cell_x;
                     cell.dataset.row = row.toString();
                     cell.dataset.column = col.toString();
-                    cell.onclick = cellClicked;
 
                     const sudoku_cell_value = puzzle[row][col];
-                    if (sudoku_cell_value !== EMPTY_CELL)
+                    const is_clue = sudoku_cell_value !== EMPTY_CELL;
+                    if (is_clue) {
                         cell.innerText = sudoku_cell_value.toString();
+                        cell.classList.add("clue");
+                    } else {
+                        cell.onclick = cellClicked;
+                    }
 
                     region.appendChild(cell);
                 }
@@ -42,30 +53,63 @@ function applySudokuStyleDimensions() {
 }
 
 // Functionality
+function changeCellValue(row, col) {
+    // TODO: Make the input system something fancier
+    const input = prompt("Ingresa un valor del 1 al 9");
+    if (input == null || input.trim() === "") {
+        puzzle[row][col] = EMPTY_CELL;
+    }
+
+    const entered_value = parseInt(input);
+    if (isNaN(entered_value)) {
+        DEBUG_ELEMENT.innerText += "¡Valor invalido ingresado!\n";
+        return;
+    }
+
+    if (entered_value < 1 || entered_value > 9) {
+        DEBUG_ELEMENT.innerText += "Solo números del 1 al 9\n";
+        return;
+    }
+
+    puzzle[row][col] = entered_value;
+}
+
+function markInvalidCells(sudoku, row, col, num) {
+    for (let x = 0; x < COLUMNS; x++) {
+        if (sudoku[row][x] === num) return false;
+    }
+
+    for (let y = 0; y < ROWS; y++) {
+        if (sudoku[y][col] === num) return false;
+    }
+
+    // Check region
+    const start_row = Math.floor(row / 3) * 3;
+    const start_col = Math.floor(col / 3) * 3;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (sudoku[i + start_row][j + start_col] === num) return false;
+        }
+    }
+
+    return true;
+}
+
 function cellClicked(event) {
     const cell = event.target;
     const row = cell.dataset.row;
     const column = cell.dataset.column;
 
-    // TODO: Make the input system something fancier
-    const new_value = prompt("Ingresa un valor del 1 al 9");
-    if (new_value == null) {
-        DEBUG_ELEMENT.innerText += "No se ingreso valor.";
-        return;
-    }
+    changeCellValue(row, column);
 
-    const foo = Number(new_value);
-    if ((foo < 1 || foo > 9) && foo % 1 === 0) {
-        DEBUG_ELEMENT.innerText += "Valor invalido. 1-9 enteros.";
-        return;
-    }
-
-    cell.innerText = new_value.toString();
+    const cell_value = puzzle[row][column];
+    cell.innerText = (cell_value !== EMPTY_CELL) ? puzzle[row][column].toString() : "";
 
     DEBUG_ELEMENT.innerText += "Row: " + row + "\n";
     DEBUG_ELEMENT.innerText += "Column : " + column + "\n\n";
 }
 
+// Driver code
 function init() {
     // HTML Page and styling
     //applySudokuStyleDimensions();
