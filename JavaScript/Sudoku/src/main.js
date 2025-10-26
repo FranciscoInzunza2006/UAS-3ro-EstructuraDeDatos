@@ -1,6 +1,7 @@
 "use strict"
 
-let sudoku = generateSudoku()
+let solution = generateSudoku();
+let puzzle = generateSudokuPuzzle(solution);
 
 // HTML Elements
 const SUDOKU_ELEMENT = document.getElementById("sudoku");
@@ -22,8 +23,9 @@ function createSudokuElements() {
                     cell.dataset.column = col.toString();
                     cell.onclick = cellClicked;
 
-                    const sudoku_cell_value = sudoku[row][col];
-                    cell.innerText = sudoku_cell_value.toString();
+                    const sudoku_cell_value = puzzle[row][col];
+                    if (sudoku_cell_value !== EMPTY_CELL)
+                        cell.innerText = sudoku_cell_value.toString();
 
                     region.appendChild(cell);
                 }
@@ -45,6 +47,21 @@ function cellClicked(event) {
     const row = cell.dataset.row;
     const column = cell.dataset.column;
 
+    // TODO: Make the input system something fancier
+    const new_value = prompt("Ingresa un valor del 1 al 9");
+    if (new_value == null) {
+        DEBUG_ELEMENT.innerText += "No se ingreso valor.";
+        return;
+    }
+
+    const foo = Number(new_value);
+    if ((foo < 1 || foo > 9) && foo % 1 === 0) {
+        DEBUG_ELEMENT.innerText += "Valor invalido. 1-9 enteros.";
+        return;
+    }
+
+    cell.innerText = new_value.toString();
+
     DEBUG_ELEMENT.innerText += "Row: " + row + "\n";
     DEBUG_ELEMENT.innerText += "Column : " + column + "\n\n";
 }
@@ -53,7 +70,7 @@ function init() {
     // HTML Page and styling
     //applySudokuStyleDimensions();
     createSudokuElements();
-    printSudoku(sudoku);
+    printSudoku(solution);
 }
 
 window.onload = init;

@@ -40,6 +40,28 @@ function generateSudoku() {
     return sudoku;
 }
 
+function generateSudokuPuzzle(solved_sudoku, difficulty = 35) {
+    let puzzle = [];
+    solved_sudoku.forEach(row => {
+        puzzle.push(Array.from(row));
+    })
+
+    const cells = [];
+    for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+            cells.push([row, col]);
+        }
+    }
+    shuffle(cells);
+
+    for (let removed_cells = 0; removed_cells < difficulty; removed_cells++) {
+        const [row, col] = cells[removed_cells];
+        puzzle[row][col] = EMPTY_CELL;
+    }
+
+    return puzzle;
+}
+
 function solveSudoku(sudoku) {
     for (let row = 0; row < ROWS; row++) {
         for (let col = 0; col < COLUMNS; col++) {
