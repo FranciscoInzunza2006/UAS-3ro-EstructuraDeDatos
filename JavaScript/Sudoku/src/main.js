@@ -8,7 +8,7 @@
 
 // HTML Elements
 const SUDOKU_CONTAINER = document.getElementById("sudoku");
-const DEBUG_ELEMENT = document.getElementById("debug_output");
+const DEBUG_ELEMENT = document.getElementById("temu_console");
 
 let game = new SudokuGame(SUDOKU_CONTAINER);
 

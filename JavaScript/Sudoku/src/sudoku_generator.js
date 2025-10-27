@@ -8,7 +8,6 @@ class SudokuGenerator {
     static REGIONS = SudokuGenerator.SUDOKU_WIDTH * SudokuGenerator.SUDOKU_HEIGHT;
     static CELLS = SudokuGenerator.REGION_WIDTH * SudokuGenerator.REGION_HEIGHT;
 
-
     static ROWS = SudokuGenerator.SUDOKU_HEIGHT * SudokuGenerator.REGION_HEIGHT
     static COLUMNS = SudokuGenerator.SUDOKU_WIDTH * SudokuGenerator.REGION_WIDTH;
 
