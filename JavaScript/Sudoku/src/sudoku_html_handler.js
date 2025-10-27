@@ -47,6 +47,7 @@ class SudokuHtmlHandler {
                 }
 
                 cell.onclick = this.on_click;
+                cell.innerText = "";
                 cell.classList.remove(SudokuHtmlHandler.CLUE_CLASS);
             }
         }
