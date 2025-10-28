@@ -10,7 +10,7 @@
 const SUDOKU_CONTAINER = document.getElementById("sudoku");
 const DEBUG_ELEMENT = document.getElementById("temu_console");
 
-let audio = new Audio('../assets/audio/background_music.mp3');
+let audio = new Audio('background_music.mp3');
 audio.volume = 0.25;
 audio.loop = true;
 
