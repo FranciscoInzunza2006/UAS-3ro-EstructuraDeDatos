@@ -2,7 +2,10 @@ class SudokuHtmlHandler {
     static REGION_CLASS = "sudoku-region"
     static CELL_CLASS = "sudoku-cell"
 
-    static CLUE_CLASS = "clue"
+    static UNSOLVED_CELL_CLASS = "unsolved"
+    static SOLVED_CELL_CLASS = "solved"
+    static CLUE_CELL_CLASS = "clue"
+
 
     constructor(sudoku_container, on_click) {
         this.container = sudoku_container;
@@ -38,17 +41,22 @@ class SudokuHtmlHandler {
                 const col = Number(cell.dataset.col);
 
                 const value = sudoku_puzzle[row][col];
+
+                cell.classList.remove(SudokuHtmlHandler.UNSOLVED_CELL_CLASS);
+                cell.classList.remove(SudokuHtmlHandler.SOLVED_CELL_CLASS);
+                cell.classList.remove(SudokuHtmlHandler.CLUE_CELL_CLASS);
+
                 if (this.#is_clue(value)) {
                     cell.onclick = null;
 
                     cell.innerText = value.toString();
-                    cell.classList.add(SudokuHtmlHandler.CLUE_CLASS);
+                    cell.classList.add(SudokuHtmlHandler.CLUE_CELL_CLASS);
                     continue;
                 }
 
                 cell.onclick = this.on_click;
                 cell.innerText = "";
-                cell.classList.remove(SudokuHtmlHandler.CLUE_CLASS);
+                cell.classList.add(SudokuHtmlHandler.UNSOLVED_CELL_CLASS);
             }
         }
     }

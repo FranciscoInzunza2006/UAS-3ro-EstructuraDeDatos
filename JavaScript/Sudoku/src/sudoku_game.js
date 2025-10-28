@@ -1,12 +1,16 @@
 class SudokuGame {
     static STARTING_LIVES = 3;
     static BONUS_LIVES = 1;
+
     constructor(sudoku_container) {
         this.generator = new SudokuGenerator();
         this.drawer = new SudokuHtmlHandler(sudoku_container, (e) => this.#clickedCell(e));
 
         this.solution = null;
         this.puzzle = null;
+
+        this.difficulty = 35;
+        this.remaining_cells = 0;
 
         this.lives = SudokuGame.STARTING_LIVES;
         this.flawless = false;
@@ -15,18 +19,40 @@ class SudokuGame {
 
         this.time_taken = 0;
         this.time_in_level = 0;
+
+        setInterval(function () {
+            function format_seconds(total_seconds) {
+                const minutes = Math.floor(total_seconds / 60);
+                const seconds = total_seconds % 60;
+
+                const minutes_formatted = (minutes >= 10) ? minutes : '0' + minutes;
+                const seconds_formatted = (seconds >= 10) ? seconds : '0' + seconds;
+
+                return minutes_formatted + ":" + seconds_formatted;
+            }
+
+            game.time_taken++;
+            game.time_in_level++;
+
+            document.getElementById("time-total").innerText = format_seconds(game.time_taken);
+            document.getElementById("time-level").innerText = format_seconds(game.time_in_level);
+        }, 1000);
+
+
     }
 
     start() {
         this.drawer.createElements();
-        this.#next_level();
+        this.#load_next_level();
     }
 
-    #next_level() {
+    #load_next_level() {
         this.current_level++;
 
         this.solution = this.generator.generate();
-        this.puzzle = this.generator.generatePuzzle(this.solution);
+        this.puzzle = this.generator.generatePuzzle(this.solution, this.difficulty); // Higher difficulty the higher the level
+
+        this.remaining_cells = this.difficulty;
 
         this.lives = SudokuGame.STARTING_LIVES;
         if (this.flawless)
@@ -36,6 +62,9 @@ class SudokuGame {
         this.drawer.restart(this.puzzle);
 
         this.time_in_level = 0;
+
+        this.#updateLevel();
+        this.#updateLives();
 
         let debug_solution = document.getElementById("solution");
         let debug_puzzle = document.getElementById("puzzle");
@@ -64,15 +93,49 @@ class SudokuGame {
         if (new_value !== correct_value) {
             this.flawless = false;
             this.lives--;
-            DEBUG_ELEMENT.innerText = "¡Esa no era la respuesta correcta!";
-
-            // TODO: Game Over
+            this.#updateLives();
+            if (this.lives > 0) {
+                alert("¡Esa no era la respuesta correcta!");
+            } else {
+                this.#gameOver();
+            }
 
             return;
         }
 
-        this.puzzle[row][col] = correct_value;
+        //this.puzzle[row][col] = correct_value;
+
+        cell.onclick = null;
         cell.innerText = correct_value.toString();
+        cell.classList.replace(SudokuHtmlHandler.UNSOLVED_CELL_CLASS, SudokuHtmlHandler.SOLVED_CELL_CLASS);
+
+        this.remaining_cells -= 1;
+        if (this.remaining_cells === 0) {
+            if (this.current_level === 5) {
+                alert("¡GG!");
+                window.location.reload();
+            }
+
+            let str = `¡Nivel ${this.current_level} completado!\n`;
+            if (this.flawless)
+                str += "¡FELICIDADES! Completaste el nivel sin ningún error.\n";
+
+            alert(str);
+            this.#load_next_level();
+        }
+    }
+
+    #gameOver() {
+        alert("¡Game Over!");
+        window.location.reload();
+    }
+
+    #updateLevel() {
+        document.getElementById("level").innerText = this.current_level.toString();
+    }
+
+    #updateLives() {
+        document.getElementById("lives").innerHTML = this.lives.toString();
     }
 
     #getNewCellValue() {

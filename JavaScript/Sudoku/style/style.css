@@ -50,20 +50,25 @@ body {
     height: 1rem;
 }
 
+.unsolved:hover {
+    cursor: pointer;
+
+    background-color: #f0f0f0;
+    scale: 120%;
+}
+
 .clue {
     color: dodgerblue;
     font-weight: bolder;
 }
 
-.sudoku-cell.invalid {
-    background-color: red;
+.solved {
+    color: lightseagreen;
+    font-weight: bolder;
 }
 
-.sudoku-cell:hover:not(.clue) {
-    cursor: pointer;
-
-    background-color: #f0f0f0;
-    scale: 120%;
+.sudoku-cell.invalid {
+    background-color: red;
 }
 
 #debug_output {
