@@ -9,7 +9,7 @@ class SudokuGame {
         this.solution = null;
         this.puzzle = null;
 
-        this.difficulty = 15;
+        this.difficulty = 0;
         this.remaining_cells = 0;
 
         this.lives = SudokuGame.STARTING_LIVES;
