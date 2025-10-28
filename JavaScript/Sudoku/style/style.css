@@ -120,6 +120,7 @@ header h2 {
 }
 
 .flagged {
+    color: black;
     background-color: lightgray;
 }
 
