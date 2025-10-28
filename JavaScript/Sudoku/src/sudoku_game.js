@@ -9,7 +9,7 @@ class SudokuGame {
         this.solution = null;
         this.puzzle = null;
 
-        this.difficulty = 35;
+        this.difficulty = 15;
         this.remaining_cells = 0;
 
         this.lives = SudokuGame.STARTING_LIVES;
@@ -49,6 +49,12 @@ class SudokuGame {
     #load_next_level() {
         this.current_level++;
 
+        this.difficulty += 10; // 10 clues less per level
+        // 17 is the least amount of clues possible for a level
+        if (SudokuGenerator.TOTAL_CELLS - this.difficulty < 17) {
+            this.difficulty = SudokuGenerator.TOTAL_CELLS - 17;
+        }
+
         this.solution = this.generator.generate();
         this.puzzle = this.generator.generatePuzzle(this.solution, this.difficulty); // Higher difficulty the higher the level
 
@@ -83,14 +89,14 @@ class SudokuGame {
         const col = Number(cell.dataset.col);
 
         const new_value = this.#getNewCellValue();
-        const cell_value = this.puzzle[row][col];
 
-        if (new_value === null || new_value === cell_value) {
+
+        if (new_value === null) {
             return;
         }
 
         const correct_value = this.solution[row][col];
-        if (new_value !== correct_value) {
+        if (new_value !== correct_value && new_value !== 100) {
             this.flawless = false;
             this.lives--;
             this.#updateLives();
@@ -113,10 +119,10 @@ class SudokuGame {
 
         this.remaining_cells -= 1;
         if (this.remaining_cells === 0) {
-            if (this.current_level === 5) {
-                alert("¡GG!");
-                window.location.reload();
+            if (this.current_level == 5) {
+                this.#GG();
             }
+
 
             let str = `¡Nivel ${this.current_level} completado!\n`;
             if (this.flawless)
@@ -146,14 +152,20 @@ class SudokuGame {
         cell.classList.add(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
     }
 
+    #GG() {
+        alert("¡GG!\n" + "Completado en: " + document.getElementById("time-total").innerText);        
+        window.location.replace("index.html");
+    }
 
     #gameOver() {
         alert("¡Game Over!");
-        window.location.reload();
+        window.location.replace("index.html");
     }
 
     #updateLevel() {
         document.getElementById("level").innerText = this.current_level.toString();
+
+        document.body.classList.replace(`level-${this.current_level - 1}`, `level-${this.current_level}`);
     }
 
     #updateLives() {
@@ -171,6 +183,10 @@ class SudokuGame {
         if (isNaN(entered_value)) {
             DEBUG_ELEMENT.innerText += "¡Valor invalido ingresado!\n";
             return null;
+        }
+
+        if (entered_value == 100) {
+            return 100;
         }
 
         if (entered_value < 1 || entered_value > 9) {

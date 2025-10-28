@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es-mx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="style/style.css">
+
+    <script src="src/sudoku_generator.js"></script>
+    <script src="src/sudoku_html_handler.js"></script>
+    <script src="src/sudoku_game.js"></script>
+
+    <title>Sudoku</title>
+</head>
+
+<body class="level-0">
+    <header>
+        <h1>Sudoku</h1>
+        <h2>Paco Edition</h2>
+        <p>Usa tu teclado y ratón para insertar valores en la celda, con el click derecho coloca valores temporales.</p>
+    </header>
+
+    <section>
+        <p id="info">
+            Nivel: <span id="level">0</span><br>
+            Vidas restantes: <span id="lives">0</span><br>
+            Tiempo en este nivel: <span id="time-level">00:00</span><br>
+            Tiempo total: <span id="time-total">00:00</span><br>
+        </p>
+    </section>
+
+    <main id="sudoku">
+    </main>
+
+    <section id="debug">
+
+        <div id="sudokus" style="display: flex; flex-direction:row; justify-content: space-between;">
+            <div id="solution"></div>
+            <div id="puzzle"></div>
+        </div>
+        <p id="temu_console">
+
+        </p>
+    </section>
+
+    <script src="src/main.js"></script>
+</body>
+
+</html>

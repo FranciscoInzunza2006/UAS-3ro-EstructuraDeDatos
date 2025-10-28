@@ -1,38 +1,36 @@
-<!doctype html>
-<html lang="es-mx">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="style/style.css">
-
-    <script src="src/sudoku_generator.js"></script>
-    <script src="src/sudoku_html_handler.js"></script>
-    <script src="src/sudoku_game.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sudoku</title>
+
+    <style>
+        body {            
+            font-family: 'Comic Sans MS', sans-serif;
+            background-color: black;
+            color: white;
+
+            display: flex;        
+            justify-content: center;
+            align-items: center;
+
+            margin: 0;
+            height: 100vh;            
+        }
+    </style>
+
 </head>
+
 <body>
-
-<main id="sudoku">
-</main>
-
-<section id="debug">
-    <p>
-        Nivel: <span id="level">0</span><br>
-        Vidas restantes: <span id="lives">0</span><br>
-        Tiempo en este nivel: <span id="time-level">00:00</span><br>
-        Tiempo total: <span id="time-total">00:00</span><br>
-    </p>
-    <div id="sudokus" style="display: flex; flex-direction:row; justify-content: space-between;">
-        <div id="solution"></div>
-        <div id="puzzle"></div>
-    </div>
-    <p id="temu_console">
-
-    </p>
-</section>
-
-<script src="src/main.js"></script>
+    <h1>Haz click para jugar</h1>
 </body>
+
+<script>
+    window.onclick = function () {
+        window.location.replace("sudoku.html");
+    }
+</script>
+
 </html>
