@@ -4,7 +4,7 @@ class SudokuGame {
 
     constructor(sudoku_container) {
         this.generator = new SudokuGenerator();
-        this.drawer = new SudokuHtmlHandler(sudoku_container, (e) => this.#clickedCell(e));
+        this.drawer = new SudokuHtmlHandler(sudoku_container);
 
         this.solution = null;
         this.puzzle = null;
@@ -77,7 +77,7 @@ class SudokuGame {
         }
     }
 
-    #clickedCell(event) {
+    setCellValue(event) {
         const cell = event.target;
         const row = Number(cell.dataset.row);
         const col = Number(cell.dataset.col);
@@ -106,8 +106,10 @@ class SudokuGame {
         //this.puzzle[row][col] = correct_value;
 
         cell.onclick = null;
+        cell.oncontextmenu = null;
         cell.innerText = correct_value.toString();
         cell.classList.replace(SudokuHtmlHandler.UNSOLVED_CELL_CLASS, SudokuHtmlHandler.SOLVED_CELL_CLASS);
+        cell.classList.remove(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
 
         this.remaining_cells -= 1;
         if (this.remaining_cells === 0) {
@@ -124,6 +126,26 @@ class SudokuGame {
             this.#load_next_level();
         }
     }
+
+    flagCell(event) {
+        const cell = event.target;
+
+        const is_flagged = cell.classList.contains(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
+        if (is_flagged) {
+            cell.classList.remove(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
+            cell.innerText = "";
+            return false;
+        }
+
+        const new_value = this.#getNewCellValue();
+        if (new_value === null) {
+            return false;
+        }
+
+        cell.innerText = new_value;
+        cell.classList.add(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
+    }
+
 
     #gameOver() {
         alert("¡Game Over!");
@@ -142,7 +164,7 @@ class SudokuGame {
         // TODO: Make the input system something fancier
         const input = prompt("Ingresa un valor del 1 al 9");
         if (input == null || input.trim() === "") {
-            return SudokuGenerator.EMPTY_CELL;
+            return null;
         }
 
         const entered_value = parseInt(input);

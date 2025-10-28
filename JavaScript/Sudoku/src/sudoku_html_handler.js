@@ -5,11 +5,12 @@ class SudokuHtmlHandler {
     static UNSOLVED_CELL_CLASS = "unsolved"
     static SOLVED_CELL_CLASS = "solved"
     static CLUE_CELL_CLASS = "clue"
+    static FLAGGED_CELL_CLASS = "flagged"
 
-
-    constructor(sudoku_container, on_click) {
+    constructor(sudoku_container) {
         this.container = sudoku_container;
-        this.on_click = on_click;
+        this.on_click = (e) => {game.setCellValue(e);}
+        this.on_context_menu = (e) => {game.flagCell(e); return false;}
     }
 
     createElements() {
@@ -45,16 +46,19 @@ class SudokuHtmlHandler {
                 cell.classList.remove(SudokuHtmlHandler.UNSOLVED_CELL_CLASS);
                 cell.classList.remove(SudokuHtmlHandler.SOLVED_CELL_CLASS);
                 cell.classList.remove(SudokuHtmlHandler.CLUE_CELL_CLASS);
+                cell.classList.remove(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
+
+                cell.onclick = null;
+                cell.oncontextmenu = null;
 
                 if (this.#is_clue(value)) {
-                    cell.onclick = null;
-
                     cell.innerText = value.toString();
                     cell.classList.add(SudokuHtmlHandler.CLUE_CELL_CLASS);
                     continue;
                 }
 
                 cell.onclick = this.on_click;
+                cell.oncontextmenu = this.on_context_menu;
                 cell.innerText = "";
                 cell.classList.add(SudokuHtmlHandler.UNSOLVED_CELL_CLASS);
             }

@@ -57,6 +57,10 @@ body {
     scale: 120%;
 }
 
+.flagged {
+    background-color: lightgray;
+}
+
 .clue {
     color: dodgerblue;
     font-weight: bolder;
