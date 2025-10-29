@@ -4,9 +4,10 @@
 
 #include <iostream>
 #include <ostream>
+#include <random>
 
 #include "sorting_algorithms.hpp"
-#include "tester.hpp"
+#include "sorting_benchmark.hpp"
 
 void inOrder(int array[], const std::size_t array_length)
 {
@@ -18,9 +19,12 @@ void inOrder(int array[], const std::size_t array_length)
 
 void randomValues(int array[], const std::size_t array_length)
 {
+    std::default_random_engine generator; // Same values each time to be more consistent NOLINT(*-msc51-cpp)
+    std::uniform_int_distribution<> distribution(1, 100);
+
     for (std::size_t i = 0; i < array_length; i++)
     {
-        array[i] = std::rand() % 100;
+        array[i] = distribution(generator);
     }
 }
 
@@ -34,8 +38,9 @@ void inReverse(int array[], const std::size_t array_length)
 
 int main()
 {
-    const auto tester = Tester(
-        {100, 1'000, 10'000, 100'000},
+    const auto benchmarker = SortingBenchmark(
+        //{100, 1'000, 10'000, 100'000},
+{100, 1'000, 10'000},
         {
             {"Ordenado", inOrder},
             {"Inverso", inReverse},
@@ -43,16 +48,15 @@ int main()
         }
     );
 
-    SortingAlgorithm sorting_algorithms[] = {
+    NamedAlgorithm sorting_algorithms[] = {
         {"Bubble sort", bubbleSort},
         {"Selection sort", selectionSort},
         {"Quick sort", quickSort},
     };
 
-    // TODO: Change name
-    for (const auto& test : sorting_algorithms)
+    for (const auto& algorithm : sorting_algorithms)
     {
-        tester.executeTest(test);
+        benchmarker.runBenchmark(algorithm);
         std::cout << std::endl;
     }
 

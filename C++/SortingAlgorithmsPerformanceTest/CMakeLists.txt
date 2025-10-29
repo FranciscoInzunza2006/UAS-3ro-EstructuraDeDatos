@@ -9,5 +9,5 @@ add_executable(SortingAlgorithmsPerformanceTest
         main.cpp
         sorting_algorithms.cpp
         sorting_algorithms.hpp
-        tester.cpp
-        tester.hpp)
+        sorting_benchmark.cpp
+        sorting_benchmark.hpp)
