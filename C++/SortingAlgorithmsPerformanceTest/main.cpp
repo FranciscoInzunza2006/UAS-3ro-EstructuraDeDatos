@@ -13,6 +13,44 @@
 
 using NamedArrayFunction = std::pair<const std::string, ArrayFunction>;
 
+void printBenchmarkResults(const std::vector<BenchmarkResults>& results, const std::vector<std::string>& sorting_algorithms_name,
+                           const std::vector<std::string>& input_generators_name,
+                           const std::vector<std::size_t>& sample_sizes)
+{
+    // Print results
+    for (std::size_t algorithm = 0; algorithm < sorting_algorithms_name.size(); algorithm++)
+    {
+        constexpr int cell_width = 14;
+        const std::string& algorithm_name = sorting_algorithms_name[algorithm];
+
+        // Header
+        std::stringstream results_table;
+
+        results_table << std::left << std::setw(cell_width) << algorithm_name;
+        for (const std::size_t& sample_size : sample_sizes)
+        {
+            results_table << std::right << std::setw(cell_width) << sample_size;
+        }
+        results_table << "\n";
+
+        // Samples
+        for (std::size_t type = 0; type < input_generators_name.size(); type++)
+        {
+            const std::string& sample_type = input_generators_name[type];
+            results_table << std::left << std::setw(cell_width) << sample_type;
+
+            // Time
+            for (size_t size = 0; size < sample_sizes.size(); size++)
+            {
+                results_table << std::right << std::setw(cell_width) << results[algorithm][type][size].count();
+            }
+            results_table << "\n";
+        }
+
+        std::cout << results_table.str() << std::endl;
+    }
+}
+
 int main()
 {
     // Set up
@@ -50,40 +88,7 @@ int main()
     {
         results.push_back(benchmarker.runBenchmark(algorithm));
     }
-
-    // Print results
-    for (std::size_t algorithm = 0; algorithm < sorting_algorithms_name.size(); algorithm++)
-    {
-        constexpr int cell_width = 14;
-        const std::string& algorithm_name = sorting_algorithms_name[algorithm];
-
-        // Header
-        std::stringstream results_table;
-
-        results_table << std::left << std::setw(cell_width) << algorithm_name;
-        for (const std::size_t& sample_size : sample_sizes)
-        {
-            results_table << std::right << std::setw(cell_width) << sample_size;
-        }
-        results_table << "\n";
-
-        // Samples
-        for (std::size_t type = 0; type < input_generators.size(); type++)
-        {
-            const std::string& sample_type = input_generators_name[type];
-            results_table << std::left << std::setw(cell_width) << sample_type;
-
-            // Time
-            for (size_t size = 0; size < sample_sizes.size(); size++)
-            {
-                results_table << std::right << std::setw(cell_width) << results[algorithm][type][size].count();
-            }
-            results_table << "\n";
-        }
-
-        std::cout << results_table.str() << std::endl;
-    }
-
+    printBenchmarkResults(results, sorting_algorithms_name, input_generators_name, sample_sizes);
 
     return 0;
 }
