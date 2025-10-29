@@ -39,29 +39,54 @@ void inReverse(int array[], const std::size_t array_length)
 int main()
 {
     const std::vector<std::size_t> sample_sizes = {100, 500, 1000};
-    const std::vector<NamedAlgorithm> input_generators = {
-        {"Ordenado", inOrder},
-        {"Inverso", inReverse},
-        {"Aleatorio", randomValues}
+    const std::vector<ArrayFunction> input_generators = {
+        inOrder,
+        inReverse,
+        randomValues
     };
     const auto benchmarker = SortingBenchmark(sample_sizes, input_generators);
 
-    NamedAlgorithm sorting_algorithms[] = {
-        {"Bubble sort", bubbleSort},
-        {"Selection sort", selectionSort},
-        {"Quick sort", quickSort},
+
+    const std::vector<ArrayFunction> sorting_algorithms = {
+        bubbleSort,
+        selectionSort,
+        quickSort
     };
 
     std::vector<BenchmarkResults> results;
-    results.reserve(sizeof(sorting_algorithms) / sizeof(sorting_algorithms[0]));
+    results.reserve(sorting_algorithms.size());
     for (const auto& algorithm : sorting_algorithms)
     {
         results.push_back(benchmarker.runBenchmark(algorithm));
     }
 
-    for (const auto& result : results)
-    {
+    std::string samples_name[] = {
+        "En orden",
+        "En reversa",
+        "Elementos aleatorios"
+    };
 
+    std::string algorithms_name[] = {
+        "Bubble Sort",
+        "Selection Sort",
+        "Quick Sort"
+    };
+
+    constexpr std::size_t al = sizeof(algorithms_name) / sizeof(algorithms_name[0]);
+    constexpr std::size_t sl = sizeof(samples_name) / sizeof(samples_name[0]);
+    for (int i = 0; i < al; i++)
+    {
+        std::cout << algorithms_name[i] << std::endl;
+        for (int j = 0; j < sl; j++)
+        {
+            std::cout << samples_name[j] << std::endl;
+
+            for (std::size_t k = 0; k < sample_sizes.size(); k++)
+            {
+                std::cout << "\t" << sample_sizes[k] << ": " << results[i][j][k].count() << "ms" << std::endl;
+            }
+        }
+        std::cout << std::endl;
     }
 
     return 0;

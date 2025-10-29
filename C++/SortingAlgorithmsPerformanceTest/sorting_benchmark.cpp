@@ -16,7 +16,7 @@ void printArray(int array[], const std::size_t array_length)
     }
 }
 
-BenchmarkResults SortingBenchmark::runBenchmark(const NamedAlgorithm& algorithm) const
+BenchmarkResults SortingBenchmark::runBenchmark(const ArrayFunction& algorithm) const
 {
     BenchmarkResults results;
     results.reserve(input_generators.size());
@@ -26,10 +26,10 @@ BenchmarkResults SortingBenchmark::runBenchmark(const NamedAlgorithm& algorithm)
         sample_type_results.reserve(sample_sizes.size());
         for (const auto& sample_length : sample_sizes)
         {
-            input_generator.funct(test_data_buffer, sample_length);
+            input_generator(test_data_buffer, sample_length);
 
             const auto start = std::chrono::steady_clock::now();
-            algorithm.funct(test_data_buffer, sample_length);
+            algorithm(test_data_buffer, sample_length);
             const auto end = std::chrono::steady_clock::now();
 
             const PreciseMilliseconds time_taken = end - start;
