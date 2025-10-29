@@ -38,15 +38,13 @@ void inReverse(int array[], const std::size_t array_length)
 
 int main()
 {
-    const auto benchmarker = SortingBenchmark(
-        //{100, 1'000, 10'000, 100'000},
-{100, 1'000, 10'000},
-        {
-            {"Ordenado", inOrder},
-            {"Inverso", inReverse},
-            {"Aleatorio", randomValues}
-        }
-    );
+    const std::vector<std::size_t> sample_sizes = {100, 500, 1000};
+    const std::vector<NamedAlgorithm> input_generators = {
+        {"Ordenado", inOrder},
+        {"Inverso", inReverse},
+        {"Aleatorio", randomValues}
+    };
+    const auto benchmarker = SortingBenchmark(sample_sizes, input_generators);
 
     NamedAlgorithm sorting_algorithms[] = {
         {"Bubble sort", bubbleSort},
@@ -54,10 +52,16 @@ int main()
         {"Quick sort", quickSort},
     };
 
+    std::vector<BenchmarkResults> results;
+    results.reserve(sizeof(sorting_algorithms) / sizeof(sorting_algorithms[0]));
     for (const auto& algorithm : sorting_algorithms)
     {
-        benchmarker.runBenchmark(algorithm);
-        std::cout << std::endl;
+        results.push_back(benchmarker.runBenchmark(algorithm));
+    }
+
+    for (const auto& result : results)
+    {
+
     }
 
     return 0;

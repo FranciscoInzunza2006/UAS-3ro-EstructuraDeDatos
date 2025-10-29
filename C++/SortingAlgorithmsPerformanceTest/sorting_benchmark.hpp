@@ -4,13 +4,14 @@
 
 #pragma once
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <ostream>
 #include <string>
 #include <vector>
 
-using ArrayFunction = void(int[], std::size_t);
+using ArrayFunction = void(int [], std::size_t);
 
 struct NamedAlgorithm
 {
@@ -18,12 +19,15 @@ struct NamedAlgorithm
     std::function<ArrayFunction> funct;
 };
 
+using PreciseMilliseconds = std::chrono::duration<float, std::milli>;
+using BenchmarkResults = std::vector<std::vector<PreciseMilliseconds>>;
 
+// TODO: This function doesn't prints anything so why it need names
 class SortingBenchmark
 {
     int* test_data_buffer{nullptr};
-    std::vector<std::size_t> sample_sizes;
-    std::vector<NamedAlgorithm> input_generators;
+    const std::vector<std::size_t> sample_sizes;
+    const std::vector<NamedAlgorithm> input_generators;
 
 public:
     SortingBenchmark(const std::vector<std::size_t>& sample_sizes,
@@ -45,11 +49,11 @@ public:
         delete[] test_data_buffer;
     };
 
-    void runBenchmark(const NamedAlgorithm& algorithm) const;
+    BenchmarkResults runBenchmark(const NamedAlgorithm& algorithm) const;
 
-    void runBenchmark(const std::string& algorithm_name,
-                     const std::function<ArrayFunction>& algorithm_function) const
+    BenchmarkResults runBenchmark(const std::string& algorithm_name,
+                      const std::function<ArrayFunction>& algorithm_function) const
     {
-        runBenchmark({algorithm_name, algorithm_function});
+        return runBenchmark({algorithm_name, algorithm_function});
     };
 };

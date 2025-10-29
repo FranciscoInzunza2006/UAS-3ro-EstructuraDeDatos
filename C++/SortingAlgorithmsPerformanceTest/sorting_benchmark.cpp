@@ -16,24 +16,27 @@ void printArray(int array[], const std::size_t array_length)
     }
 }
 
-void SortingBenchmark::runBenchmark(const NamedAlgorithm& algorithm) const
+BenchmarkResults SortingBenchmark::runBenchmark(const NamedAlgorithm& algorithm) const
 {
-    std::cout << "Algoritmo: " << algorithm.name << std::endl;
-
+    BenchmarkResults results;
+    results.reserve(input_generators.size());
     for (const auto& input_generator : input_generators)
     {
-        std::cout << "Tipo de muestra: " << input_generator.name << std::endl;
-        std::cout << "Tiempo tomado en muestra con tamaño de: \n";
+        std::vector<PreciseMilliseconds> sample_type_results;
+        sample_type_results.reserve(sample_sizes.size());
         for (const auto& sample_length : sample_sizes)
         {
             input_generator.funct(test_data_buffer, sample_length);
 
-            auto start = std::chrono::steady_clock::now();
+            const auto start = std::chrono::steady_clock::now();
             algorithm.funct(test_data_buffer, sample_length);
-            auto end = std::chrono::steady_clock::now();
+            const auto end = std::chrono::steady_clock::now();
 
-            std::chrono::duration<float, std::milli> time_taken = end - start;
-            std::cout << "\t" << sample_length << ": " << time_taken.count() << "ms\n";
+            const PreciseMilliseconds time_taken = end - start;
+            sample_type_results.push_back(time_taken);
         }
+        results.push_back(sample_type_results);
     }
+
+    return results;
 }
