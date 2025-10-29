@@ -1,0 +1,143 @@
+@font-face {
+    font-family: 'JetBrains';
+    src: url('fonts/JetBrainsSans.woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: url('fonts/JetBrainsMono.woff2');
+}
+
+html {
+    height: 100%;
+}
+
+
+body {
+    height: 100%;
+    margin: 0;    
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-family: 'JetBrains', 'Comic Sans MS', sans-serif;
+    text-align: center;
+
+    overflow-x: hidden;
+    overflow-y: auto;  
+    
+    color: whitesmoke;
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;    
+}
+
+.level-1 {
+    background: #2A7B9B;
+    background: linear-gradient(180deg, rgba(42, 123, 155, 1) 50%, rgba(87, 199, 133, 1) 80%, rgba(237, 221, 83, 1) 100%);
+}
+
+.level-2 {
+    background: #020024;
+    background: linear-gradient(90deg, rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+}
+
+.level-3 {
+    background: #3F5EFB;
+    background: radial-gradient(circle, rgba(63, 94, 251, 1) 0%, rgba(252, 70, 107, 1) 100%);
+}
+
+.level-4 {
+    background: #833AB4;
+    background: linear-gradient(90deg, rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 100%);
+}
+
+.level-5 {
+    background: #EEAECA;
+    background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+}
+
+header h1 {
+    font-size: 3rem;
+    margin-bottom: 0;
+}
+
+header h2 {
+    margin-top: 0;
+}
+
+#info {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+#sudoku {
+    background-color: black;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 2px;
+
+    padding: 2px;
+    width: fit-content;
+}
+
+.sudoku-region {
+    background-color: gainsboro;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: inherit;
+
+    overflow: hidden;
+
+    width: fit-content;
+    aspect-ratio: 1;
+}
+
+.sudoku-cell {
+    user-select: none;
+
+    background-color: white;
+    transition: color, scale 0.4s;
+
+    font-family: inherit;
+    font-size: large;
+    text-align: center;
+
+    padding: 0.8rem;
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.unsolved:hover {
+    cursor: pointer;
+
+    background-color: #f0f0f0;
+    scale: 120%;
+}
+
+.flagged {
+    color: black;
+    background-color: lightgray;
+}
+
+.clue {
+    color: dodgerblue;
+    font-weight: bolder;
+}
+
+.solved {
+    color: lightseagreen;
+    font-weight: bolder;
+}
+
+.sudoku-cell.invalid {
+    background-color: red;
+}
+
+#debug {
+    visibility: hidden;
+}
