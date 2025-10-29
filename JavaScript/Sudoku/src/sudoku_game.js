@@ -119,7 +119,7 @@ class SudokuGame {
 
         this.remaining_cells -= 1;
         if (this.remaining_cells === 0) {
-            if (this.current_level == 5) {
+            if (this.current_level === 5) {
                 this.#GG();
             }
 
@@ -152,12 +152,20 @@ class SudokuGame {
         cell.classList.add(SudokuHtmlHandler.FLAGGED_CELL_CLASS);
     }
 
+    #saveScore(){
+        name = prompt("¿Cuál es tu nombre?");
+        scores.push([this.current_level, this.time_taken, name]);
+        sessionStorage.setItem("scores", JSON.stringify(scores));
+    }
+
     #GG() {
-        alert("¡GG!\n" + "Completado en: " + document.getElementById("time-total").innerText);        
+        alert("¡GG!\n" + "Completado en: " + document.getElementById("time-total").innerText);
+        this.#saveScore()
         window.location.replace("index.html");
     }
 
     #gameOver() {
+        this.#saveScore()
         alert("¡Game Over!");
         window.location.replace("index.html");
     }
@@ -185,7 +193,7 @@ class SudokuGame {
             return null;
         }
 
-        if (entered_value == 100) {
+        if (entered_value === 100) {
             return 100;
         }
 

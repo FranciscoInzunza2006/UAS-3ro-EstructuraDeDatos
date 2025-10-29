@@ -16,6 +16,16 @@ audio.loop = true;
 
 let game = new SudokuGame(SUDOKU_CONTAINER);
 
+let scores = sessionStorage.getItem("scores");
+if (scores == null) {
+    scores = [];
+    // scores[0] = [0, 100];
+    // scores[1] = [1, 400];
+    // scores[2] = [1, 200];
+} else {
+    scores = JSON.parse(scores);
+}
+
 document.body.style.visibility = false;
 window.onload = function () {
     game.start();    
@@ -25,4 +35,8 @@ window.onload = function () {
 window.onclick = function () {
     audio.play();
     window.onclick = null;
+}
+
+window.onclose = function () {
+    console.log("Hello");
 }
