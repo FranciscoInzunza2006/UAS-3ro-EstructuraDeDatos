@@ -10,4 +10,6 @@ add_executable(SortingAlgorithmsPerformanceTest
         sorting_algorithms.cpp
         sorting_algorithms.hpp
         sorting_benchmark.cpp
-        sorting_benchmark.hpp)
+        sorting_benchmark.hpp
+        sample_generators.cpp
+        sample_generators.hpp)
