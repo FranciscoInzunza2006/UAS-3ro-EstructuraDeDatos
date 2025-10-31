@@ -34,10 +34,10 @@ struct NamedBenchmarkResults
 
 constexpr auto COLOR_RESET = "\033[0m";
 
-constexpr auto COLOR_ALGORITHM = "\033[0;96m";
+constexpr auto COLOR_MAIN = "\033[0;96m";
 
-constexpr auto COLOR_HEADER_TIME = "\033[0;95m";
-constexpr auto COLOR_TIME = "\033[0;93m";
+constexpr auto COLOR_SECONDARY = "\033[0;95m";
+constexpr auto COLOR_DATA = "\033[0;93m";
 
-constexpr auto COLOR_HEADER_AVERAGE = "\033[0;91m";
-constexpr auto COLOR_AVERAGE = "\033[1;36m";
+constexpr auto COLOR_SPECIAL = "\033[0;91m";
+constexpr auto COLOR_SPECIAL_DATA = "\033[1;36m";
