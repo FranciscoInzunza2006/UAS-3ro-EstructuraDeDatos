@@ -37,11 +37,12 @@ void foo(const std::vector<std::size_t>& sample_sizes,
     std::cout << "Done!\n\n";
 
     // Print Benchmarks
-    std::cout << "Benchmark results:\n";
+    std::cout << "Benchmark results: (Time is in milliseconds)\n";
     const BenchmarkerFormatter formatter(sample_sizes, generators_name);
     for (const auto & benchmark_result : benchmark_results)
     {
         formatter.printBenchmarkResult(benchmark_result);
+        std::cout << std::endl;
     }
     // Make benchmark rankings
     std::cout << "Rankings:\n";

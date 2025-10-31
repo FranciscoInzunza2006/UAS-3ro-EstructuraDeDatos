@@ -14,4 +14,8 @@ add_executable(sorting_algorithms_comparison
         benchmark_formatter.hpp
         benchmark_rankings.cpp
         benchmark_rankings.hpp
+        sample_generators.cpp
+        sample_generators.hpp
+        sorting_algorithms.cpp
+        sorting_algorithms.hpp
 )

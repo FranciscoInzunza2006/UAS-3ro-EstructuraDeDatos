@@ -20,7 +20,7 @@ public:
     {
     }
 
-    void printBenchmarkResult(const std::string& algorithm_name, const BenchmarkResults& result) const;
+    void printBenchmarkResult(const std::string& algorithm_name, const BenchmarkResults& results) const;
     void printBenchmarkResult(const NamedBenchmarkResults& results) const
     {
         printBenchmarkResult(results.name, results.results);

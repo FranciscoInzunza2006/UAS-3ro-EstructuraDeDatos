@@ -14,6 +14,8 @@ class Benchmarker
     const std::vector<std::size_t> sample_sizes;
     const std::vector<ArrayFunction> sample_generators;
 
+    BenchmarkResults foo(const ArrayFunction& algorithm) const;
+    void addAverages(BenchmarkResults& results) const;
 public:
     Benchmarker(const std::vector<std::size_t>& sample_sizes,
                 const std::vector<ArrayFunction>& sample_generators)
