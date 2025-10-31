@@ -1,111 +1,78 @@
-//
-// Created by Franc on 28/10/2025.
-//
-
-#include <iomanip>
 #include <iostream>
-#include <ostream>
-#include <random>
 
+#include "benchmark.hpp"
+#include "benchmarker.hpp"
+#include "benchmark_formatter.hpp"
+#include "benchmark_rankings.hpp"
 #include "sample_generators.hpp"
 #include "sorting_algorithms.hpp"
-#include "sorting_benchmark.hpp"
 
-#define CELL_WIDTH 14
-
-using NamedArrayFunction = std::pair<const std::string, ArrayFunction>;
-
-void printBenchmarkResult(const BenchmarkResults& result, const std::string& algorithm_name,
-                          const std::vector<std::string>& input_generators_name,
-                          const std::vector<std::size_t>& sample_sizes)
+void foo(const std::vector<std::size_t>& sample_sizes,
+         const std::vector<std::pair<std::string, ArrayFunction>>& generators,
+         const std::vector<std::pair<std::string, ArrayFunction>>& algorithms)
 {
-    constexpr auto COLOR_ALGORITHM = "\033[0;96m";
-    constexpr auto COLOR_HEADER = "\033[0;95m";
-    // ReSharper disable once CppTooWideScope
-    constexpr auto COLOR_TIME = "\033[0;93m";
-    constexpr auto COLOR_RESET = "\033[0m";
-
-    std::stringstream results_table;
-    results_table << COLOR_ALGORITHM << std::left << std::setw(CELL_WIDTH) << algorithm_name;
-
-    // Sample size
-    for (const std::size_t& sample_size : sample_sizes)
+#pragma region Separate Arguments
+    std::vector<std::string> generators_name;
+    std::vector<ArrayFunction> generators_function;
+    for (const auto& generator : generators)
     {
-        results_table << COLOR_HEADER << std::right << std::setw(CELL_WIDTH) << sample_size;
+        generators_name.push_back(generator.first);
+        generators_function.push_back(generator.second);
     }
-    results_table << "\n";
+#pragma endregion
 
-    // Samples
-    for (std::size_t type = 0; type < input_generators_name.size(); type++)
+    // Run Benchmarks
+    std::cout << "Running benchmarks...\n";
+    const Benchmarker benchmarker(sample_sizes, generators_function);
+
+    std::vector<NamedBenchmarkResults> benchmark_results;
+    benchmark_results.reserve(algorithms.size());
+    for (const auto& algorithm : algorithms)
     {
-        results_table << COLOR_HEADER << std::left << std::setw(CELL_WIDTH) << input_generators_name[type];
-
-        // Benchmark result
-        for (size_t size = 0; size < sample_sizes.size(); size++)
-        {
-            results_table << COLOR_TIME << std::right << std::setw(CELL_WIDTH) << result[type][size].count();
-        }
-        results_table << "\n";
+        benchmark_results.push_back({
+            algorithm.first,
+            benchmarker.runBenchmark(algorithm.second)
+        });
     }
+    std::cout << "Done!\n\n";
 
-    std::cout << results_table.str() << COLOR_RESET << std::endl;
-}
-
-void printBenchmarkResults(const std::vector<BenchmarkResults>& results,
-                           const std::vector<std::string>& sorting_algorithms_name,
-                           const std::vector<std::string>& input_generators_name,
-                           const std::vector<std::size_t>& sample_sizes)
-{
-    // Header
-    // std::cout << std::setw(CELL_WIDTH) << "Ordenamiento: " << std::setw(CELL_WIDTH) << ' ' << std::setw(CELL_WIDTH) <<
-    //     "Tamaño de muestra" << '\n';
-
-    // Print results
-    for (std::size_t algorithm = 0; algorithm < sorting_algorithms_name.size(); algorithm++)
+    // Print Benchmarks
+    std::cout << "Benchmark results:\n";
+    const BenchmarkerFormatter formatter(sample_sizes, generators_name);
+    for (const auto & benchmark_result : benchmark_results)
     {
-        printBenchmarkResult(results[algorithm], sorting_algorithms_name[algorithm], input_generators_name,
-                             sample_sizes);
+        formatter.printBenchmarkResult(benchmark_result);
     }
+    // Make benchmark rankings
+    std::cout << "Rankings:\n";
+    BenchmarkRankings rankings(sample_sizes, generators_name, benchmark_results);
+    rankings.createRankings();
 }
 
 int main()
 {
-    // Set up
-    const std::vector<std::size_t> sample_sizes = {100, 500, 1000};
-
-    const std::vector<ArrayFunction> sorting_algorithms = {
-        bubbleSort,
-        selectionSort,
-        quickSort,
-    };
-    const std::vector<std::string> sorting_algorithms_name = {
-        "Bubble Sort",
-        "Selection Sort",
-        "Quick Sort",
+    const std::vector<std::size_t> sample_sizes = {
+        100,
+        500,
+        1'000,
+        //10'000,
+        //100'000,
+        //1'000'000
     };
 
-
-    const std::vector<ArrayFunction> input_generators = {
-        inOrder,
-        inReverse,
-        randomValues,
-    };
-    const std::vector<std::string> input_generators_name = {
-        "En orden",
-        "En reversa",
-        "Aleatorio",
+    const std::vector<std::pair<std::string, ArrayFunction>> sample_generators = {
+        {"En order", inOrder},
+        {"En reversa", inReverse},
+        {"Aleatorio", randomValues}
     };
 
-    const auto benchmarker = SortingBenchmark(sample_sizes, input_generators);
+    const std::vector<std::pair<std::string, ArrayFunction>> sorting_algorithms = {
+        {"Bubble Sort", bubbleSort},
+        {"Selection Sort", selectionSort},
+        {"Quick Sort", quickSort}
+    };
 
-    // Run benchmarks
-    std::vector<BenchmarkResults> results;
-    results.reserve(sorting_algorithms.size());
-    for (const auto& algorithm : sorting_algorithms)
-    {
-        results.push_back(benchmarker.runBenchmark(algorithm));
-    }
-    printBenchmarkResults(results, sorting_algorithms_name, input_generators_name, sample_sizes);
+    foo(sample_sizes, sample_generators, sorting_algorithms);
 
     return 0;
 }

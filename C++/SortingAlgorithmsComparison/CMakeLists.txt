@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 4.0)
-project(SortingAlgorithmsPerformanceTest)
+project(SortingAlgorithmsComparison)
 
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(.)
 
-add_executable(SortingAlgorithmsPerformanceTest
+add_executable(sorting_algorithms_comparison
         main.cpp
-        sorting_algorithms.cpp
-        sorting_algorithms.hpp
-        sorting_benchmark.cpp
-        sorting_benchmark.hpp
-        sample_generators.cpp
-        sample_generators.hpp)
+        benchmark.hpp
+        benchmarker.cpp
+        benchmarker.hpp
+        benchmark_formatter.cpp
+        benchmark_formatter.hpp
+        benchmark_rankings.cpp
+        benchmark_rankings.hpp
+)
