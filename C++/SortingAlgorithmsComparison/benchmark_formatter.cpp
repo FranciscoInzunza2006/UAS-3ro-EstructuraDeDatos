@@ -49,5 +49,5 @@ void BenchmarkerFormatter::printBenchmarkResult(const std::string& algorithm_nam
         results_table << std::setw(CELL_WIDTH) << average.count();
     }
 
-    std::cout << results_table.str() << COLOR_RESET << '\n';
+    std::cout << results_table.str() << std::left << COLOR_RESET << '\n';
 }
