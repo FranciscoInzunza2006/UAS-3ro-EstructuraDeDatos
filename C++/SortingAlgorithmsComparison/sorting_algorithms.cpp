@@ -48,35 +48,39 @@ void insertionSort(int array[], const std::size_t array_length)
 {
 }
 
-// FIXME: Segfaults when 100'000
 void quickSort(int array[], const std::size_t array_length)
 {
     if (array_length <= 1)
         return;
 
-    std::size_t swap_marker = -1;
-    const std::size_t pivot = array_length - 1;
+    const std::size_t pivot_index = array_length - 1;
+    std::size_t swap_marker = 0;
 
-    for (std::size_t i = 0; i < array_length; i++)
+    for (std::size_t i = 0; i < pivot_index; i++)
     {
-        if (array[i] <= array[pivot])
+        if (array[i] <= array[pivot_index])
         {
-            swap_marker++;
-
             const int aux = array[i];
             array[i] = array[swap_marker];
             array[swap_marker] = aux;
+            swap_marker++;
         }
     }
 
-    int *left = array;
-    const std::size_t left_length = &(array[swap_marker]) - left;
-    quickSort(left, left_length);
+    const int aux = array[pivot_index];
+    array[pivot_index] = array[swap_marker];
+    array[swap_marker] = aux;
 
-    int *right = array + swap_marker + 1;
-    const std::size_t right_length = array_length - left_length - 1;
-    quickSort(right, right_length);
+    if (swap_marker > 0) {
+        quickSort(array, swap_marker);
+    }
+
+    const std::size_t right_length = array_length - swap_marker - 1;
+    if (right_length > 1) {
+        quickSort(array + swap_marker + 1, right_length);
+    }
 }
+
 
 void mergeSort(int array[], const std::size_t array_length)
 {
