@@ -5,6 +5,7 @@
 #pragma once
 #include <cstddef>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "benchmark.hpp"
@@ -14,7 +15,7 @@ class BenchmarkRankings
 {
     const std::vector<std::size_t> sample_sizes;
     const std::vector<std::string> sample_generators_names;
-    const std::vector<NamedBenchmarkResults> results;
+    std::vector<NamedBenchmarkResults> results;
 
 public:
     BenchmarkRankings(const std::vector<std::size_t>& sample_sizes,
@@ -22,7 +23,7 @@ public:
                      std::vector<NamedBenchmarkResults> results)
         : sample_sizes(sample_sizes),
           sample_generators_names(sample_generators_names),
-          results(results)
+          results(std::move(results))
     {
     }
 
