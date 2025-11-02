@@ -15,4 +15,4 @@ void heapSort(int array[], std::size_t array_length);
 void radixSort(int array[], std::size_t array_length);
 void shellSort(int array[], std::size_t array_length);
 
-
+void builtInSort(int array[], std::size_t array_length);
