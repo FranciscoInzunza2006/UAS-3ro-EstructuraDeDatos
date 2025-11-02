@@ -32,6 +32,17 @@ struct NamedBenchmarkResults
     BenchmarkResults results;
 };
 
+
+// constexpr auto COLOR_RESET = "";
+//
+// constexpr auto COLOR_MAIN = "";
+//
+// constexpr auto COLOR_SECONDARY = "";
+// constexpr auto COLOR_DATA = "";
+//
+// constexpr auto COLOR_SPECIAL = "";
+// constexpr auto COLOR_SPECIAL_DATA = "";
+
 constexpr auto COLOR_RESET = "\033[0m";
 
 constexpr auto COLOR_MAIN = "\033[0;96m";
