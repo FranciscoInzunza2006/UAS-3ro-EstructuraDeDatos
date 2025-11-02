@@ -7,30 +7,70 @@
     <title>Sudoku</title>
 
     <style>
-        body {            
+        body {
             font-family: 'Comic Sans MS', sans-serif;
             background-color: black;
             color: white;
 
-            display: flex;        
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
 
             margin: 0;
-            height: 100vh;            
+            height: 100vh;
         }
     </style>
 
 </head>
 
 <body>
-    <h1>Haz click para jugar</h1>
+<h1>Haz click para jugar</h1>
+<section id="scoreboard">
+
+</section>
 </body>
 
 <script>
     window.onclick = function () {
         window.location.replace("sudoku.html");
     }
+
+    window.onload = function () {
+        let scores = sessionStorage.getItem("scores");
+        let scores_str = "";
+        if (scores != null) {
+            scores = JSON.parse(scores);
+            scores.sort(function (a, b) {
+                let lvl = b[0] - a[0];
+                if (lvl !== 0)
+                    return lvl;
+
+                return a[1] - b[1];
+            });
+
+
+            function format_seconds(total_seconds) {
+                const minutes = Math.floor(total_seconds / 60);
+                const seconds = total_seconds % 60;
+
+                const minutes_formatted = (minutes >= 10) ? minutes : '0' + minutes;
+                const seconds_formatted = (seconds >= 10) ? seconds : '0' + seconds;
+
+                return minutes_formatted + ":" + seconds_formatted;
+            }
+            for (let i = 0; i < scores.length; i++) {
+                scores_str += `${i + 1}. ${scores[i][2]}: Nivel ${scores[i][0]} en ${format_seconds(scores[i][1])}\n`;
+            }
+        } else {
+            scores_str = "Sin puntuaciones registradas.";
+        }
+
+
+        document.getElementById('scoreboard').innerText = scores_str;
+    }
+
+
 </script>
 
 </html>
