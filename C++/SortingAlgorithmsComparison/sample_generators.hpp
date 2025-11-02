@@ -5,6 +5,7 @@
 #pragma once
 #include <cstddef>
 
+void inOrder(int array[],  std::size_t array_length);
+void inSemiOrder(int array[],  std::size_t array_length);
 void inReverse(int array[],  std::size_t array_length);
 void randomValues(int array[],  std::size_t array_length);
-void inOrder(int array[],  std::size_t array_length);

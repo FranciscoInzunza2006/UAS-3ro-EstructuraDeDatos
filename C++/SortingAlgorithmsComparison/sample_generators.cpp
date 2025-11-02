@@ -14,6 +14,21 @@ void inOrder(int array[], const std::size_t array_length)
     }
 }
 
+void inSemiOrder(int array[], const std::size_t array_length)
+{
+    for (std::size_t i = 0; i < array_length; i++)
+    {
+        array[i] = static_cast<int>(i) + 1;
+
+        // Every 3 elements there's one that is out of order
+        if (i % 3 == 0)
+        {
+            array[i] += i % 2 ? 3 : -3;
+        }
+    }
+}
+
+
 void randomValues(int array[], const std::size_t array_length)
 {
     std::default_random_engine generator; // Same values each time to be more consistent NOLINT(*-msc51-cpp)
