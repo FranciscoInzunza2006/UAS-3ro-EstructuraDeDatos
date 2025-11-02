@@ -33,13 +33,14 @@ void foo(const std::vector<std::size_t>& sample_sizes,
             algorithm.first,
             benchmarker.runBenchmark(algorithm.second)
         });
+        std::cout << algorithm.first << " done!" << std::endl;
     }
-    std::cout << "Done!\n\n";
+    std::cout << "All done!\n\n";
 
     // Print Benchmarks
     std::cout << "Benchmark results: (Time is in milliseconds)\n";
     const BenchmarkerFormatter formatter(sample_sizes, generators_name);
-    for (const auto & benchmark_result : benchmark_results)
+    for (const auto& benchmark_result : benchmark_results)
     {
         formatter.printBenchmarkResult(benchmark_result);
         std::cout << std::endl;
@@ -54,23 +55,32 @@ int main()
 {
     const std::vector<std::size_t> sample_sizes = {
         100,
-        500,
+        //500,
         1'000,
-        //10'000,
-        //100'000,
+        10'000,
+        100'000,
         //1'000'000
     };
 
     const std::vector<std::pair<std::string, ArrayFunction>> sample_generators = {
-        {"En order", inOrder},
-        {"En reversa", inReverse},
-        {"Aleatorio", randomValues}
+        {"In order", inOrder},
+        {"In semiorder", inSemiOrder},
+        {"In reverse", inReverse},
+        {"Random values", randomValues}
     };
 
     const std::vector<std::pair<std::string, ArrayFunction>> sorting_algorithms = {
         {"Bubble Sort", bubbleSort},
         {"Selection Sort", selectionSort},
-        {"Quick Sort", quickSort}
+        {"Insertion Sort", insertionSort},
+        {"Radix Sort", radixSort},
+
+        {"Quick Sort", quickSort},
+        {"Merge Sort", mergeSort},
+        {"Heap Sort", heapSort},
+        {"Shell Sort", shellSort},
+
+        {"Built-In", builtInSort},
     };
 
     foo(sample_sizes, sample_generators, sorting_algorithms);
