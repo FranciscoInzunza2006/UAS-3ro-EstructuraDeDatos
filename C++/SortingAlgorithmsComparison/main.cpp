@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "benchmark.hpp"
-#include "benchmarker.hpp"
+#include "include/benchmark.hpp"
+#include "include/benchmarker.hpp"
 #include "benchmark_formatter.hpp"
 #include "benchmark_rankings.hpp"
 #include "sample_generators.hpp"
-#include "sorting_algorithms.hpp"
+#include "include/sorting_algorithms.hpp"
 
 void foo(const std::vector<std::size_t>& sample_sizes,
          const std::vector<std::pair<std::string, ArrayFunction>>& generators,

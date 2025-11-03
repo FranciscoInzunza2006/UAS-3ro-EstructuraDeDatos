@@ -2,7 +2,7 @@
 // Created by Franc on 30/10/2025.
 //
 
-#include "benchmark_rankings.hpp"
+#include "../include/benchmark_rankings.hpp"
 
 #include <algorithm>
 #include <iomanip>

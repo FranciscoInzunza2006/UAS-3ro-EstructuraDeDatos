@@ -2,7 +2,7 @@
 // Created by Franc on 30/10/2025.
 //
 
-#include "benchmarker.hpp"
+#include "../include/benchmarker.hpp"
 
 BenchmarkResults Benchmarker::foo(const ArrayFunction& algorithm) const
 {

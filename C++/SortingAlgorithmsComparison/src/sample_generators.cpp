@@ -2,7 +2,7 @@
 // Created by Franc on 29/10/2025.
 //
 
-#include "sample_generators.hpp"
+#include "../include/sample_generators.hpp"
 
 #include <random>
 
