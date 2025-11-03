@@ -10,7 +10,6 @@ add_subdirectory(libraries)
 add_library(gui
         src/gui.cpp
         include/gui.hpp
-        include/gui.hpp
 )
 target_link_libraries(imgui)
 
