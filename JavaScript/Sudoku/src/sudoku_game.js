@@ -49,7 +49,8 @@ class SudokuGame {
     #load_next_level() {
         this.current_level++;
 
-        this.difficulty += 10; // 10 clues less per level
+        if (this.current_level !== 1)
+            this.difficulty += 10; // 10 clues less per level
         // 17 is the least amount of clues possible for a level
         if (SudokuGenerator.TOTAL_CELLS - this.difficulty < 17) {
             this.difficulty = SudokuGenerator.TOTAL_CELLS - 17;

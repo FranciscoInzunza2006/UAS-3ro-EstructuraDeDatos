@@ -28,6 +28,7 @@ if (scores == null) {
 
 document.body.style.visibility = false;
 window.onload = function () {
+    game.difficulty = Number(prompt("Ingresa la dificultad base: "));
     game.start();    
     document.body.style.visibility = true;
 }
