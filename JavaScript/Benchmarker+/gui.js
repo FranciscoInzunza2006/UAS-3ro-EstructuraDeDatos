@@ -129,20 +129,45 @@ function updateResultsTable() {
 
     for (let i = 1; i <= sample_generators.length + 1; i++) {
         for (let j = 1; j <= samples_size.length + 1; j++) {
-            RESULTS_TABLE.children[i].children[j].innerText = format_time(rs[i-1][j-1]);
+            RESULTS_TABLE.children[i].children[j].innerText = format_time(rs[i - 1][j - 1]);
         }
     }
 }
 
-SAMPLE_SIZE_CONTROL.addEventListener('click', updateGraphValues);
-SAMPLE_TYPE_CONTROL.addEventListener('click', updateGraphValues);
+function updateRankings() {
+    const RANKINGS = document.getElementById('rankings');
+    RANKINGS.innerHTML = '';
 
-ALGORITHM_CONTROL.addEventListener('click', updateResultsTable);
+    const sample_type_index = SAMPLE_TYPE_CONTROL.selectedIndex;
+    const sample_size_index = SAMPLE_SIZE_CONTROL.selectedIndex;
+    const rankings = Array.from(results);
+    for (let i = 0; i < rankings.length; i++) {
+        rankings[i].push(sorting_algorithms_name[i]);
+    }
+
+    rankings.sort((a, b) => a[sample_type_index][sample_size_index] - b[sample_type_index][sample_size_index]);
+    for (const ranking of rankings) {
+        const el = document.createElement('li');
+        el.innerText = ranking.pop() + ": " + format_time(ranking[sample_type_index][sample_size_index]);
+
+        RANKINGS.appendChild(el);
+    }
+}
+
+function updateStuff() {
+    updateGraphValues()
+    updateRankings();
+}
+
+SAMPLE_SIZE_CONTROL.addEventListener('change', updateStuff);
+SAMPLE_TYPE_CONTROL.addEventListener('change', updateStuff);
+
+ALGORITHM_CONTROL.addEventListener('change', updateResultsTable);
 
 addDropdownOptions();
 
 createGraphBars();
-updateGraphValues();
+updateStuff();
 
 createResultsTable();
 updateResultsTable();
