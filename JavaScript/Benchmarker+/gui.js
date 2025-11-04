@@ -1,4 +1,3 @@
-runBenchmarks();
 
 const SAMPLE_SIZE_CONTROL = document.getElementById('sample-size');
 const SAMPLE_TYPE_CONTROL = document.getElementById('sample-type');
@@ -164,10 +163,15 @@ SAMPLE_TYPE_CONTROL.addEventListener('change', updateStuff);
 
 ALGORITHM_CONTROL.addEventListener('change', updateResultsTable);
 
-addDropdownOptions();
+window.onload = () => {
+    runBenchmarks();
 
-createGraphBars();
-updateStuff();
+    addDropdownOptions();
 
-createResultsTable();
-updateResultsTable();
+    createGraphBars();
+    updateStuff();
+
+    createResultsTable();
+    updateResultsTable();
+}
+

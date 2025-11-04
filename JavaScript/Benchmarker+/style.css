@@ -9,7 +9,6 @@
     --text-secondary: #9fb0c2;
 
     --graph-bar-color: #0ea5e9;
-
 }
 
 * {
@@ -33,7 +32,7 @@ p {
 
 section {
     background: var(--card-background-color);
-    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .35);
 
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -59,6 +58,14 @@ select {
     padding: 10px 12px;
     border: 1px solid #2a3b50;
     border-radius: 10px;
+}
+
+th {
+    text-align: left;
+}
+
+td {
+    width: 6rem;
 }
 
 #controls {
@@ -89,7 +96,7 @@ select {
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.35);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .35);
 
     height: 50vh;
 }

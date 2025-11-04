@@ -2,11 +2,10 @@
 "use strict";
 
 const samples_size = [
-    50,
+    //50,
     100,
-    500,
-    1000,
-    //1_000,
+    //500,
+    1_000,
     //10_000,
     //100_000
 ];
@@ -14,13 +13,15 @@ const samples_size = [
 const sample_generators = [
     inOrder,
     inSemiOrder,
-    inReverse
+    inReverse,
+    randomValues,
 ];
 
 const sample_generators_name = [
     "En Orden",
     "En Semi-Orden",
-    "En reversa"
+    "En reversa",
+    "Valores Aleatorio",
 ];
 
 const sorting_algorithms = [

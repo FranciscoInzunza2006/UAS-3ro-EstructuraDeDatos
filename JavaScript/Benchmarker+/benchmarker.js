@@ -13,8 +13,8 @@ class Benchmarker {
 
     #getTimes(sorting_algorithm) {
         let results = new Array(sample_generators.length);
-        for (let i = 0; i < samples_size.length - 1; i++) {
-            results[i] = new Array(samples_size.length);
+        for (let i = 0; i < sample_generators.length; i++) {
+            results[i] = new Array(samples_size.length).fill(-1);
         }
 
         let i = 0;
