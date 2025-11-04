@@ -8,7 +8,7 @@
     --text-main: #e6eef8;
     --text-secondary: #9fb0c2;
 
-    --graph-bar-color: #0ea5e9;
+    /*--graph-bar-color: #0ea5e9;*/
 }
 
 * {
@@ -113,8 +113,15 @@ td {
 
 .bar {
     width: 100%;
-    transition: height 0.5s ease-in-out;
-    background-color: var(--graph-bar-color);
+    transition: width,height 1.5s,0.5s ease-in-out;
+    /*background-color: var(--graph-bar-color);*/
+
+    background: #291f7a;
+    background: linear-gradient(0deg, rgba(41, 31, 122, 1) 0%, rgba(14, 102, 233, 1) 25%, rgba(14, 165, 233, 1) 100%);
+}
+
+.bar:hover {
+    width: 105%;
 }
 
 .label {
