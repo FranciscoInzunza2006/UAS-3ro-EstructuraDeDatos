@@ -47,8 +47,8 @@ class Benchmarker {
         // Sample type averages
         for (const sample_type_results of results) {
             let type_average = 0;
-            for (const size_result in sample_type_results) {
-                type_average += size_result;
+            for (const size_result of sample_type_results) {
+                type_average += Number(size_result);
             }
 
             sample_type_results.push(type_average / sizes);
