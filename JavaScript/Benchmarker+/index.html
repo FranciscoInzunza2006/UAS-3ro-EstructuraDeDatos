@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Benchmark</title>
 
+    <link rel="stylesheet" href="style.css">
+
     <script src="benchmarker.js"></script>
     <script src="sorting_algorithms.js"></script>
     <script src="sample_generators.js"></script>
@@ -12,5 +14,133 @@
 </head>
 <body>
 
+<header>
+    <h1>Comparador de Ordenamientos</h1>
+    <p>Usa esta página para comparar distintos algoritmos de ordenamiento de datos en distintos escenarios para que
+        averigües cuál es el ideal para tu aplicación.</p>
+</header>
+
+<main>
+    <section id="controls">
+        <div>
+            <label for="sample-size">Cantidad de datos: </label>
+            <select id="sample-size">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">Promedio</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="sample-type">Escenario</label>
+            <select id="sample-type">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">Promedio</option>
+            </select>
+        </div>
+    </section>
+
+    <div id="results">
+        <section>
+            <h2>Rankings</h2>
+            <!-- TODO: Cooler with time taken being in a different color and aligned -->
+            <ol>
+                <li>Quick Sort: --.---ms</li>
+                <li>Bubble Sort: --.---ms</li>
+                <li>Heap Sort: --.---ms</li>
+            </ol>
+        </section>
+
+        <section id="graph-container">
+            <h2>Gráfica de tiempos por método</h2>
+            <div id="graph">
+                <div class="graph-bar">
+                    <span class="label">3ms</span>
+                    <div class="bar" style="height: 30%"></div>
+                    <span class="label">Heap Sort</span>
+                </div>
+                <div class="graph-bar">
+                    <span class="label">5ms</span>
+                    <div class="bar" style="height: 50%"></div>
+                    <span class="label">Quick Sort</span>
+                </div>
+                <div class="graph-bar">
+                    <span class="label">10ms</span>
+                    <div class="bar" style="height: 100%"></div>
+                    <span class="label">Bubble Sort</span>
+                </div>
+            </div>
+        </section>
+    </div>
+    <section>
+        <div>
+            <label for="algorithm">Algoritmo</label>
+            <select id="algorithm">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </div>
+        <table>
+            <caption>Tiempo tomado en cada escenario</caption>
+            <tbody>
+            <tr>
+                <th></th>
+                <th>100</th>
+                <th>1 000</th>
+                <th>10 000</th>
+                <th>100 000</th>
+                <th>Promedio</th>
+            </tr>
+            <tr>
+                <th>Ordenado</th>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+            </tr>
+            <tr>
+                <th>Semi-Ordenado</th>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+            </tr>
+            <tr>
+                <th>Inverso</th>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+            </tr>
+            <tr>
+                <th>Aleatorio</th>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+            </tr>
+            <tr>
+                <th>Promedio</th>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+                <td>--.---ms</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script src="gui.js"></script>
 </body>
 </html>
