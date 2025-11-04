@@ -1,7 +1,7 @@
 
 "use strict";
 
-const sample_sizes = [
+const samples_size = [
     50,
     100,
     500,
@@ -17,7 +17,7 @@ const sample_generators = [
     inReverse
 ];
 
-const sample_generators_names = [
+const sample_generators_name = [
     "En Orden",
     "En Semi-Orden",
     "En reversa"
@@ -25,17 +25,21 @@ const sample_generators_names = [
 
 const sorting_algorithms = [
     bubbleSort,
+    insertionSort,
 ];
 
-const sorted_algorithms_names = [
+const sorting_algorithms_name = [
     "Bubble Sort",
+    "Insertion Sort",
 ];
-
-let benchmarker = new Benchmarker(sample_sizes, sample_generators);
 
 let results = [];
-for (let i = 0; i < sorting_algorithms.length; i++) {
-    results.push(benchmarker.runBenchmark(sorting_algorithms[i]));
+function runBenchmarks() {
+    const benchmarker = new Benchmarker(samples_size, sample_generators);
+    for (let i = 0; i < sorting_algorithms.length; i++) {
+        results.push(benchmarker.runBenchmark(sorting_algorithms[i]));
+    }
+    console.log(results);
 }
 
-console.log(results);
+

@@ -13,14 +13,14 @@ class Benchmarker {
 
     #getTimes(sorting_algorithm) {
         let results = new Array(sample_generators.length);
-        for (let i = 0; i < sample_sizes.length - 1; i++) {
-            results[i] = new Array(sample_sizes.length);
+        for (let i = 0; i < samples_size.length - 1; i++) {
+            results[i] = new Array(samples_size.length);
         }
 
         let i = 0;
         for (const generator of sample_generators) {
             let j = 0;
-            for (const size of sample_sizes) {
+            for (const size of samples_size) {
                 let sample = new Array(size);
                 generator(sample);
                 // if (size === 100) {
@@ -42,7 +42,7 @@ class Benchmarker {
 
     #addAverages(results) {
         const types = sample_generators.length;
-        const sizes = sample_sizes.length;
+        const sizes = samples_size.length;
 
         // Sample type averages
         for (const sample_type_results of results) {
