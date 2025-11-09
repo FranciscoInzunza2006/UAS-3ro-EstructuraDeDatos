@@ -5,34 +5,38 @@ import pygame
 WHITE = (255, 255, 255)
 
 
-
 class Board:
     CELL_SIZE = 32
+
     def __init__(self, width, height):
         self.width = width
         self.height = height
 
         self.board = [[] * width] * height
 
-        self.surf = pygame.Surface((self.width * self.CELL_SIZE, self.height * self.CELL_SIZE))
+        self.background = pygame.Surface((self.width * self.CELL_SIZE, self.height * self.CELL_SIZE))
 
-        self.surf.fill(WHITE)
+        # Pre-Render the whole background
+        self.background.fill(WHITE)
         for y in range(self.height):
             i = y % 2
             for x in range(self.width):
                 if i % 2 == 0:
-                    pygame.draw.rect(self.surf, (192, 192, 192), (x * self.CELL_SIZE, y * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
+                    pygame.draw.rect(self.background, (192, 192, 192),
+                                     (x * self.CELL_SIZE, y * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
 
                 i += 1
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.surf,  self.surf.get_rect())
+        surface.blit(self.background, self.background.get_rect())
+
 
 class Segment:
-    def __init__(self, x:int, y:int):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
         self.next: Segment | None = None
+
 
 class Player:
     SNAKE_COLOR = (0, 255, 0)
@@ -105,20 +109,26 @@ class Player:
         segment = self.body
         while segment is not None:
             pygame.draw.rect(surface, self.SNAKE_COLOR,
-                             (segment.x * Board.CELL_SIZE, segment.y * Board.CELL_SIZE, Board.CELL_SIZE, Board.CELL_SIZE))
+                             (segment.x * Board.CELL_SIZE, segment.y * Board.CELL_SIZE, Board.CELL_SIZE,
+                              Board.CELL_SIZE))
             segment = segment.next
 
+
 class Snake:
-    BOARD_WIDTH = 16
-    BOARD_HEIGHT = 16
+    WINDOW_CAPTION = "Snake"
+
+    TARGET_FRAMERATE = 60
+
+    BOARD_WIDTH = 17
+    BOARD_HEIGHT = 15
 
     def __init__(self):
         self.running: bool = False
         self.display_surface: pygame.surface.Surface | None = None
 
-        self.width: int = self.BOARD_WIDTH * Board.CELL_SIZE
-        self.height: int = self.BOARD_HEIGHT * Board.CELL_SIZE
-        self.dimensions = self.width, self.height
+        self.window_width: int = self.BOARD_WIDTH * Board.CELL_SIZE
+        self.window_height: int = self.BOARD_HEIGHT * Board.CELL_SIZE
+        self.window_dimensions = self.window_width, self.window_height
 
         self.fps = pygame.time.Clock()
 
@@ -127,11 +137,11 @@ class Snake:
 
     def init(self):
         pygame.init()
-        pygame.display.set_caption("Snake")
-        self.display_surface = pygame.display.set_mode(self.dimensions, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        pygame.display.set_caption(self.WINDOW_CAPTION)
+        self.display_surface = pygame.display.set_mode(self.window_dimensions, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.running = True
 
-    def check_event(self, event: pygame.event.Event):
+    def handleEvent(self, event: pygame.event.Event):
         if event.type == pygame.QUIT:
             self.running = False
 
@@ -152,19 +162,22 @@ class Snake:
     def run(self):
         self.init()
 
+        # Main loop
         while self.running:
             for event in pygame.event.get():
-                self.check_event(event)
+                self.handleEvent(event)
 
             self.step()
             self.draw()
 
-            self.fps.tick(60)
+            self.fps.tick(self.TARGET_FRAMERATE)
         self.cleanup()
+
 
 def main():
     game = Snake()
     game.run()
+
 
 if __name__ == "__main__":
     main()
