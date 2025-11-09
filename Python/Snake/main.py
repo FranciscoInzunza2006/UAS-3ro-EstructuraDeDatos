@@ -1,7 +1,10 @@
+from enum import Enum
 
 import pygame
 
 WHITE = (255, 255, 255)
+
+
 
 class Board:
     CELL_SIZE = 32
@@ -31,14 +34,24 @@ class Segment:
         self.y = y
         self.next: Segment | None = None
 
-class Player():
+class Player:
     SNAKE_COLOR = (0, 255, 0)
-    STARTING_SEGMENTS = 5
+    STARTING_SEGMENTS = 15
+
+    class DIRECTION(Enum):
+        UP = 1
+        DOWN = 2
+        LEFT = 3
+        RIGHT = 4
 
     def __init__(self, board: Board):
         # Create body segments
         board_x_center = board.width // 2
         board_y_center = board.height // 2
+
+        self.movement_cooldown = 2
+        self.movement_direction = self.DIRECTION.RIGHT
+        self.ticks_for_next_move = self.movement_cooldown
 
         segment = None
         for s in range(self.STARTING_SEGMENTS):
@@ -49,10 +62,42 @@ class Player():
         self.body: Segment = segment
 
     def step(self):
-        segment = self.body
-        while segment is not None:
-            segment.x += 1
-            segment = segment.next
+        pressed_keys = pygame.key.get_pressed()
+
+        if pressed_keys[pygame.K_LEFT]:
+            self.movement_direction = self.DIRECTION.LEFT
+        elif pressed_keys[pygame.K_RIGHT]:
+            self.movement_direction = self.DIRECTION.RIGHT
+        elif pressed_keys[pygame.K_UP]:
+            self.movement_direction = self.DIRECTION.UP
+        elif pressed_keys[pygame.K_DOWN]:
+            self.movement_direction = self.DIRECTION.DOWN
+
+
+        self.ticks_for_next_move -= 1
+        if self.ticks_for_next_move <= 0:
+            self.ticks_for_next_move = self.movement_cooldown
+
+            self.updateSegmentsPosition(self.body, self.body.next)
+
+            match self.movement_direction:
+                case self.DIRECTION.UP:
+                    self.body.y -= 1
+                case self.DIRECTION.DOWN:
+                    self.body.y += 1
+                case self.DIRECTION.LEFT:
+                    self.body.x -= 1
+                case self.DIRECTION.RIGHT:
+                    self.body.x += 1
+
+    def updateSegmentsPosition(self, segment: Segment, next: Segment):
+        if next is None:
+            return
+
+        self.updateSegmentsPosition(next, next.next)
+
+        next.x = segment.x
+        next.y = segment.y
 
     def draw(self, surface: pygame.Surface):
         segment = self.body
