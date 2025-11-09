@@ -36,7 +36,7 @@ class Segment:
 
 class Player:
     SNAKE_COLOR = (0, 255, 0)
-    STARTING_SEGMENTS = 15
+    STARTING_SEGMENTS = 5
 
     class DIRECTION(Enum):
         UP = 1
@@ -49,7 +49,7 @@ class Player:
         board_x_center = board.width // 2
         board_y_center = board.height // 2
 
-        self.movement_cooldown = 2
+        self.movement_cooldown = 60
         self.movement_direction = self.DIRECTION.RIGHT
         self.ticks_for_next_move = self.movement_cooldown
 
@@ -64,15 +64,14 @@ class Player:
     def step(self):
         pressed_keys = pygame.key.get_pressed()
 
-        if pressed_keys[pygame.K_LEFT]:
+        if pressed_keys[pygame.K_LEFT] and self.movement_direction != self.DIRECTION.RIGHT:
             self.movement_direction = self.DIRECTION.LEFT
-        elif pressed_keys[pygame.K_RIGHT]:
+        elif pressed_keys[pygame.K_RIGHT] and self.movement_direction != self.DIRECTION.LEFT:
             self.movement_direction = self.DIRECTION.RIGHT
-        elif pressed_keys[pygame.K_UP]:
+        elif pressed_keys[pygame.K_UP] and self.movement_direction != self.DIRECTION.DOWN:
             self.movement_direction = self.DIRECTION.UP
-        elif pressed_keys[pygame.K_DOWN]:
+        elif pressed_keys[pygame.K_DOWN] and self.movement_direction != self.DIRECTION.UP:
             self.movement_direction = self.DIRECTION.DOWN
-
 
         self.ticks_for_next_move -= 1
         if self.ticks_for_next_move <= 0:
@@ -89,6 +88,9 @@ class Player:
                     self.body.x -= 1
                 case self.DIRECTION.RIGHT:
                     self.body.x += 1
+
+            self.body.x = self.body.x % 16
+            self.body.y = self.body.y % 16
 
     def updateSegmentsPosition(self, segment: Segment, next: Segment):
         if next is None:
