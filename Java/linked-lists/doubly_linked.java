@@ -95,11 +95,12 @@ class LinkedList {
     public void pushFirst(final int value) {
         System.out.println("Se inserto el nodo.");
         if (head == null) {
-            head = new Node(value, null);
+            head = new Node(value, null, null);
             return;
         }
 
-        head = new Node(value, head);
+        head = new Node(value, head, null);
+        head.next.previous = head;
     }
 
     public void pushLast(final int value) {
@@ -108,11 +109,11 @@ class LinkedList {
             return;
         }
 
-        Node current = head;
-        while (current.next != null) {
-            current = current.next;
+        Node tail = head;
+        while (tail.next != null) {
+            tail = tail.next;
         }
-        current.next = new Node(value, null);
+        tail.next = new Node(value, null, tail);
         System.out.println("Se inserto el nodo.");
     }
 
@@ -127,20 +128,26 @@ class LinkedList {
             return;
         }
 
-        Node previous_node = null;
         Node current_node = head;
-        for (int i = 0; i < index && current_node != null; i++) {
-            previous_node = current_node;
+        int i;
+        for (i = 0; i < index && current_node != null; i++) {
             current_node = current_node.next;
         }
 
-        if (previous_node == null || (current_node == null && index > 0)) {
+        if (i < index) {
             System.out.println("No se pudo insertar el nodo.");
             return;
         }
 
+        if (current_node == null) {
+            pushLast(value);
+            return;
+        }
+
         System.out.println("Se inserto el nodo.");
-        previous_node.next = new Node(value, current_node);
+        Node new_node = new Node(value, current_node, current_node.previous);
+        current_node.previous.next = new_node;
+        current_node.previous = new_node;
     }
 
     // Pop
@@ -151,6 +158,10 @@ class LinkedList {
         }
 
         System.out.println("Se elimino el nodo.");
+
+        if (head.next != null) {
+            head.next.previous = null;
+        }
         head = head.next;
     }
 
@@ -165,12 +176,12 @@ class LinkedList {
             head = null;
             return;
         }
-        
-        Node new_tail = head;
-        while (new_tail.next.next != null) {
-            new_tail = new_tail.next;
+
+        Node tail = head;
+        while (tail.next != null) {
+            tail = tail.next;
         }
-        new_tail.next = null;
+        tail.previous.next = null;
     }
 
     public void popAt(final int index) {
@@ -184,11 +195,8 @@ class LinkedList {
             return;
         }
 
-        Node previous_node = null;
         Node current_node = head;
-
         for (int i = 0; i < index && current_node != null; i++) {
-            previous_node = current_node;
             current_node = current_node.next;
         }
 
@@ -198,7 +206,12 @@ class LinkedList {
         }
 
         System.out.println("Se elimino el nodo.");
-        previous_node.next = current_node.next;
+        if (current_node.next == null) {
+            current_node.previous.next = null;
+        } else {
+            current_node.previous.next = current_node.next;
+            current_node.next.previous = current_node.previous;
+        }
     }
 
     // Extra
@@ -244,10 +257,12 @@ class LinkedList {
     class Node {
         public int value;
         public Node next;
+        public Node previous;
 
-        public Node(int value, Node next) {
+        public Node(int value, Node next, Node previous) {
             this.value = value;
             this.next = next;
+            this.previous = previous;
         }
     }
 }
