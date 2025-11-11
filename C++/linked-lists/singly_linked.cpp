@@ -1,42 +1,229 @@
 #include <iostream>
 
-struct Node
-{
-    int value{};
-    Node* next{};
+#define SEPARATOR "-------------------------------------------------\n";
 
-    explicit Node(const int value, Node* next = nullptr)
+class LinkedList
+{
+    class Node
     {
-        this->value = value;
-        this->next = next;
+    public:
+        int value;
+        Node* next;
+
+        Node(const int v, Node* n) : value(v), next(n)
+        {
+        }
+    };
+
+    Node* head = nullptr;
+
+public:
+    ~LinkedList()
+    {
+        while (head != nullptr)
+        {
+            const Node* current_node = head;
+            head = head->next;
+            delete current_node;
+        }
+    }
+
+    void pushFirst(const int value)
+    {
+        std::cout << "Se inserto el nodo.\n";
+        if (head == nullptr)
+        {
+            head = new Node(value, nullptr);
+            return;
+        }
+
+        head = new Node(value, head);
+    }
+
+    void pushLast(const int value)
+    {
+        if (head == nullptr)
+        {
+            pushFirst(value);
+            return;
+        }
+
+        Node* tail = head;
+        while (tail->next != nullptr)
+        {
+            tail = tail->next;
+        }
+        tail->next = new Node(value, nullptr);
+        std::cout << "Se inserto el nodo.\n";
+    }
+
+    void pushAt(const int value, const int index)
+    {
+        if (index == 0)
+        {
+            pushFirst(value);
+            return;
+        }
+
+        if (head == nullptr)
+        {
+            std::cout << "No se pudo insertar el nodo.\n";
+            return;
+        }
+
+        Node* previous_node = nullptr;
+        Node* current_node = head;
+        for (int i = 0; i < index && current_node != nullptr; i++)
+        {
+            previous_node = current_node;
+            current_node = current_node->next;
+        }
+
+        if (previous_node == nullptr || (current_node == nullptr && index > 0))
+        {
+            std::cout << "No se pudo insertar el nodo.\n";
+            return;
+        }
+
+        std::cout << "Se inserto el nodo.\n";
+        previous_node->next = new Node(value, current_node);
+    }
+
+    // Pop
+    void popFirst()
+    {
+        if (head == nullptr)
+        {
+            std::cout << "La lista esta vacia.\n";
+            return;
+        }
+
+        std::cout << "Se elimino el nodo.\n";
+
+        const Node* ptr = head;
+        head = head->next;
+        delete ptr;
+    }
+
+    void popLast()
+    {
+        if (head == nullptr)
+        {
+            std::cout << "La lista esta vacia.\n";
+            return;
+        }
+
+        std::cout << "Se elimino el nodo.\n";
+        if (head->next == nullptr)
+        {
+            delete head;
+            head = nullptr;
+            return;
+        }
+
+        Node* new_tail = head;
+        while (new_tail->next->next != nullptr)
+        {
+            new_tail = new_tail->next;
+        }
+        delete new_tail->next;
+        new_tail->next = nullptr;
+    }
+
+    void popAt(const int index)
+    {
+        if (head == nullptr)
+        {
+            std::cout << "La lista esta vacia.\n";
+            return;
+        }
+
+        if (index == 0)
+        {
+            popFirst();
+            return;
+        }
+
+        Node* previous_node = nullptr;
+        Node* current_node = head;
+
+        for (int i = 0; i < index && current_node != nullptr; i++)
+        {
+            previous_node = current_node;
+            current_node = current_node->next;
+        }
+
+        if (current_node == nullptr)
+        {
+            std::cout << "No se pudo eliminar el nodo.\n";
+            return;
+        }
+
+        std::cout << "Se elimino el nodo.\n";
+        previous_node->next = current_node->next;
+        delete current_node;
+    }
+
+    // Extra
+    void display() const
+    {
+        if (head == nullptr)
+        {
+            std::cout << "La lista esta vacia.\n";
+            return;
+        }
+
+        const Node* current_node = head;
+        while (current_node != nullptr)
+        {
+            std::cout << current_node->value << ' ';
+            current_node = current_node->next;
+        }
+        std::cout << '\n';
+    }
+
+    void search(const int needle) const
+    {
+        if (head == nullptr)
+        {
+            std::cout << "La lista esta vacia.\n";
+            return;
+        }
+
+        bool found = false;
+        int i = 0;
+        const Node* current_node = head;
+        while (current_node != nullptr)
+        {
+            if (current_node->value == needle)
+            {
+                found = true;
+                std::cout << "El valor esta en el nodo con el indice " << i << '\n';
+            }
+
+            current_node = current_node->next;
+            i++;
+        }
+
+        if (!found)
+        {
+            std::cout << "El valor buscado no esta en la lista.\n";
+        }
     }
 };
 
-void pushFirst();
-void pushLast();
-void pushAt();
-
-void popFirst();
-void popLast();
-void popAt();
-
-void displayList();
-void searchInList();
-
-Node* head = nullptr;
-
 int main()
 {
+    auto list = LinkedList();
+
     int choice = 0;
     do
     {
         std::system("cls");
-
-        constexpr auto SEPARATOR = "-------------------------------------------------\n";
         std::cout << SEPARATOR;
-        std::cout << "Menu de listas enlazadas singulares\n";
+        std::cout << "Lista enlazada\n";
         std::cout << SEPARATOR;
-        displayList();
+        list.display();
         std::cout << SEPARATOR;
         std::cout << "1. Insertar elemento al inicio\n";
         std::cout << "2. Insertar elemento al final\n";
@@ -50,32 +237,60 @@ int main()
 
         std::cout << "Ingresa una opcion: ";
         std::cin >> choice;
+
+        std::cout << SEPARATOR;
+
+        int val = -1;
+        int index = -1;
         switch (choice)
         {
         case 1:
-            pushFirst();
+            std::cout << "Ingresa un valor: ";
+            std::cin >> val;
+
+            list.pushFirst(val);
             break;
         case 2:
-            pushLast();
+            std::cout << "Ingresa un valor: ";
+            std::cin >> val;
+
+            list.pushLast(val);
+
             break;
         case 3:
-            pushAt();
+            std::cout << "Ingresa un valor: ";
+            std::cin >> val;
+
+            std::cout << "Ingresa el indice deseado: ";
+            std::cin >> index;
+
+            list.pushAt(val, index);
             break;
+
         case 4:
-            popFirst();
+            list.popFirst();
             break;
+
         case 5:
-            popLast();
+            list.popLast();
             break;
         case 6:
-            popAt();
+            std::cout << "Ingresa el indice deseado: ";
+            std::cin >> index;
+
+            list.popAt(index);
             break;
         case 7:
-            searchInList();
+            std::cout << "Ingresa un valor: ";
+            std::cin >> val;
+
+            list.search(val);
             break;
+
         case 8:
             std::cout << "Adios.\n";
             break;
+
         default:
             std::cout << "Opcion invalida.\n";
             break;
@@ -85,211 +300,4 @@ int main()
         std::system("pause");
     }
     while (choice != 8);
-
-    while (head != nullptr)
-        popFirst();
-
-    return 0;
-}
-
-void pushFirst()
-{
-    std::cout << "Ingresa el valor a insertar: ";
-    int value;
-    std::cin >> value;
-
-    if (head == nullptr)
-    {
-        head = new Node(value);
-        return;
-    }
-
-    Node* previous_head = head;
-    head = new Node(value, previous_head);
-    std::cout << "Se inserto el nodo.\n";
-}
-
-void pushLast()
-{
-    if (head == nullptr)
-    {
-        pushFirst();
-        return;
-    }
-
-    std::cout << "Ingresa el valor a insertar: ";
-    int value;
-    std::cin >> value;
-
-    Node* ptr = head;
-    while (ptr->next != nullptr)
-    {
-        ptr = ptr->next;
-    }
-
-    ptr->next = new Node(value);
-    std::cout << "Se inserto el nodo.\n";
-}
-
-void pushAt()
-{
-    std::cout << "Ingresa el valor a insertar: ";
-    int value;
-    std::cin >> value;
-
-    std::cout << "Ingresa en que posicion (empieza por 0): ";
-    int target_position;
-    std::cin >> target_position;
-
-    Node* ptr = head;
-    Node* previous = nullptr;
-    int i = 0;
-    while (ptr != nullptr && i < target_position)
-    {
-        previous = ptr;
-        ptr = ptr->next;
-        i++;
-    }
-
-    if (i < target_position)
-    {
-        std::cout << "No se pudo insertar el valor.\n";
-        return;
-    }
-
-    Node* new_node = new Node(value, ptr);
-    if (previous != nullptr)
-        previous->next = new_node;
-    else
-        head = new_node;
-
-    std::cout << "Se inserto el nodo.\n";
-}
-
-void popFirst()
-{
-    if (head == nullptr)
-    {
-        std::cout << "La lista esta vacia.\n";
-        return;
-    }
-
-    const Node* ptr = head;
-    head = ptr->next;
-    delete ptr;
-    std::cout << "Se elimino el nodo.\n";
-}
-
-void popLast()
-{
-    if (head == nullptr)
-    {
-        std::cout << "La lista esta vacia.\n";
-        return;
-    }
-
-    std::cout << "Se elimino el nodo.\n";
-    if (head->next == nullptr)
-    {
-        delete head;
-        head = nullptr;
-        return;
-    }
-
-    Node* ptr = head->next;
-    Node* previous = head;
-    while (ptr->next != nullptr)
-    {
-        previous = ptr;
-        ptr = ptr->next;
-    }
-
-    previous->next = nullptr;
-    delete ptr;
-}
-
-void popAt()
-{
-    if (head == nullptr)
-    {
-        std::cout << "La lista esta vacia.\n";
-        return;
-    }
-
-    std::cout << "Ingresa en que posicion (empieza por 0): ";
-    int target_position;
-    std::cin >> target_position;
-
-    Node* ptr = head;
-    Node* previous = nullptr;
-    int i = 0;
-    while (ptr != nullptr && i < target_position)
-    {
-        previous = ptr;
-        ptr = ptr->next;
-        i++;
-    }
-
-    if (ptr == nullptr || i < target_position)
-    {
-        std::cout << "No se pudo eliminar el elemento.\n";
-        return;
-    }
-
-    if (previous != nullptr)
-        previous->next = ptr->next;
-    else
-        head = ptr->next;
-
-    delete ptr;
-    std::cout << "Se elimino el nodo.\n";
-}
-
-void displayList()
-{
-    if (head == nullptr)
-    {
-        std::cout << "La lista esta vacia.\n";
-        return;
-    }
-
-    const Node* ptr = head;
-    while (ptr != nullptr)
-    {
-        std::cout << ptr->value << ' ';
-        ptr = ptr->next;
-    }
-    std::cout << '\n';
-}
-
-void searchInList()
-{
-    if (head == nullptr)
-    {
-        std::cout << "La lista esta vacia.\n";
-        return;
-    }
-
-    std::cout << "Ingresa el valor a buscar: ";
-    int needle;
-    std::cin >> needle;
-
-
-    int i = 0;
-    bool found = false;
-    const Node* ptr = head;
-    while (ptr != nullptr)
-    {
-        if (ptr->value == needle)
-        {
-            found = true;
-            std::cout << "Elemento encontrado en la posicion " << i << ".\n";
-        }
-
-        ptr = ptr->next;
-        i++;
-    }
-
-    if (!found)
-        std::cout << "Elemento no encontrado.\n";
 }
