@@ -1,3 +1,4 @@
+import math
 import random
 
 import pygame
@@ -6,10 +7,16 @@ from pygame import surface
 from board import Board
 from common import RED, BLACK, BOARD_WIDTH, BOARD_HEIGHT, CELL_SIZE
 
+def imageThingy(sprite, rate, x, y):
+    scale = math.floor(math.sin(pygame.time.get_ticks() * rate) * 2)
+    new_size = CELL_SIZE + scale
+    scaled_sprite = pygame.transform.smoothscale(sprite, (new_size, new_size))
+
+    offset = scale//2
+    return scaled_sprite, (x - offset, y - offset)
 
 class Food:
     sprite = pygame.image.load('assets/food.png')
-    sprite_rect = sprite.get_rect()
 
     def __init__(self, x: int, y: int):
         self.x = x
@@ -19,10 +26,12 @@ class Food:
         pass
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.sprite, (self.x * CELL_SIZE, self.y * CELL_SIZE))
+        thingy = imageThingy(Food.sprite, 0.005, self.x * CELL_SIZE, self.y * CELL_SIZE)
+        surface.blit(thingy[0], thingy[1])
 
 
 class Trap:
+    sprite = pygame.image.load('assets/trap.png')
     def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
@@ -33,9 +42,8 @@ class Trap:
             self.life -= 1
 
     def draw(self, surface: pygame.Surface):
-        pygame.draw.rect(surface, BLACK,
-                         (self.x * Board.CELL_SIZE, self.y * Board.CELL_SIZE, Board.CELL_SIZE,
-                          Board.CELL_SIZE))
+        thingy = imageThingy(Trap.sprite, 0.01, self.x * CELL_SIZE, self.y * CELL_SIZE)
+        surface.blit(thingy[0], thingy[1])
 
 
 class ItemManager:
