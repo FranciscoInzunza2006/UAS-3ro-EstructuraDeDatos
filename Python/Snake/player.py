@@ -83,18 +83,24 @@ class Player:
 
             self.body.x = self.body.x % BOARD_WIDTH
             self.body.y = self.body.y % BOARD_HEIGHT
+
+            if self.body.direction != self.movement_direction:
+                pygame.mixer.Sound('assets/sfx_move.mp3').play()
+
             self.body.direction = self.movement_direction
 
             # Collision with itself
             segment = self.body.next
             while segment is not None:
                 if segment.x == self.body.x and segment.y == self.body.y:
+                    pygame.mixer.Sound('assets/sfx_gameover.mp3').play()
                     pygame.event.post(EVENT_GAME_OVER)
                 segment = segment.next
 
             # Collision with items
             for i, food in enumerate(item_manager.foods):
                 if food.x == self.body.x and food.y == self.body.y:
+                    pygame.mixer.Sound('assets/sfx_food.mp3').play()
                     item_manager.foods.pop(i)
                     self.addSegment()
                     if self.segment_count >= TARGET_SEGMENTS:
@@ -103,6 +109,7 @@ class Player:
 
             for i, trap in enumerate(item_manager.traps):
                 if trap.x == self.body.x and trap.y == self.body.y:
+                    pygame.mixer.Sound('assets/sfx_gameover.mp3').play()
                     sleep(0.15)
                     item_manager.traps.pop(i)
                     self.removeSegment()
