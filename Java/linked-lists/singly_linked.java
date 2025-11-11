@@ -108,11 +108,11 @@ class LinkedList {
             return;
         }
 
-        Node current = head;
-        while (current.next != null) {
-            current = current.next;
+        Node tail = head;
+        while (tail.next != null) {
+            tail = tail.next;
         }
-        current.next = new Node(value, null);
+        tail.next = new Node(value, null);
         System.out.println("Se inserto el nodo.");
     }
 
@@ -165,7 +165,7 @@ class LinkedList {
             head = null;
             return;
         }
-        
+
         Node new_tail = head;
         while (new_tail.next.next != null) {
             new_tail = new_tail.next;
