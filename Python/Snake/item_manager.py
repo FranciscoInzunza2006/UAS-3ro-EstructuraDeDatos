@@ -4,10 +4,13 @@ import pygame
 from pygame import surface
 
 from board import Board
-from common import RED, BLACK, BOARD_WIDTH, BOARD_HEIGHT
+from common import RED, BLACK, BOARD_WIDTH, BOARD_HEIGHT, CELL_SIZE
 
 
 class Food:
+    sprite = pygame.image.load('assets/food.png')
+    sprite_rect = sprite.get_rect()
+
     def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
@@ -16,9 +19,7 @@ class Food:
         pass
 
     def draw(self, surface: pygame.Surface):
-        pygame.draw.rect(surface, RED,
-                         (self.x * Board.CELL_SIZE, self.y * Board.CELL_SIZE, Board.CELL_SIZE,
-                          Board.CELL_SIZE))
+        surface.blit(self.sprite, (self.x * CELL_SIZE, self.y * CELL_SIZE))
 
 
 class Trap:
