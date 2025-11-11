@@ -11,7 +11,9 @@ from item_manager import ItemManager
 
 
 class Player:
-    SNAKE_COLOR = (0, 255, 0)
+    SNAKE_COLOR = (78, 124, 246)
+    SNAKE_COLOR_TAIL = (60, 80, 255)
+    #SNAKE_COLOR_TAIL = (66, 111, 227)
     STARTING_SEGMENTS = 5
 
     class DIRECTION(Enum):
@@ -154,8 +156,17 @@ class Player:
 
     def draw(self, surface: pygame.Surface):
         segment = self.body
+        i = 0
         while segment is not None:
-            pygame.draw.rect(surface, self.SNAKE_COLOR,
-                             (segment.x * Board.CELL_SIZE, segment.y * Board.CELL_SIZE, Board.CELL_SIZE,
-                              Board.CELL_SIZE))
+            x = segment.x * Board.CELL_SIZE
+            y = segment.y * Board.CELL_SIZE
+
+            color = [self.SNAKE_COLOR[0], self.SNAKE_COLOR[1], self.SNAKE_COLOR[2]]
+            for f in (0, 1, 2):
+                diff = self.SNAKE_COLOR_TAIL[f] - self.SNAKE_COLOR[f]
+                diff //= TARGET_SEGMENTS
+                color[f] += diff * i
+            i += 1
+
+            pygame.draw.rect(surface, color, (x, y, Board.CELL_SIZE, Board.CELL_SIZE))
             segment = segment.next
