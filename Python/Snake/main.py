@@ -1,194 +1,29 @@
 from enum import Enum
+from time import sleep
 
 import pygame
 
-WHITE = (255, 255, 255)
+from common import *
+from board import Board
+from screens import MainMenuScreen, Screen, GameOverScreen, GameplayScreen
 
-
-class Board:
-    CELL_SIZE = 32
-
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-
-        self.background = pygame.Surface((self.width * self.CELL_SIZE, self.height * self.CELL_SIZE))
-
-        # Pre-Render the whole background
-        self.background.fill(WHITE)
-        for y in range(self.height):
-            i = y % 2
-            for x in range(self.width):
-                if i % 2 == 0:
-                    pygame.draw.rect(self.background, (192, 192, 192),
-                                     (x * self.CELL_SIZE, y * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
-
-                i += 1
-
-    def draw(self, surface: pygame.Surface):
-        surface.blit(self.background, self.background.get_rect())
-
-
-class Segment:
-    def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
-        self.next: Segment | None = None
-
-# FIXME: Weird movement when first loading
-# TODO: Body collision
-class Player:
-    SNAKE_COLOR = (0, 255, 0)
-    STARTING_SEGMENTS = 5
-
-    class DIRECTION(Enum):
-        UP = 1
-        DOWN = 2
-        LEFT = 3
-        RIGHT = 4
-
-    def __init__(self, board: Board):
-        # Create body segments
-        board_x_center = board.width // 2
-        board_y_center = board.height // 2
-
-        self.movement_cooldown = 8
-        self.movement_direction = self.DIRECTION.RIGHT
-        self.ticks_for_next_move = self.movement_cooldown
-
-        segment = None
-        for s in range(self.STARTING_SEGMENTS):
-            seg = Segment(board_x_center - s, board_y_center)
-            seg.next = segment
-            segment = seg
-
-        self.body: Segment = segment
-
-    def step(self, board: Board, food, traps):
-        pressed_keys = pygame.key.get_pressed()
-
-        if pressed_keys[pygame.K_LEFT] and self.movement_direction != self.DIRECTION.RIGHT:
-            self.movement_direction = self.DIRECTION.LEFT
-        elif pressed_keys[pygame.K_RIGHT] and self.movement_direction != self.DIRECTION.LEFT:
-            self.movement_direction = self.DIRECTION.RIGHT
-        elif pressed_keys[pygame.K_UP] and self.movement_direction != self.DIRECTION.DOWN:
-            self.movement_direction = self.DIRECTION.UP
-        elif pressed_keys[pygame.K_DOWN] and self.movement_direction != self.DIRECTION.UP:
-            self.movement_direction = self.DIRECTION.DOWN
-
-        self.ticks_for_next_move -= 1
-        if self.ticks_for_next_move <= 0:
-            self.ticks_for_next_move = self.movement_cooldown
-
-            self._updateSegmentsPosition(self.body, self.body.next)
-
-            match self.movement_direction:
-                case self.DIRECTION.UP:
-                    self.body.y -= 1
-                case self.DIRECTION.DOWN:
-                    self.body.y += 1
-                case self.DIRECTION.LEFT:
-                    self.body.x -= 1
-                case self.DIRECTION.RIGHT:
-                    self.body.x += 1
-
-            self.body.x = self.body.x % board.width
-            self.body.y = self.body.y % board.height
-
-        body_x = self.body.x
-        body_y = self.body.y
-        for trap in traps:
-            if trap.x == body_x and trap.y == body_y:
-                pass
-
-
-    def _updateSegmentsPosition(self, segment: Segment, next: Segment):
-        if next is None:
-            return
-
-        self._updateSegmentsPosition(next, next.next)
-
-        next.x = segment.x
-        next.y = segment.y
-
-    def draw(self, surface: pygame.Surface):
-        segment = self.body
-        while segment is not None:
-            pygame.draw.rect(surface, self.SNAKE_COLOR,
-                             (segment.x * Board.CELL_SIZE, segment.y * Board.CELL_SIZE, Board.CELL_SIZE,
-                              Board.CELL_SIZE))
-            segment = segment.next
-
-class ItemManager:
-    def __init__(self):
-        self.food: Food = None
-        self.traps: list[Trap] = []
-
-    def step(self):
-        pass
-
-    def draw(self, surface: pygame.Surface):
-
-        pass
-
-class Food:
-    def __init__(self, x:int, y: int):
-        self.x = x
-        self.y = y
-
-    def step(self):
-        pass
-
-    def draw(self, surface: pygame.Surface):
-        pass
-
-class Trap:
-    def __init__(self, x:int, y: int):
-        self.x = x
-        self.y = y
-        self.life = 300
-
-    def step(self):
-        if self.life >= 0:
-            self.life -= 1
-
-    def draw(self, surface: pygame.Surface):
-        if self.life >= 0:
-            pass
 
 class Snake:
     WINDOW_CAPTION = "Snake"
 
     TARGET_FRAMERATE = 60
 
-    BOARD_WIDTH = 17
-    BOARD_HEIGHT = 15
-
-    # Custom events
-    EVENT_GAME_OVER = pygame.USEREVENT + 1
-    EVENT_FOOD_EATEN = pygame.USEREVENT + 2
-
-    class SCREENS(Enum):
-        MAIN_MENU = 1
-        GAME_OVER = 2
-        LEVEL = 3
-
-
     def __init__(self):
         self.running: bool = False
         self.display_surface: pygame.surface.Surface | None = None
 
-        self.window_width: int = self.BOARD_WIDTH * Board.CELL_SIZE
-        self.window_height: int = self.BOARD_HEIGHT * Board.CELL_SIZE
+        self.window_width: int = BOARD_WIDTH * Board.CELL_SIZE
+        self.window_height: int = BOARD_HEIGHT * Board.CELL_SIZE
         self.window_dimensions = self.window_width, self.window_height
 
         self.fps = pygame.time.Clock()
 
-        self.screen = SCREENS.MAIN_MENU
-
-        self.board = Board(self.BOARD_WIDTH, self.BOARD_HEIGHT)
-        self.player = Player(self.board)
-        self.item_manager = ItemManager()
+        self.current_screen: Screen | None = None
 
     def init(self):
         pygame.init()
@@ -196,26 +31,18 @@ class Snake:
         self.display_surface = pygame.display.set_mode(self.window_dimensions, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.running = True
 
+        self.current_screen = MainMenuScreen()
+
     def handleEvent(self, event: pygame.event.Event):
-        match event.type:
-            case pygame.QUIT:
-                self.running = False
-            case EVENT_GAME_OVER:
-
-
-    def step(self):
-        self.player.step(self.board)
-
-    def draw(self):
-        self.display_surface.fill(WHITE)
-
-        self.board.draw(self.display_surface)
-        self.player.draw(self.display_surface)
-
-        pygame.display.update()
-
-    def cleanup(self):
-        pygame.quit()
+        if event.type == pygame.QUIT:
+            self.running = False
+        elif event.type == MAIN_MENU:
+            self.current_screen = MainMenuScreen()
+        elif event.type == GAME_START:
+            self.current_screen = GameplayScreen()
+        elif event.type == GAME_OVER:
+            sleep(1)
+            self.current_screen = GameOverScreen()
 
     def run(self):
         self.init()
@@ -225,17 +52,18 @@ class Snake:
             for event in pygame.event.get():
                 self.handleEvent(event)
 
-            self.step()
-            self.draw()
+            self.current_screen.step()
+            self.display_surface.fill(WHITE)
+            self.current_screen.draw(self.display_surface)
+            pygame.display.update()
 
             self.fps.tick(self.TARGET_FRAMERATE)
-        self.cleanup()
+        pygame.quit()
 
 
 def main():
     game = Snake()
     game.run()
-
 
 if __name__ == "__main__":
     main()
