@@ -1,7 +1,9 @@
+import random
+
 import pygame
 
 from board import Board
-from common import RED, BLACK
+from common import RED, BLACK, BOARD_WIDTH, BOARD_HEIGHT
 
 
 class Food:
@@ -40,11 +42,14 @@ class ItemManager:
         self.traps: list[Trap] = []
 
     def step(self, board):
+        x = random.randint(0, BOARD_WIDTH - 1)
+        y = random.randint(0, BOARD_HEIGHT - 1)
         if len(self.foods) == 0:
-            self.foods.append(Food(5, 3))
+            self.foods.append(Food(x, y))
+            return
 
         if len(self.traps) == 0:
-            self.traps.append(Trap(5, 10))
+            self.traps.append(Trap(x, y))
 
         #for trap in self.traps:
             #self.traps.append(Food(3, 1))

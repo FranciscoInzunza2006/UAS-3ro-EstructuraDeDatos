@@ -1,6 +1,7 @@
 # FIXME: Weird movement when first loading
 # TODO: Body collision
 from enum import Enum
+from time import sleep
 
 import pygame
 
@@ -48,13 +49,13 @@ class Player:
     def step(self, board: Board, item_manager: ItemManager):
         pressed_keys = pygame.key.get_pressed()
 
-        if pressed_keys[pygame.K_LEFT] and self.movement_direction != self.DIRECTION.RIGHT:
+        if pressed_keys[pygame.K_LEFT] and self.body.direction != self.DIRECTION.RIGHT:
             self.movement_direction = self.DIRECTION.LEFT
-        elif pressed_keys[pygame.K_RIGHT] and self.movement_direction != self.DIRECTION.LEFT:
+        elif pressed_keys[pygame.K_RIGHT] and self.body.direction != self.DIRECTION.LEFT:
             self.movement_direction = self.DIRECTION.RIGHT
-        elif pressed_keys[pygame.K_UP] and self.movement_direction != self.DIRECTION.DOWN:
+        elif pressed_keys[pygame.K_UP] and self.body.direction != self.DIRECTION.DOWN:
             self.movement_direction = self.DIRECTION.UP
-        elif pressed_keys[pygame.K_DOWN] and self.movement_direction != self.DIRECTION.UP:
+        elif pressed_keys[pygame.K_DOWN] and self.body.direction!= self.DIRECTION.UP:
             self.movement_direction = self.DIRECTION.DOWN
 
         self.ticks_for_next_move -= 1
@@ -75,7 +76,7 @@ class Player:
 
             self.body.x = self.body.x % board.width
             self.body.y = self.body.y % board.height
-
+            self.body.direction = self.movement_direction
 
             # Collision with itself
             segment = self.body.next
@@ -85,12 +86,15 @@ class Player:
                 segment = segment.next
 
             # Collision with items
-            for food in item_manager.foods:
+            for i, food in enumerate(item_manager.foods):
                 if food.x == self.body.x and food.y == self.body.y:
+                    item_manager.foods.pop(i)
                     self.addSegment()
 
-            for trap in item_manager.traps:
+            for i, trap in enumerate(item_manager.traps):
                 if trap.x == self.body.x and trap.y == self.body.y:
+                    sleep(0.15)
+                    item_manager.traps.pop(i)
                     self.removeSegment()
                     if self.segment_count == 0:
                         pygame.event.post(EVENT_GAME_OVER)
