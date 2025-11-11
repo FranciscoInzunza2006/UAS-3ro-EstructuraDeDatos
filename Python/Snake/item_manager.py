@@ -41,7 +41,7 @@ class ItemManager:
         self.foods: list[Food] = []
         self.traps: list[Trap] = []
 
-    def step(self, board):
+    def step(self):
         x = random.randint(0, BOARD_WIDTH - 1)
         y = random.randint(0, BOARD_HEIGHT - 1)
         if len(self.foods) == 0:

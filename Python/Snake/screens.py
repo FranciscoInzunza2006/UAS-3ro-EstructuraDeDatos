@@ -1,5 +1,3 @@
-import pygame
-
 from board import Board
 from common import *
 from item_manager import ItemManager
@@ -26,7 +24,7 @@ class MainMenuScreen(Screen):
     def step(self):
         key_pressed = pygame.key.get_pressed()
         if key_pressed[pygame.K_SPACE]:
-            result = pygame.event.post(EVENT_GAME_START)
+            pygame.event.post(EVENT_GAME_START)
 
     def draw(self, surface: pygame.Surface):
         pass

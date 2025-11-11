@@ -1,10 +1,7 @@
-from enum import Enum
 from time import sleep
 
-import pygame
-
-from common import *
 from board import Board
+from common import *
 from screens import MainMenuScreen, Screen, GameOverScreen, GameplayScreen
 
 
