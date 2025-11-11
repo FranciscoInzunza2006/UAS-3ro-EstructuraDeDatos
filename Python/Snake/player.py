@@ -13,14 +13,15 @@ from item_manager import ItemManager
 class Player:
     SNAKE_COLOR = (78, 124, 246)
     SNAKE_COLOR_TAIL = (60, 80, 255)
-    #SNAKE_COLOR_TAIL = (66, 111, 227)
+    # SNAKE_COLOR_TAIL = (66, 111, 227)
     STARTING_SEGMENTS = 5
 
     class DIRECTION(Enum):
-        UP = 1
-        DOWN = 2
-        LEFT = 3
-        RIGHT = 4
+        RIGHT = 0
+        UP = 90
+        LEFT = 180
+        DOWN =270
+
 
     class Segment:
         def __init__(self, x: int, y: int, direction):
@@ -173,7 +174,12 @@ class Player:
                 diff = self.SNAKE_COLOR_TAIL[f] - self.SNAKE_COLOR[f]
                 diff //= TARGET_SEGMENTS
                 color[f] += diff * i
-            i += 1
 
             pygame.draw.rect(surface, color, (x, y, Board.CELL_SIZE, Board.CELL_SIZE))
+
+            if i == 0:
+                sprite = pygame.transform.rotate(pygame.image.load('assets/face.png'), segment.direction.value)
+                surface.blit(sprite, (x, y))
+
             segment = segment.next
+            i += 1
