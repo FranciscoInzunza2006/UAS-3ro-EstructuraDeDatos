@@ -12,8 +12,6 @@ class Board:
         self.width = width
         self.height = height
 
-        self.board = [[] * width] * height
-
         self.background = pygame.Surface((self.width * self.CELL_SIZE, self.height * self.CELL_SIZE))
 
         # Pre-Render the whole background
@@ -37,7 +35,8 @@ class Segment:
         self.y = y
         self.next: Segment | None = None
 
-
+# FIXME: Weird movement when first loading
+# TODO: Body collision
 class Player:
     SNAKE_COLOR = (0, 255, 0)
     STARTING_SEGMENTS = 5
@@ -53,7 +52,7 @@ class Player:
         board_x_center = board.width // 2
         board_y_center = board.height // 2
 
-        self.movement_cooldown = 60
+        self.movement_cooldown = 8
         self.movement_direction = self.DIRECTION.RIGHT
         self.ticks_for_next_move = self.movement_cooldown
 
@@ -65,7 +64,7 @@ class Player:
 
         self.body: Segment = segment
 
-    def step(self):
+    def step(self, board: Board, food, traps):
         pressed_keys = pygame.key.get_pressed()
 
         if pressed_keys[pygame.K_LEFT] and self.movement_direction != self.DIRECTION.RIGHT:
@@ -81,7 +80,7 @@ class Player:
         if self.ticks_for_next_move <= 0:
             self.ticks_for_next_move = self.movement_cooldown
 
-            self.updateSegmentsPosition(self.body, self.body.next)
+            self._updateSegmentsPosition(self.body, self.body.next)
 
             match self.movement_direction:
                 case self.DIRECTION.UP:
@@ -93,14 +92,21 @@ class Player:
                 case self.DIRECTION.RIGHT:
                     self.body.x += 1
 
-            self.body.x = self.body.x % 16
-            self.body.y = self.body.y % 16
+            self.body.x = self.body.x % board.width
+            self.body.y = self.body.y % board.height
 
-    def updateSegmentsPosition(self, segment: Segment, next: Segment):
+        body_x = self.body.x
+        body_y = self.body.y
+        for trap in traps:
+            if trap.x == body_x and trap.y == body_y:
+                pass
+
+
+    def _updateSegmentsPosition(self, segment: Segment, next: Segment):
         if next is None:
             return
 
-        self.updateSegmentsPosition(next, next.next)
+        self._updateSegmentsPosition(next, next.next)
 
         next.x = segment.x
         next.y = segment.y
@@ -113,6 +119,42 @@ class Player:
                               Board.CELL_SIZE))
             segment = segment.next
 
+class ItemManager:
+    def __init__(self):
+        self.food: Food = None
+        self.traps: list[Trap] = []
+
+    def step(self):
+        pass
+
+    def draw(self, surface: pygame.Surface):
+
+        pass
+
+class Food:
+    def __init__(self, x:int, y: int):
+        self.x = x
+        self.y = y
+
+    def step(self):
+        pass
+
+    def draw(self, surface: pygame.Surface):
+        pass
+
+class Trap:
+    def __init__(self, x:int, y: int):
+        self.x = x
+        self.y = y
+        self.life = 300
+
+    def step(self):
+        if self.life >= 0:
+            self.life -= 1
+
+    def draw(self, surface: pygame.Surface):
+        if self.life >= 0:
+            pass
 
 class Snake:
     WINDOW_CAPTION = "Snake"
@@ -121,6 +163,16 @@ class Snake:
 
     BOARD_WIDTH = 17
     BOARD_HEIGHT = 15
+
+    # Custom events
+    EVENT_GAME_OVER = pygame.USEREVENT + 1
+    EVENT_FOOD_EATEN = pygame.USEREVENT + 2
+
+    class SCREENS(Enum):
+        MAIN_MENU = 1
+        GAME_OVER = 2
+        LEVEL = 3
+
 
     def __init__(self):
         self.running: bool = False
@@ -132,8 +184,11 @@ class Snake:
 
         self.fps = pygame.time.Clock()
 
+        self.screen = SCREENS.MAIN_MENU
+
         self.board = Board(self.BOARD_WIDTH, self.BOARD_HEIGHT)
         self.player = Player(self.board)
+        self.item_manager = ItemManager()
 
     def init(self):
         pygame.init()
@@ -142,11 +197,14 @@ class Snake:
         self.running = True
 
     def handleEvent(self, event: pygame.event.Event):
-        if event.type == pygame.QUIT:
-            self.running = False
+        match event.type:
+            case pygame.QUIT:
+                self.running = False
+            case EVENT_GAME_OVER:
+
 
     def step(self):
-        self.player.step()
+        self.player.step(self.board)
 
     def draw(self):
         self.display_surface.fill(WHITE)
