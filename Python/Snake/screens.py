@@ -1,3 +1,5 @@
+import pygame
+
 from board import Board
 from common import *
 
@@ -38,11 +40,11 @@ class GameplayScreen(Screen):
         print("Ok, thats something.")
 
     def step(self):
-        pass
+        self.player.step(self.board)
 
     def draw(self, surface: pygame.Surface):
-        surface.fill((0, 0, 255))
-        pass
+        self.board.draw(surface)
+        self.player.draw(surface)
 
 
 class GameOverScreen(Screen):
@@ -52,11 +54,9 @@ class GameOverScreen(Screen):
 
     def step(self):
         key_pressed = pygame.key.get_pressed()
-        if key_pressed[pygame.K_SPACE]:
+        if key_pressed[pygame.K_RETURN]:
             pygame.event.post(EVENT_MAIN_MENU)
-        pass
 
     def draw(self, surface: pygame.Surface):
         surface.fill(BLACK)
         surface.blit(self.GAME_OVER_TEXT, (10, 10))
-        pass
