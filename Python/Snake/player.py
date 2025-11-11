@@ -6,7 +6,7 @@ from time import sleep
 import pygame
 
 from board import Board
-from common import EVENT_GAME_OVER, EVENT_NEXT_LEVEL
+from common import EVENT_GAME_OVER, EVENT_NEXT_LEVEL, BOARD_WIDTH, BOARD_HEIGHT
 from item_manager import ItemManager
 
 
@@ -27,10 +27,9 @@ class Player:
             self.direction = direction
             self.next: Player.Segment | None = None
 
-
     def __init__(self, board: Board):
         # Create body segments
-        self.segment_count =  self.STARTING_SEGMENTS
+        self.segment_count = self.STARTING_SEGMENTS
         board_x_center = board.width // 2
         board_y_center = board.height // 2
 
@@ -46,7 +45,7 @@ class Player:
 
         self.body: Player.Segment = segment
 
-    def step(self, board: Board, item_manager: ItemManager):
+    def step(self, item_manager: ItemManager):
         pressed_keys = pygame.key.get_pressed()
 
         if pressed_keys[pygame.K_LEFT] and self.body.direction != self.DIRECTION.RIGHT:
@@ -55,7 +54,7 @@ class Player:
             self.movement_direction = self.DIRECTION.RIGHT
         elif pressed_keys[pygame.K_UP] and self.body.direction != self.DIRECTION.DOWN:
             self.movement_direction = self.DIRECTION.UP
-        elif pressed_keys[pygame.K_DOWN] and self.body.direction!= self.DIRECTION.UP:
+        elif pressed_keys[pygame.K_DOWN] and self.body.direction != self.DIRECTION.UP:
             self.movement_direction = self.DIRECTION.DOWN
 
         self.ticks_for_next_move -= 1
@@ -74,8 +73,8 @@ class Player:
                 case self.DIRECTION.RIGHT:
                     self.body.x += 1
 
-            self.body.x = self.body.x % board.width
-            self.body.y = self.body.y % board.height
+            self.body.x = self.body.x % BOARD_WIDTH
+            self.body.y = self.body.y % BOARD_HEIGHT
             self.body.direction = self.movement_direction
 
             # Collision with itself
@@ -100,7 +99,6 @@ class Player:
                     self.removeSegment()
                     if self.segment_count == 0:
                         pygame.event.post(EVENT_GAME_OVER)
-
 
     def addSegment(self):
         tail = self.body

@@ -41,8 +41,8 @@ class GameplayScreen(Screen):
         self.reset()
 
     def step(self):
-        self.player.step(self.board, self.item_manager)
-        self.item_manager.step(self.board)
+        self.player.step(self.item_manager)
+        self.item_manager.step()
 
     def draw(self, surface: pygame.Surface):
         self.board.draw(surface)
