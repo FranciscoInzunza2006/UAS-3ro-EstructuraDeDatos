@@ -239,7 +239,7 @@ void popAt()
     if (previous != nullptr)
         previous->next = ptr->next;
     else
-        head = nullptr;
+        head = ptr->next;
 
     delete ptr;
     std::cout << "Se elimino el nodo.\n";
