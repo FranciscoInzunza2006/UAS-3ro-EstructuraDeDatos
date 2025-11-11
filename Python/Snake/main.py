@@ -43,6 +43,8 @@ class Snake:
         elif event.type == GAME_OVER:
             sleep(1)
             self.current_screen = GameOverScreen()
+        elif event.type == NEXT_LEVEL:
+            self.current_screen.reset()
 
     def run(self):
         self.init()

@@ -35,10 +35,12 @@ class MainMenuScreen(Screen):
 class GameplayScreen(Screen):
     def __init__(self):
         super().__init__()
-        self.board = Board(BOARD_WIDTH, BOARD_HEIGHT)
-        self.player = Player(self.board)
-        self.item_manager = ItemManager()
-        print("Ok, thats something.")
+        self.board = None
+        self.player = None
+        self.item_manager = None
+        self.level = 0
+
+        self.reset()
 
     def step(self):
         self.player.step(self.board, self.item_manager)
@@ -49,6 +51,12 @@ class GameplayScreen(Screen):
         self.player.draw(surface)
         self.item_manager.draw(surface)
 
+    def reset(self):
+        self.board = Board(BOARD_WIDTH, BOARD_HEIGHT)
+        self.player = Player(self.board)
+        self.item_manager = ItemManager()
+
+        self.level += 1
 
 class GameOverScreen(Screen):
     def __init__(self):

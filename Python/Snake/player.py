@@ -6,7 +6,7 @@ from time import sleep
 import pygame
 
 from board import Board
-from common import EVENT_GAME_OVER
+from common import EVENT_GAME_OVER, EVENT_NEXT_LEVEL
 from item_manager import ItemManager
 
 
@@ -90,6 +90,8 @@ class Player:
                 if food.x == self.body.x and food.y == self.body.y:
                     item_manager.foods.pop(i)
                     self.addSegment()
+                    if self.segment_count > 7:
+                        pygame.event.post(EVENT_NEXT_LEVEL)
 
             for i, trap in enumerate(item_manager.traps):
                 if trap.x == self.body.x and trap.y == self.body.y:
