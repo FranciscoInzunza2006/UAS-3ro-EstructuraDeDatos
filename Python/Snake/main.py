@@ -38,10 +38,16 @@ class Snake:
         elif event.type == GAME_START:
             self.current_screen = GameplayScreen()
         elif event.type == GAME_OVER:
+            self.draw()
             sleep(1)
             self.current_screen = GameOverScreen()
         elif event.type == NEXT_LEVEL:
             self.current_screen.reset()
+
+    def draw(self):
+        self.display_surface.fill(WHITE)
+        self.current_screen.draw(self.display_surface)
+        pygame.display.update()
 
     def run(self):
         self.init()
@@ -52,9 +58,7 @@ class Snake:
                 self.handleEvent(event)
 
             self.current_screen.step()
-            self.display_surface.fill(WHITE)
-            self.current_screen.draw(self.display_surface)
-            pygame.display.update()
+            self.draw()
 
             self.fps.tick(self.TARGET_FRAMERATE)
         pygame.quit()
