@@ -42,7 +42,7 @@ class GameplayScreen(Screen):
 
     def step(self):
         self.player.step(self.item_manager)
-        self.item_manager.step()
+        self.item_manager.step(self.level)
 
     def draw(self, surface: pygame.Surface):
         self.board.draw(surface)
@@ -51,7 +51,7 @@ class GameplayScreen(Screen):
 
     def reset(self):
         self.board = Board(BOARD_WIDTH, BOARD_HEIGHT)
-        self.player = Player(self.board)
+        self.player = Player(self.level)
         self.item_manager = ItemManager()
 
         self.level += 1

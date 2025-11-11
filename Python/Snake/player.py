@@ -27,13 +27,16 @@ class Player:
             self.direction = direction
             self.next: Player.Segment | None = None
 
-    def __init__(self, board: Board):
+    def __init__(self, level):
         # Create body segments
         self.segment_count = self.STARTING_SEGMENTS
-        board_x_center = board.width // 2
-        board_y_center = board.height // 2
+        board_x_center = BOARD_WIDTH // 2 - self.STARTING_SEGMENTS
+        board_y_center = BOARD_HEIGHT // 2
 
-        self.movement_cooldown = 8
+        self.movement_cooldown = 10 - level // 2
+        if self.movement_cooldown < 4:
+            self.movement_cooldown = 4
+
         self.movement_direction = self.DIRECTION.RIGHT
         self.ticks_for_next_move = self.movement_cooldown
 
@@ -46,6 +49,9 @@ class Player:
         self.body: Player.Segment = segment
 
     def step(self, item_manager: ItemManager):
+        if self.segment_count <= 0:
+            return
+
         pressed_keys = pygame.key.get_pressed()
 
         if pressed_keys[pygame.K_LEFT] and self.body.direction != self.DIRECTION.RIGHT:

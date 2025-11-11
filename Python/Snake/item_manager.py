@@ -1,6 +1,7 @@
 import random
 
 import pygame
+from pygame import surface
 
 from board import Board
 from common import RED, BLACK, BOARD_WIDTH, BOARD_HEIGHT
@@ -41,22 +42,29 @@ class ItemManager:
         self.foods: list[Food] = []
         self.traps: list[Trap] = []
 
-    def step(self):
+        self.trap_spawn_cooldown = 60
+
+    def step(self, level):
         x = random.randint(0, BOARD_WIDTH - 1)
         y = random.randint(0, BOARD_HEIGHT - 1)
         if len(self.foods) == 0:
+            for trap in self.traps:
+                if trap.x == x and trap.y == y:
+                    return
             self.foods.append(Food(x, y))
             return
 
-        if len(self.traps) == 0:
-            self.traps.append(Trap(x, y))
-
-        #for trap in self.traps:
-            #self.traps.append(Food(3, 1))
+        if len(self.traps) < level - 1:
+            self.trap_spawn_cooldown -= 1
+            if self.trap_spawn_cooldown == 0:
+                self.trap_spawn_cooldown = 60
+                self.traps.append(Trap(x, y))
+        else:
+            self.trap_spawn_cooldown = 60
 
     def draw(self, surface: pygame.Surface):
-        for food in self.foods:
-            food.draw(surface)
-
         for trap in self.traps:
             trap.draw(surface)
+
+        for food in self.foods:
+            food.draw(surface)
