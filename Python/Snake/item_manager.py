@@ -1,8 +1,11 @@
 import pygame
 
+from board import Board
+from common import RED, BLACK
+
 
 class Food:
-    def __init__(self, x:int, y: int):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
@@ -10,10 +13,13 @@ class Food:
         pass
 
     def draw(self, surface: pygame.Surface):
-        pass
+        pygame.draw.rect(surface, RED,
+                         (self.x * Board.CELL_SIZE, self.y * Board.CELL_SIZE, Board.CELL_SIZE,
+                          Board.CELL_SIZE))
+
 
 class Trap:
-    def __init__(self, x:int, y: int):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
         self.life = 300
@@ -23,15 +29,29 @@ class Trap:
             self.life -= 1
 
     def draw(self, surface: pygame.Surface):
-        if self.life >= 0:
-            pass
+        pygame.draw.rect(surface, BLACK,
+                         (self.x * Board.CELL_SIZE, self.y * Board.CELL_SIZE, Board.CELL_SIZE,
+                          Board.CELL_SIZE))
+
 
 class ItemManager:
     def __init__(self):
-        pass
+        self.foods: list[Food] = []
+        self.traps: list[Trap] = []
 
-    def step(self):
-        pass
+    def step(self, board):
+        if len(self.foods) == 0:
+            self.foods.append(Food(5, 3))
+
+        if len(self.traps) == 0:
+            self.traps.append(Trap(5, 10))
+
+        #for trap in self.traps:
+            #self.traps.append(Food(3, 1))
 
     def draw(self, surface: pygame.Surface):
-        pass
+        for food in self.foods:
+            food.draw(surface)
+
+        for trap in self.traps:
+            trap.draw(surface)

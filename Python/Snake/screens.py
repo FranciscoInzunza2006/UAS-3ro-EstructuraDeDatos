@@ -2,6 +2,7 @@ import pygame
 
 from board import Board
 from common import *
+from item_manager import ItemManager
 
 from player import Player
 
@@ -36,15 +37,17 @@ class GameplayScreen(Screen):
         super().__init__()
         self.board = Board(BOARD_WIDTH, BOARD_HEIGHT)
         self.player = Player(self.board)
-        # self.item_manager = ItemManager()
+        self.item_manager = ItemManager()
         print("Ok, thats something.")
 
     def step(self):
-        self.player.step(self.board)
+        self.player.step(self.board, self.item_manager)
+        self.item_manager.step(self.board)
 
     def draw(self, surface: pygame.Surface):
         self.board.draw(surface)
         self.player.draw(surface)
+        self.item_manager.draw(surface)
 
 
 class GameOverScreen(Screen):
