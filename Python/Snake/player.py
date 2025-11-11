@@ -5,6 +5,7 @@ from enum import Enum
 import pygame
 
 from board import Board
+from common import EVENT_GAME_OVER
 
 
 class Player:
@@ -15,7 +16,7 @@ class Player:
         def __init__(self, x: int, y: int):
             self.x = x
             self.y = y
-            self.next: Segment | None = None
+            self.next: Player.Segment | None = None
 
     class DIRECTION(Enum):
         UP = 1
@@ -34,13 +35,13 @@ class Player:
 
         segment = None
         for s in range(self.STARTING_SEGMENTS):
-            seg = Segment(board_x_center - s, board_y_center)
+            seg = self.Segment(board_x_center + s, board_y_center)
             seg.next = segment
             segment = seg
 
-        self.body: Segment = segment
+        self.body: Player.Segment = segment
 
-    def step(self, board: Board, food, traps):
+    def step(self, board: Board):
         pressed_keys = pygame.key.get_pressed()
 
         if pressed_keys[pygame.K_LEFT] and self.movement_direction != self.DIRECTION.RIGHT:
@@ -56,7 +57,7 @@ class Player:
         if self.ticks_for_next_move <= 0:
             self.ticks_for_next_move = self.movement_cooldown
 
-            self._updateSegmentsPosition(self.body, self.body.next)
+            self.updateSegmentsPosition(self.body, self.body.next)
 
             match self.movement_direction:
                 case self.DIRECTION.UP:
@@ -71,21 +72,24 @@ class Player:
             self.body.x = self.body.x % board.width
             self.body.y = self.body.y % board.height
 
-        body_x = self.body.x
-        body_y = self.body.y
-        for trap in traps:
-            if trap.x == body_x and trap.y == body_y:
-                pass
+
+            segment = self.body.next
+            while segment is not None:
+                if segment.x == self.body.x and segment.y == self.body.y:
+                    print(segment.x, segment.y)
+                    pygame.event.post(EVENT_GAME_OVER)
+                segment = segment.next
 
 
-    def _updateSegmentsPosition(self, segment: Segment, next: Segment):
+    def updateSegmentsPosition(self, segment: Segment, next: Segment):
         if next is None:
             return
 
-        self._updateSegmentsPosition(next, next.next)
+        self.updateSegmentsPosition(next, next.next)
 
         next.x = segment.x
         next.y = segment.y
+        print(segment.x, segment.y)
 
     def draw(self, surface: pygame.Surface):
         segment = self.body
