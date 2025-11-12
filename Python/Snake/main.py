@@ -1,21 +1,19 @@
 from time import sleep
 
-from board import Board
 from common import *
 from screens import MainMenuScreen, Screen, GameOverScreen, GameplayScreen
 
 
 class Snake:
     WINDOW_CAPTION = "Snake"
-
     TARGET_FRAMERATE = 60
 
     def __init__(self):
         self.running: bool = False
         self.display_surface: pygame.surface.Surface | None = None
 
-        self.window_width: int = BOARD_WIDTH * Board.CELL_SIZE
-        self.window_height: int = BOARD_HEIGHT * Board.CELL_SIZE
+        self.window_width: int = BOARD_WIDTH * TILE_SIZE_PX
+        self.window_height: int = BOARD_HEIGHT * TILE_SIZE_PX
         self.window_dimensions = self.window_width, self.window_height
 
         self.fps = pygame.time.Clock()

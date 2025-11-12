@@ -14,8 +14,7 @@ EVENT_NEXT_LEVEL = pygame.event.Event(NEXT_LEVEL)
 # Board dimensions
 BOARD_WIDTH = 17
 BOARD_HEIGHT = 15
-
-CELL_SIZE = 32
+TILE_SIZE_PX = 32
 
 TARGET_SEGMENTS = 15
 

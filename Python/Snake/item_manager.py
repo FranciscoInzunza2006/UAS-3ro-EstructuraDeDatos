@@ -2,14 +2,13 @@ import math
 import random
 
 import pygame
-from pygame import surface
 
-from board import Board
-from common import RED, BLACK, BOARD_WIDTH, BOARD_HEIGHT, CELL_SIZE
+from common import BOARD_WIDTH, BOARD_HEIGHT, TILE_SIZE_PX
+
 
 def imageThingy(sprite, rate, x, y):
     scale = math.floor(math.sin(pygame.time.get_ticks() * rate) * 2)
-    new_size = CELL_SIZE + scale
+    new_size = TILE_SIZE_PX + scale
     scaled_sprite = pygame.transform.smoothscale(sprite, (new_size, new_size))
 
     offset = scale//2
@@ -26,7 +25,7 @@ class Food:
         pass
 
     def draw(self, surface: pygame.Surface):
-        thingy = imageThingy(Food.sprite, 0.005, self.x * CELL_SIZE, self.y * CELL_SIZE)
+        thingy = imageThingy(Food.sprite, 0.005, self.x * TILE_SIZE_PX, self.y * TILE_SIZE_PX)
         surface.blit(thingy[0], thingy[1])
 
 
@@ -42,7 +41,7 @@ class Trap:
             self.life -= 1
 
     def draw(self, surface: pygame.Surface):
-        thingy = imageThingy(Trap.sprite, 0.01, self.x * CELL_SIZE, self.y * CELL_SIZE)
+        thingy = imageThingy(Trap.sprite, 0.01, self.x * TILE_SIZE_PX, self.y * TILE_SIZE_PX)
         surface.blit(thingy[0], thingy[1])
 
 

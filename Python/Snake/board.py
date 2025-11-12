@@ -1,25 +1,23 @@
 import pygame
 
-from common import WHITE
+from common import TILE_SIZE_PX
 
 
 class Board:
-    CELL_SIZE = 32
-
     def __init__(self, width, height):
-        self.width = width
-        self.height = height
+        #self.width = width
+        #self.height = height
 
-        self.background = pygame.Surface((self.width * self.CELL_SIZE, self.height * self.CELL_SIZE))
+        self.background = pygame.Surface((width * TILE_SIZE_PX, height * TILE_SIZE_PX))
 
         # Pre-Render the whole background
         self.background.fill((170, 215, 81))
-        for y in range(self.height):
+        for y in range(height):
             i = y % 2
-            for x in range(self.width):
+            for x in range(width):
                 if i % 2 == 0:
                     pygame.draw.rect(self.background, (162, 209, 73),
-                                     (x * self.CELL_SIZE, y * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
+                                     (x * TILE_SIZE_PX, y * TILE_SIZE_PX, TILE_SIZE_PX, TILE_SIZE_PX))
 
                 i += 1
 

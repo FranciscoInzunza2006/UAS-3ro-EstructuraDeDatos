@@ -5,8 +5,7 @@ from time import sleep
 
 import pygame
 
-from board import Board
-from common import EVENT_GAME_OVER, EVENT_NEXT_LEVEL, BOARD_WIDTH, BOARD_HEIGHT, TARGET_SEGMENTS
+from common import EVENT_GAME_OVER, EVENT_NEXT_LEVEL, BOARD_WIDTH, BOARD_HEIGHT, TARGET_SEGMENTS, TILE_SIZE_PX
 from item_manager import ItemManager
 
 
@@ -166,8 +165,8 @@ class Player:
         segment = self.body
         i = 0
         while segment is not None:
-            x = segment.x * Board.CELL_SIZE
-            y = segment.y * Board.CELL_SIZE
+            x = segment.x * TILE_SIZE_PX
+            y = segment.y * TILE_SIZE_PX
 
             color = [self.SNAKE_COLOR[0], self.SNAKE_COLOR[1], self.SNAKE_COLOR[2]]
             for f in (0, 1, 2):
@@ -175,7 +174,7 @@ class Player:
                 diff //= TARGET_SEGMENTS
                 color[f] += diff * i
 
-            pygame.draw.rect(surface, color, (x, y, Board.CELL_SIZE, Board.CELL_SIZE))
+            pygame.draw.rect(surface, color, (x, y, TILE_SIZE_PX, TILE_SIZE_PX))
 
             if i == 0:
                 sprite = pygame.transform.rotate(pygame.image.load('assets/face.png'), segment.direction.value)
