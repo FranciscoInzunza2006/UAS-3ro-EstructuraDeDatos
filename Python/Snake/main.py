@@ -41,6 +41,8 @@ class Snake:
             common.scores.append(common.current_score)
             self.current_screen = GameOverScreen()
         elif event.type == NEXT_LEVEL:
+            self.draw()
+            sleep(1)
             self.current_screen.reset()
 
     def draw(self):

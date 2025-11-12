@@ -107,7 +107,7 @@ class Player:
                     if self.segment_count >= TARGET_SEGMENTS:
                         common.current_score += 10
                         pygame.event.post(EVENT_NEXT_LEVEL)
-                        sleep(1)
+                        return
 
             for i, trap in enumerate(item_manager.traps):
                 if trap.x == self.body.x and trap.y == self.body.y:
