@@ -11,8 +11,9 @@ def imageThingy(sprite, rate, x, y):
     new_size = TILE_SIZE_PX + scale
     scaled_sprite = pygame.transform.smoothscale(sprite, (new_size, new_size))
 
-    offset = scale//2
+    offset = scale // 2
     return scaled_sprite, (x - offset, y - offset)
+
 
 class Food:
     sprite = pygame.image.load('assets/food.png')
@@ -31,6 +32,7 @@ class Food:
 
 class Trap:
     sprite = pygame.image.load('assets/trap.png')
+
     def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
@@ -46,13 +48,17 @@ class Trap:
 
 
 class ItemManager:
-    def __init__(self):
+    def __init__(self, level):
         self.foods: list[Food] = []
         self.traps: list[Trap] = []
 
-        self.trap_spawn_cooldown = 60
+        total_traps = min(level, 25)
+        for i in range(total_traps):
+            x = random.randint(0, BOARD_WIDTH - 1)
+            y = random.randint(0, BOARD_HEIGHT - 1)
+            self.traps.append(Trap(x, y))
 
-    def step(self, level):
+    def step(self):
         x = random.randint(0, BOARD_WIDTH - 1)
         y = random.randint(0, BOARD_HEIGHT - 1)
         if len(self.foods) == 0:
@@ -60,15 +66,6 @@ class ItemManager:
                 if trap.x == x and trap.y == y:
                     return
             self.foods.append(Food(x, y))
-            return
-
-        if len(self.traps) < level - 1:
-            self.trap_spawn_cooldown -= 1
-            if self.trap_spawn_cooldown == 0:
-                self.trap_spawn_cooldown = 60
-                self.traps.append(Trap(x, y))
-        else:
-            self.trap_spawn_cooldown = 60
 
     def draw(self, surface: pygame.Surface):
         for trap in self.traps:
