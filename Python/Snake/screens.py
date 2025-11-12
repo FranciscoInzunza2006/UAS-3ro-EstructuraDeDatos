@@ -88,6 +88,8 @@ class GameplayScreen(Screen):
         self.item_manager = None
         self.level = 0
 
+        common.current_score = 0
+
         self.reset()
 
     def step(self):
