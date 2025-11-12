@@ -1,0 +1,20 @@
+# IDE
+.vscode
+.idea
+
+# C++
+*.obj
+*.exe
+out/
+
+# C#
+obj/
+
+# Java
+*.class
+
+# Python
+__pycache__/
+.venv
+
+# JavaScript
