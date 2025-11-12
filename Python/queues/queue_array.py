@@ -54,6 +54,7 @@ class Queue:
         i = self.front
         while i <= self.rear:
             print(self.queue[i], end=" ")
+            i += 1
         print()
 
 
