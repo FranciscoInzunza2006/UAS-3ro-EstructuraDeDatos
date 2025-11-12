@@ -121,6 +121,7 @@ class Player:
                     self.removeSegment()
                     if self.segment_count == 0:
                         pygame.event.post(EVENT_GAME_OVER)
+                        return
 
     def addSegment(self):
         tail = self.body
