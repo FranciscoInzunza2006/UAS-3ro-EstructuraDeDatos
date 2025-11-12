@@ -18,7 +18,7 @@ TILE_SIZE_PX = 32
 
 TARGET_SEGMENTS = 15
 
-scores = [99, 50, 25]
+scores = [999, 500, 250]
 current_score = 0
 
 # Colors
