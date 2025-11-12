@@ -16,7 +16,7 @@ class Queue {
     }
 
     enqueue(value) {
-        if (rear == Queue.MAX_SIZE - 1) {
+        if (this.rear == Queue.MAX_SIZE - 1) {
             console.log("La cola esta llena.");
             return false;
         }
