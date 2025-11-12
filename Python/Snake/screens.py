@@ -27,6 +27,19 @@ class MainMenuScreen(Screen):
     def __init__(self):
         super().__init__()
 
+        center_x = self.width // 2
+        center_y = self.height // 2
+
+        self.thingy_speed = 0.004
+        self.thingy_scale = 0.25
+
+        self.TITLE_TEXT = self.FONT_1.render("SNAKE", True, WHITE, BLACK)
+        self.title_rect = self.TITLE_TEXT.get_rect(center=(center_x, center_y))
+
+        self.INSTRUCTIONS_TEXT = self.FONT_2.render("Press Space to continue", True, WHITE, BLACK)
+        self.instructions_rect = self.INSTRUCTIONS_TEXT.get_rect(center=(center_x, self.title_rect.bottom + 40))
+
+
     def step(self):
         key_pressed = pygame.key.get_pressed()
         if key_pressed[pygame.K_SPACE]:
@@ -35,7 +48,21 @@ class MainMenuScreen(Screen):
             pygame.event.post(EVENT_GAME_OVER)
 
     def draw(self, surface: pygame.Surface):
-        pass
+        surface.fill(BLACK)
+
+        center_x = self.width // 2
+        center_y = self.height // 2
+
+        val = math.sin(pygame.time.get_ticks() * self.thingy_speed)
+
+        rot = (math.sin(pygame.time.get_ticks() * self.thingy_speed)) * 10
+        scale = math.sin(pygame.time.get_ticks() * self.thingy_speed * 2) * self.thingy_scale
+        title = pygame.transform.rotozoom(self.TITLE_TEXT, rot, 1 + scale)
+        rect = title.get_rect(center=(center_x, center_y))
+
+        surface.blit(title, rect)
+        surface.blit(self.INSTRUCTIONS_TEXT, self.instructions_rect)
+
 
 
 class GameplayScreen(Screen):
