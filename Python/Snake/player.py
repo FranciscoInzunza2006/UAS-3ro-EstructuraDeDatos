@@ -13,7 +13,7 @@ class Player:
     SNAKE_COLOR = (78, 124, 246)
     SNAKE_COLOR_TAIL = (60, 80, 255)
     # SNAKE_COLOR_TAIL = (66, 111, 227)
-    STARTING_SEGMENTS = 1
+    STARTING_SEGMENTS = 5
 
     class DIRECTION(Enum):
         RIGHT = 0
