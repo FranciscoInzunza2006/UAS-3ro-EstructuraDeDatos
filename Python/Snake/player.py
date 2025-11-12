@@ -1,5 +1,3 @@
-# FIXME: Weird movement when first loading
-# TODO: Body collision
 from enum import Enum
 from time import sleep
 
@@ -8,6 +6,7 @@ import pygame
 from common import EVENT_GAME_OVER, EVENT_NEXT_LEVEL, BOARD_WIDTH, BOARD_HEIGHT, TARGET_SEGMENTS, TILE_SIZE_PX
 from item_manager import ItemManager
 
+import common
 
 class Player:
     SNAKE_COLOR = (78, 124, 246)
@@ -51,6 +50,7 @@ class Player:
         self.body: Player.Segment = segment
 
     def step(self, item_manager: ItemManager):
+        global current_score
         if self.segment_count <= 0:
             return
 
@@ -103,12 +103,18 @@ class Player:
                     pygame.mixer.Sound('assets/sfx_food.mp3').play()
                     item_manager.foods.pop(i)
                     self.addSegment()
+                    common.current_score += 1
                     if self.segment_count >= TARGET_SEGMENTS:
+                        common.current_score += 10
                         pygame.event.post(EVENT_NEXT_LEVEL)
                         sleep(1)
 
             for i, trap in enumerate(item_manager.traps):
                 if trap.x == self.body.x and trap.y == self.body.y:
+                    common.current_score -= 2
+                    if common.current_score < 0:
+                        common.current_score = 0
+
                     pygame.mixer.Sound('assets/sfx_gameover.mp3').play()
                     sleep(0.15)
                     item_manager.traps.pop(i)

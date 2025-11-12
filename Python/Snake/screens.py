@@ -2,10 +2,10 @@ import math
 
 from board import Board
 from common import *
+import common
 from item_manager import ItemManager
 
 from player import Player
-
 
 class Screen:
     # Fonts
@@ -39,6 +39,8 @@ class MainMenuScreen(Screen):
         self.INSTRUCTIONS_TEXT = self.FONT_2.render("Press Space to continue", True, WHITE, BLACK)
         self.instructions_rect = self.INSTRUCTIONS_TEXT.get_rect(center=(center_x, self.title_rect.bottom + 40))
 
+        scores.sort(reverse=True)
+
 
     def step(self):
         key_pressed = pygame.key.get_pressed()
@@ -63,6 +65,19 @@ class MainMenuScreen(Screen):
         surface.blit(title, rect)
         surface.blit(self.INSTRUCTIONS_TEXT, self.instructions_rect)
 
+        # Scores
+        scores_str = ["Scores:"]
+
+        for ranking, score in enumerate(common.scores, 1):
+            scores_str.append(f"  #{ranking}: {score}")
+
+        x = 16
+        y = 16
+        for s in scores_str:
+            text = self.FONT_2.render(s, True, WHITE, BLACK)
+            surface.blit(text, (x, y))
+            y += text.get_height() + 10
+
 
 
 class GameplayScreen(Screen):
@@ -83,6 +98,9 @@ class GameplayScreen(Screen):
         self.board.draw(surface)
         self.player.draw(surface)
         self.item_manager.draw(surface)
+
+        txt = self.FONT_2.render(f"Score: {common.current_score}", True, BLACK)
+        surface.blit(txt, (16, 16))
 
     def reset(self):
         self.board = Board(BOARD_WIDTH, BOARD_HEIGHT)
@@ -107,8 +125,14 @@ class GameOverScreen(Screen):
 
         game_over_height = self.game_over_rect.bottom + self.game_over_hover_distance * 4
 
+        last_score = common.scores[len(common.scores) - 1]
+        self.score_msg = self.FONT_2.render(f"You got a score of {last_score}", True, WHITE, BLACK)
+        self.score_rect = self.score_msg.get_rect(center=(center_x, game_over_height))
+
         self.INSTRUCTIONS_TEXT = self.FONT_2.render("Press Enter to continue", True, WHITE, BLACK)
-        self.instructions_rect = self.INSTRUCTIONS_TEXT.get_rect(center=(center_x, game_over_height))
+        self.instructions_rect = self.INSTRUCTIONS_TEXT.get_rect(center=(center_x, self.score_rect.bottom + 10))
+
+
 
 
     def step(self):
@@ -123,3 +147,6 @@ class GameOverScreen(Screen):
 
         surface.blit(self.GAME_OVER_TEXT, self.game_over_rect.move(0, y_offset))
         surface.blit(self.INSTRUCTIONS_TEXT, self.instructions_rect)
+        surface.blit(self.score_msg, self.score_rect)
+
+

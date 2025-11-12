@@ -16,7 +16,10 @@ BOARD_WIDTH = 17
 BOARD_HEIGHT = 15
 TILE_SIZE_PX = 32
 
-TARGET_SEGMENTS = 1
+TARGET_SEGMENTS = 15
+
+scores = [99, 50, 25]
+current_score = 0
 
 # Colors
 WHITE = (255, 255, 255)

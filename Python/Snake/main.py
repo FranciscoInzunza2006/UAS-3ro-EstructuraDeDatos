@@ -2,7 +2,7 @@ from time import sleep
 
 from common import *
 from screens import MainMenuScreen, Screen, GameOverScreen, GameplayScreen
-
+import common
 
 class Snake:
     WINDOW_CAPTION = "Snake"
@@ -38,6 +38,7 @@ class Snake:
         elif event.type == GAME_OVER:
             self.draw()
             sleep(1)
+            common.scores.append(common.current_score)
             self.current_screen = GameOverScreen()
         elif event.type == NEXT_LEVEL:
             self.current_screen.reset()
