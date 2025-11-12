@@ -2,7 +2,7 @@
 // Created by Franc on 28/10/2025.
 //
 
-#include "sorting_algorithms.hpp"
+#include "../include/sorting_algorithms.hpp"
 
 #include <algorithm>
 

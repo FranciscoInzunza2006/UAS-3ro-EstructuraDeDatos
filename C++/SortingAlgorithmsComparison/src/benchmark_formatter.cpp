@@ -2,7 +2,7 @@
 // Created by Franc on 30/10/2025.
 //
 
-#include "benchmark.hpp"
+#include "../include/benchmark.hpp"
 #include "benchmark_formatter.hpp"
 
 #include <iomanip>

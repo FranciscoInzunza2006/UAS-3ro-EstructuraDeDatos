@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Benchmark</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="benchmarker.js"></script>
+    <script src="sorting_algorithms.js"></script>
+    <script src="sample_generators.js"></script>
+
+    <script src="main.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Comparador de Ordenamientos</h1>
+    <p>Usa esta página para comparar distintos algoritmos de ordenamiento de datos en distintos escenarios para que
+        averigües cuál es el ideal para tu aplicación.</p>
+</header>
+
+<main>
+    <section id="controls">
+        <div>
+            <label for="sample-size">Cantidad de datos: </label>
+            <select id="sample-size">
+            </select>
+        </div>
+
+        <div>
+            <label for="sample-type">Escenario</label>
+            <select id="sample-type">
+            </select>
+        </div>
+    </section>
+
+    <div id="results">
+        <section>
+            <h2>Rankings</h2>
+            <!-- TODO: Cooler with time taken being in a different color and aligned -->
+            <ol id="rankings">
+
+            </ol>
+        </section>
+
+        <section id="graph-container">
+            <h2>Gráfica de tiempos por método</h2>
+            <div id="graph">
+
+            </div>
+        </section>
+    </div>
+    <section>
+        <div>
+            <label for="algorithm">Algoritmo</label>
+            <select id="algorithm">
+            </select>
+        </div>
+        <table>
+            <caption>Tiempo tomado en cada escenario</caption>
+            <tbody id="results-table">
+
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<script src="gui.js"></script>
+</body>
+</html>
