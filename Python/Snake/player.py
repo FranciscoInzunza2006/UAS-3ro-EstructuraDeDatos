@@ -36,8 +36,8 @@ class Player:
         board_y_center = BOARD_HEIGHT // 2
 
         self.movement_cooldown = 10 - level // 2
-        if self.movement_cooldown < 4:
-            self.movement_cooldown = 4
+        if self.movement_cooldown < 3:
+            self.movement_cooldown = 3
 
         self.movement_direction = self.DIRECTION.RIGHT
         self.ticks_for_next_move = self.movement_cooldown
