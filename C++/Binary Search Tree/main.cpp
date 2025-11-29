@@ -76,45 +76,35 @@ class BinarySearchTree
         return node;
     }
 
-    // Source - https://stackoverflow.com/a
-    // Posted by Adrian Schneider, modified by community. See post 'Timeline' for change history
-    // Retrieved 2025-11-28, License - CC BY-SA 4.0
-    static void displayInOrder(const std::string& prefix, const Node* node, const bool isLeft)
+    // Display
+    static void displayInOrder(const Node* node)
     {
-        if (node == nullptr) return;
-
-        displayInOrder(prefix + (isLeft ? "│   " : "    "), node->left, true);
-
-        std::cout << prefix;
-        std::cout << (isLeft ? "├──" : "└──");
-        std::cout << node->key << '\n';
-
-        displayInOrder(prefix + (isLeft ? "│   " : "    "), node->right, false);
+        if (node != nullptr)
+        {
+            displayInOrder(node->left);
+            std::cout << node->key << "   ";
+            displayInOrder(node->right);
+        }
     }
 
-    static void displayPreOrder(const std::string& prefix, const Node* node, const bool isLeft)
+    static void displayPreOrder(const Node* node)
     {
-        if (node == nullptr) return;
-
-        std::cout << prefix;
-        std::cout << (isLeft ? "├──" : "└──");
-        std::cout << node->key << '\n';
-
-        displayInOrder(prefix + (isLeft ? "│   " : "    "), node->left, true);
-        displayInOrder(prefix + (isLeft ? "│   " : "    "), node->right, false);
+        if (node != nullptr)
+        {
+            std::cout << node->key << "   ";
+            displayPreOrder(node->left);
+            displayPreOrder(node->right);
+        }
     }
 
-    static void displayPostOrder(const std::string& prefix, const Node* node, const bool isLeft)
+    static void displayPostOrder(const Node* node)
     {
-        if (node == nullptr) return;
-
-        displayInOrder(prefix + (isLeft ? "│   " : "    "), node->right, false);
-
-        std::cout << prefix;
-        std::cout << (isLeft ? "├──" : "└──");
-        std::cout << node->key << '\n';
-
-        displayInOrder(prefix + (isLeft ? "│   " : "    "), node->left, true);
+        if (node != nullptr)
+        {
+            displayPostOrder(node->left);
+            displayPostOrder(node->right);
+            std::cout << node->key << "   ";
+        }
     }
 
 public:
@@ -128,9 +118,23 @@ public:
 
     Node* search(int key);
 
-    void displayInOrder() const { displayInOrder("", root, false); }
-    void displayPostOrder() const { displayPostOrder("", root, false); }
-    void displayPreOrder() const { displayPreOrder("", root, false); }
+    void displayInOrder() const
+    {
+        displayInOrder(root);
+        std::cout << std::endl;
+    }
+
+    void displayPreOrder() const
+    {
+        displayPreOrder(root);
+        std::cout << std::endl;
+    }
+
+    void displayPostOrder() const
+    {
+        displayPostOrder(root);
+        std::cout << std::endl;
+    }
 
     int height();
     int size();
@@ -143,20 +147,19 @@ int main()
     auto tree = BinarySearchTree();
 
     constexpr int sequence[] = {45, 15, 79, 90, 10, 55, 12, 20, 50};
-    for (const int val : sequence)
-    {
-        tree.insert(val);
-    }
+    for (const int val : sequence) tree.insert(val);
 
     std::cout << "Tree:\n";
     tree.displayInOrder();
 
-    std::cout << "Removed:\n"
-        "\t- 90\n"
-        "\t- 79\n"
-        "\t- 45\n";
+    std::cout << "\nRemoved:\n"
+        "  - 90\n"
+        "  - 79\n"
+        "  - 45\n";
     tree.remove(90);
+    tree.displayInOrder();
     tree.remove(79);
+    tree.displayInOrder();
     tree.remove(45);
     tree.displayInOrder();
 
