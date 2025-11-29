@@ -2,6 +2,7 @@
 // Created by Franc on 28/11/2025.
 //
 
+#include <fstream>
 #include <iostream>
 
 class Node
@@ -132,7 +133,28 @@ class BinarySearchTree
         }
     }
 
+    //
+    static void save(const Node* node, std::ofstream& file)
+    {
+        if (node == nullptr) return;
+        save(node->left, file);
+        file << node->key << " ";
+        save(node->right, file);
+    }
+
+    static void cleanup(const Node* node)
+    {
+        if (node == nullptr) return;
+        cleanup(node->left);
+        cleanup(node->right);
+        delete node;
+    }
 public:
+    ~BinarySearchTree()
+    {
+        cleanup(root);
+    }
+
     bool insert(const int key)
     {
         if (search(key) != nullptr) return false;
@@ -181,7 +203,33 @@ public:
         return size(root);
     }
 
-    void save();
+    // FIXME: Loads the file in orden so every node only has a right branch
+    bool load(const std::string& filename)
+    {
+        std::ifstream file(filename);
+        if (!file.is_open())
+        {
+            return false;
+        }
+
+        int val;
+        while (file >> std::ws >> val) insert(val);
+
+        file.close();
+        return true;
+    }
+
+    bool save(const std::string& filename) const
+    {
+        std::ofstream file(filename);
+        if (!file.is_open())
+        {
+            return false;
+        }
+        save(root, file);
+        file.close();
+        return true;
+    }
 };
 
 int main()
@@ -217,6 +265,11 @@ int main()
         tree.displayInOrder();
         std::cout << '\n';
     }
+
+    // IN OUT Files
+    tree.save("test.txt");
+    auto tree2 = BinarySearchTree();
+    tree2.load("test.txt");
 
     return 0;
 }
