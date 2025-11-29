@@ -77,6 +77,17 @@ class BinarySearchTree
         return node;
     }
 
+    static Node* search(Node* node, const int key)
+    {
+        if (node == nullptr)
+            return nullptr;
+
+        if (key < node->key) return search(node->left, key);
+        if (key > node->key) return search(node->right, key);
+
+        return key == node->key ? node : nullptr;
+    }
+
     // Display
     static void displayInOrder(const Node* node)
     {
@@ -117,10 +128,7 @@ public:
         return true;
     }
 
-    Node* search(int key)
-    {
-        return nullptr;
-    }
+    Node* search(const int key) const {return search(root, key);}
 
     void displayInOrder() const
     {
@@ -160,7 +168,7 @@ int main()
     constexpr int needles[] = {20, 100};
     for (const int needle : needles)
     {
-        std::cout << "Searching " << needle << ": " << (tree.search(20) ? "Found" : "Not found") << "\n";
+        std::cout << "Searching " << needle << ": " << (tree.search(needle) != nullptr ? "Found" : "Not found") << "\n";
     }
     std::cout << '\n';
 
