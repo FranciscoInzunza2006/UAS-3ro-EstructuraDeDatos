@@ -88,6 +88,12 @@ class BinarySearchTree
         return key == node->key ? node : nullptr;
     }
 
+    static std::size_t size(const Node* node)
+    {
+        if (node == nullptr) return 0;
+        return 1 + size(node->left) + size(node->right);
+    }
+
     // Display
     static void displayInOrder(const Node* node)
     {
@@ -155,7 +161,8 @@ public:
     }
 
     int height();
-    int size();
+
+    std::size_t size() const { return size(root);}
 
     void save();
 };
@@ -170,9 +177,12 @@ int main()
 
     std::cout << "Tree:\n";
     tree.displayInOrder();
-    std::cout << '\n';
+
+    // Size
+    std::cout << "Size: " << tree.size() << '\n';
 
     // Search node
+    std::cout << '\n';
     constexpr int needles[] = {20, 100};
     for (const int needle : needles)
     {
@@ -184,11 +194,11 @@ int main()
     constexpr int to_remove[] = {90, 79, 45};
     for (const int val : to_remove)
     {
-        std::cout << "Removed " << val << ": ";
         tree.remove(val);
+        std::cout << "Removed: " << val << "; New size: " << tree.size() << '\n';
         tree.displayInOrder();
+        std::cout << '\n';
     }
-    std::cout << '\n';
 
     return 0;
 }
