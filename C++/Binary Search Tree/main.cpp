@@ -26,6 +26,15 @@ class BinarySearchTree
 {
     Node* root = nullptr;
 
+    static void cleanup(const Node* node)
+    {
+        if (node == nullptr) return;
+        cleanup(node->left);
+        cleanup(node->right);
+        delete node;
+    }
+
+    //region Main usage
     static Node* insert(Node* node, const int key)
     {
         if (node == nullptr)
@@ -95,6 +104,9 @@ class BinarySearchTree
         return node;
     }
 
+    //endregion
+
+    //region Tree properties
     static std::size_t size(const Node* node)
     {
         if (node == nullptr) return 0;
@@ -107,7 +119,9 @@ class BinarySearchTree
         return 1 + std::max(height(node->left), height(node->right));
     }
 
-    // Display
+    //endregion
+
+    //region Display
     static void displayInOrder(const Node* node)
     {
         if (node != nullptr)
@@ -138,7 +152,9 @@ class BinarySearchTree
         }
     }
 
-    //
+    //endregion
+
+    //region IN OUT files
     static void save(const Node* node, std::ofstream& file)
     {
         if (node == nullptr) return;
@@ -147,19 +163,19 @@ class BinarySearchTree
         save(node->right, file);
     }
 
-    static void cleanup(const Node* node)
-    {
-        if (node == nullptr) return;
-        cleanup(node->left);
-        cleanup(node->right);
-        delete node;
-    }
+    //endregion
 public:
+    BinarySearchTree() = default;
+    explicit BinarySearchTree(const std::string& filename)
+    {
+        load(filename);
+    }
     ~BinarySearchTree()
     {
         cleanup(root);
     }
 
+    //region Main usage
     bool insert(const int key)
     {
         if (search(key) != nullptr) return false;
@@ -181,6 +197,22 @@ public:
         return search(root, key);
     }
 
+    //endregion
+
+    //region Tree properties
+    std::size_t height() const
+    {
+        return height(root);
+    }
+
+    std::size_t size() const
+    {
+        return size(root);
+    }
+
+    //endregion
+
+    //region Display
     void displayInOrder() const
     {
         displayInOrder(root);
@@ -199,16 +231,9 @@ public:
         std::cout << std::endl;
     }
 
-    std::size_t height() const
-    {
-        return height(root);
-    }
+    //endregion
 
-    std::size_t size() const
-    {
-        return size(root);
-    }
-
+    //region IN OUT files
     // FIXME: Loads the file in orden so every node only has a right branch
     bool load(const std::string& filename)
     {
@@ -237,6 +262,8 @@ public:
         file.close();
         return true;
     }
+
+    //endregion
 };
 
 int main()
@@ -275,8 +302,7 @@ int main()
 
     // IN OUT Files
     tree.save("test.txt");
-    auto tree2 = BinarySearchTree();
-    tree2.load("test.txt");
+    auto tree2 = BinarySearchTree("test.txt");
 
     return 0;
 }
