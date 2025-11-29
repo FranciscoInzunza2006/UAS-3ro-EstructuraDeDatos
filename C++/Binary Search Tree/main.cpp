@@ -117,7 +117,10 @@ public:
         return true;
     }
 
-    Node* search(int key);
+    Node* search(int key)
+    {
+        return nullptr;
+    }
 
     void displayInOrder() const
     {
@@ -145,23 +148,31 @@ int main()
 {
     auto tree = BinarySearchTree();
 
+    // Create tree
     constexpr int sequence[] = {45, 15, 79, 90, 10, 55, 12, 20, 50};
     for (const int val : sequence) tree.insert(val);
 
     std::cout << "Tree:\n";
     tree.displayInOrder();
+    std::cout << '\n';
 
-    std::cout << "\nRemoved: 90\n";
-    tree.remove(90);
-    tree.displayInOrder();
+    // Search node
+    constexpr int needles[] = {20, 100};
+    for (const int needle : needles)
+    {
+        std::cout << "Searching " << needle << ": " << (tree.search(20) ? "Found" : "Not found") << "\n";
+    }
+    std::cout << '\n';
 
-    std::cout << "\nRemoved: 79\n";
-    tree.remove(79);
-    tree.displayInOrder();
-
-    std::cout << "\nRemoved: 45\n";
-    tree.remove(45);
-    tree.displayInOrder();
+    // Remove nodes
+    constexpr int to_remove[] = {90, 79, 45};
+    for (const int val : to_remove)
+    {
+        std::cout << "Removed " << val << ": ";
+        tree.remove(val);
+        tree.displayInOrder();
+    }
+    std::cout << '\n';
 
     return 0;
 }
