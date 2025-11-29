@@ -53,7 +53,7 @@ class BinarySearchTree
                 return nullptr;
             }
 
-            // FIXME: Memory leaks
+            // One child
             if (node->left == nullptr)
             {
                 Node* temp = node->right;
@@ -67,6 +67,7 @@ class BinarySearchTree
                 return temp;
             }
 
+            // Two children
             const Node* successor = getSuccessor(node);
             node->key = successor->key;
             node->right = remove(node->right, successor->key);
