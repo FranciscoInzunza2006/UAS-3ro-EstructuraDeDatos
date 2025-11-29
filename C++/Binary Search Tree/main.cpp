@@ -62,7 +62,7 @@ class BinarySearchTree
                 return node->left;
             }
 
-            const Node* successor = findMin(node->right);
+            const Node* successor = getSuccessor(node);
             node->key = successor->key;
             node->right = remove(node->right, successor->key);
         }
@@ -70,8 +70,9 @@ class BinarySearchTree
         return node;
     }
 
-    static Node* findMin(Node* node)
+    static Node* getSuccessor(Node* node)
     {
+        node = node->right;
         while (node->left != nullptr)
             node = node->left;
         return node;
@@ -132,18 +133,19 @@ class BinarySearchTree
     }
 
 public:
-    // TODO: Add success check
     bool insert(const int key)
     {
+        if (search(key) != nullptr) return false;
+
         root = insert(root, key);
         return true;
     }
 
-    // TODO: Add success check
     bool remove(const int key)
     {
+        const std::size_t s = size();
         root = remove(root, key);
-        return true;
+        return s != size();
     }
 
     Node* search(const int key) const { return search(root, key); }
@@ -198,7 +200,7 @@ int main()
     std::cout << '\n';
 
     // Remove nodes
-    constexpr int to_remove[] = {90, 79, 45};
+    constexpr int to_remove[] = {-7, 90, 79, 45};
     for (const int val : to_remove)
     {
         tree.remove(val);
