@@ -56,11 +56,15 @@ class BinarySearchTree
             // FIXME: Memory leaks
             if (node->left == nullptr)
             {
-                return node->right;
+                Node* temp = node->right;
+                delete node;
+                return temp;
             }
             if (node->right == nullptr)
             {
-                return node->left;
+                Node* temp = node->left;
+                delete node;
+                return temp;
             }
 
             const Node* successor = getSuccessor(node);
@@ -219,6 +223,7 @@ public:
         return true;
     }
 
+    // FIXME: Saving it in pre-order might help
     bool save(const std::string& filename) const
     {
         std::ofstream file(filename);
