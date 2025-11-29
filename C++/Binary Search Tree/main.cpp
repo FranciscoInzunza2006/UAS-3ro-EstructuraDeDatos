@@ -123,13 +123,11 @@ public:
         displayInOrder(root);
         std::cout << std::endl;
     }
-
     void displayPreOrder() const
     {
         displayPreOrder(root);
         std::cout << std::endl;
     }
-
     void displayPostOrder() const
     {
         displayPostOrder(root);
@@ -152,14 +150,15 @@ int main()
     std::cout << "Tree:\n";
     tree.displayInOrder();
 
-    std::cout << "\nRemoved:\n"
-        "  - 90\n"
-        "  - 79\n"
-        "  - 45\n";
+    std::cout << "\nRemoved: 90\n";
     tree.remove(90);
     tree.displayInOrder();
+
+    std::cout << "\nRemoved: 79\n";
     tree.remove(79);
     tree.displayInOrder();
+
+    std::cout << "\nRemoved: 45\n";
     tree.remove(45);
     tree.displayInOrder();
 
