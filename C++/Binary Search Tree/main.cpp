@@ -85,7 +85,7 @@ class BinarySearchTree
         if (key < node->key) return search(node->left, key);
         if (key > node->key) return search(node->right, key);
 
-        return key == node->key ? node : nullptr;
+        return node;
     }
 
     static std::size_t size(const Node* node)
