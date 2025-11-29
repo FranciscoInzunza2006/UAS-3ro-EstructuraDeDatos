@@ -120,26 +120,34 @@ class BinarySearchTree
     }
 
 public:
-    void insert(const int key) { root = insert(root, key); }
+    // TODO: Add success check
+    bool insert(const int key)
+    {
+        root = insert(root, key);
+        return true;
+    }
 
+    // TODO: Add success check
     bool remove(const int key)
     {
         root = remove(root, key);
         return true;
     }
 
-    Node* search(const int key) const {return search(root, key);}
+    Node* search(const int key) const { return search(root, key); }
 
     void displayInOrder() const
     {
         displayInOrder(root);
         std::cout << std::endl;
     }
+
     void displayPreOrder() const
     {
         displayPreOrder(root);
         std::cout << std::endl;
     }
+
     void displayPostOrder() const
     {
         displayPostOrder(root);
