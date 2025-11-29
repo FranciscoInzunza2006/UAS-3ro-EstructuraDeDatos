@@ -169,9 +169,10 @@ public:
 
     bool remove(const int key)
     {
-        const std::size_t s = size();
+        if (search(key) == nullptr) return false;
+
         root = remove(root, key);
-        return s != size();
+        return true;
     }
 
     Node* search(const int key) const
