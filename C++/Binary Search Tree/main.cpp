@@ -94,6 +94,12 @@ class BinarySearchTree
         return 1 + size(node->left) + size(node->right);
     }
 
+    static std::size_t height(const Node* node)
+    {
+        if (node == nullptr) return 0;
+        return 1 + std::max(height(node->left), height(node->right));
+    }
+
     // Display
     static void displayInOrder(const Node* node)
     {
@@ -160,9 +166,9 @@ public:
         std::cout << std::endl;
     }
 
-    int height();
+    std::size_t height() const { return height(root); }
 
-    std::size_t size() const { return size(root);}
+    std::size_t size() const { return size(root); }
 
     void save();
 };
@@ -178,8 +184,9 @@ int main()
     std::cout << "Tree:\n";
     tree.displayInOrder();
 
-    // Size
+    // Properties
     std::cout << "Size: " << tree.size() << '\n';
+    std::cout << "Height: " << tree.height() << '\n';
 
     // Search node
     std::cout << '\n';
@@ -195,7 +202,7 @@ int main()
     for (const int val : to_remove)
     {
         tree.remove(val);
-        std::cout << "Removed: " << val << "; New size: " << tree.size() << '\n';
+        std::cout << "Removed: " << val << "; Size: " << tree.size() << "; Height: " << tree.height() << '\n';
         tree.displayInOrder();
         std::cout << '\n';
     }
