@@ -148,7 +148,10 @@ public:
         return s != size();
     }
 
-    Node* search(const int key) const { return search(root, key); }
+    Node* search(const int key) const
+    {
+        return search(root, key);
+    }
 
     void displayInOrder() const
     {
@@ -168,9 +171,15 @@ public:
         std::cout << std::endl;
     }
 
-    std::size_t height() const { return height(root); }
+    std::size_t height() const
+    {
+        return height(root);
+    }
 
-    std::size_t size() const { return size(root); }
+    std::size_t size() const
+    {
+        return size(root);
+    }
 
     void save();
 };
