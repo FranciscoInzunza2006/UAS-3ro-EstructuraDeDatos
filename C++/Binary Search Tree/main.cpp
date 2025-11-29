@@ -45,6 +45,7 @@ class BinarySearchTree
         else if (key > node->key) node->right = remove(node->right, key);
         else
         {
+            // Leaf node
             if (node->left == nullptr && node->right == nullptr)
             {
                 delete node;
@@ -61,7 +62,7 @@ class BinarySearchTree
                 return node->left;
             }
 
-            const Node* successor = findMin(node);
+            const Node* successor = findMin(node->right);
             node->key = successor->key;
             node->right = remove(node->right, successor->key);
         }
