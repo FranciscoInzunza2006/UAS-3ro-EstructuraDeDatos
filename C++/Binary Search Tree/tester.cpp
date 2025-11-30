@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "modules/binary_search_tree/binary_search_tree.hpp"
+#include "binary_search_tree.hpp"
 
 int main()
 {
