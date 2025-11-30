@@ -66,7 +66,7 @@ void CommandLine::executeCommand(const Tokens& tokens)
 void CommandLine::printGeneralHelp() const
 {
     std::cout <<
-        "Para obtener más información acerca de un comando, escriba help seguido del nombre de comando o use la bandera '-h' después del nombre del comando.\n";
+        "Para obtener más información acerca de un comando, escriba help seguido del nombre del comando o use la bandera '-h' después del nombre del comando.\n";
     std::cout << std::left;
     for (const auto& command : commands)
     {
