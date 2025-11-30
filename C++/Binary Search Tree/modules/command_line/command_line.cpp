@@ -14,7 +14,7 @@ class Command
 {
 public:
     StringPair command;
-    std::function<void()> callback;
+    std::function<void(std::vector<std::string>)> callback;
     std::vector<StringPair> params;
 
     void printHelp() const
@@ -34,7 +34,7 @@ public:
 
     Command() = default;
 
-    Command(StringPair command, std::function<void()> callback, const std::vector<StringPair>& params = {}) :
+    Command(StringPair command, std::function<void(std::vector<std::string>)> callback, const std::vector<StringPair>& params = {}) :
         command(std::move(command)), callback(std::move(callback)), params(params)
     {
     };
@@ -112,7 +112,13 @@ class CommandLine
 
         if (const auto command = getCommand(command_token); command != nullptr)
         {
-            command->callback();
+            if (command->params.size() != tokens.size() - 1)
+            {
+                throw std::runtime_error("Wrong argument count");
+            }
+
+            command->callback(tokens);
+            return;
         }
         throw std::runtime_error("Unknown command");
     }
@@ -163,16 +169,24 @@ public:
     }
 };
 
-bool foo()
+void foo(...)
 {
     std::cout << "Hello, World!\n";
-    return true;
+}
+
+int square(const int a)
+{
+    return a*a;
 }
 
 int main()
 {
     const std::vector commands = {
-        Command({"insert", "Inserta un número en el árbol."}, &foo, {
+        Command({"insert", "Inserta un número en el árbol."}, [](const std::vector<std::string>& tokens)
+        {
+            int val = std::stoi(tokens[1]);
+            std::cout << "Square: " << square(val) << '\n';
+        }, {
             {"Valor", "El valor que se va a ingresar, no debe estár en el árbol."}
         }),
         Command({"search", "Busca un número en el árbol y muestra su ruta."}, &foo, {
