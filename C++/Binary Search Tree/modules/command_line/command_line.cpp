@@ -150,7 +150,16 @@ public:
         if (tokens.empty())
             return;
 
-        runCommand(tokens);
+        try
+        {
+            runCommand(tokens);
+        } catch (const std::exception& e)
+        {
+            constexpr auto RED = "\033[0;31m";
+            constexpr auto RESET = "\033[0m";
+            std::cout << RED << e.what() << RESET << '\n';
+        }
+
     }
 };
 
