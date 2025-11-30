@@ -149,6 +149,11 @@ std::size_t BinarySearchTree::height(const Node* node)
 //region Displaying
 void BinarySearchTree::displayInOrder() const
 {
+    if (root == nullptr)
+    {
+        std::cout << "El árbol esta vacío.";
+        return;
+    }
     displayInOrder(root);
     std::cout << std::endl;
 }
@@ -165,6 +170,11 @@ void BinarySearchTree::displayInOrder(const Node* node)
 
 void BinarySearchTree::displayPreOrder() const
 {
+    if (root == nullptr)
+    {
+        std::cout << "El árbol esta vacío.";
+        return;
+    }
     displayPreOrder(root);
     std::cout << std::endl;
 }
@@ -181,6 +191,11 @@ void BinarySearchTree::displayPreOrder(const Node* node)
 
 void BinarySearchTree::displayPostOrder() const
 {
+    if (root == nullptr)
+    {
+        std::cout << "El árbol esta vacío.";
+        return;
+    }
     displayPostOrder(root);
     std::cout << std::endl;
 }
@@ -197,7 +212,13 @@ void BinarySearchTree::displayPostOrder(const Node* node)
 
 void BinarySearchTree::displayPathToNode(const Node* node) const
 {
+    if (root == nullptr)
+    {
+        std::cout << "El árbol esta vacío.";
+        return;
+    }
     displayPathToNode(root, node);
+    std::cout << std::endl;
 }
 
 void BinarySearchTree::displayPathToNode(const Node* current_node, const Node* node)
