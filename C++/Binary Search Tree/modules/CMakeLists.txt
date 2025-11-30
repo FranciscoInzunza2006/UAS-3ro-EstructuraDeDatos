@@ -1,13 +1,3 @@
 
-add_library(BST
-        binary_search_tree/binary_search_tree.cpp
-        binary_search_tree/binary_search_tree.hpp
-        binary_search_tree/node.hpp
-)
-
-add_library(CommandLine
-        command_line/command.cpp
-        command_line/command.hpp
-        command_line/command_line.cpp
-        command_line/command_line.hpp
-)
+add_subdirectory(binary_search_tree)
+add_subdirectory(command_line)
