@@ -40,7 +40,6 @@ public:
     };
 };
 
-
 class CommandLine
 {
     std::vector<Command> commands;
@@ -68,45 +67,63 @@ class CommandLine
         return tokens;
     }
 
-    bool runCommand(const Command& command, std::string_view str);
-
-    bool parseCommand(const std::string_view input)
+    const Command* getCommand(const std::string_view token) const
     {
-        const std::vector<std::string> tokens = split(input);
-
-        constexpr int COMMAND = 0;
-        constexpr int HELP = 1;
-        if (tokens[COMMAND] == "exit")
+        for (const auto & cmd : commands)
         {
-            running = false;
-            return true;
+            if (cmd.command.first == token)
+                return &cmd;
         }
 
-        if (tokens[COMMAND] == "help")
-        {
-            printHelp();
-            return false;
-        }
 
-        for (const Command& command : commands)
-        {
-            if (command.command.first == tokens[COMMAND])
-            {
-                if (tokens[HELP] == "-h")
-                {
-                    command.printHelp();
-                    return true;
-                }
-
-                command.callback();
-                return true;
-            }
-        }
-
-        return true;
+        return nullptr;
     }
 
-    void printHelp()
+    void runCommand(const std::vector<std::string>& tokens)
+    {
+        const std::string_view command_token = tokens[0];
+        if (command_token == "exit")
+        {
+            running = false;
+            return;
+        }
+
+        if (command_token == "help")
+        {
+            if (tokens.size() == 1)
+            {
+                printHelp();
+                return;
+            }
+
+            if (tokens.size() > 2)
+            {
+                throw std::runtime_error("Too many arguments");
+            }
+
+            if (const auto command = getCommand(tokens[1]); command != nullptr)
+            {
+                command->printHelp();
+                return;
+            }
+
+            throw std::runtime_error("Unknown command");
+        }
+
+        if (const auto command = getCommand(command_token); command != nullptr)
+        {
+            command->callback();
+        }
+        throw std::runtime_error("Unknown command");
+    }
+
+    static std::vector<std::string> parseCommand(const std::string_view input)
+    {
+        //const std::vector<std::string> tokens = split(input);
+        return split(input);
+    }
+
+    void printHelp() const
     {
         std::cout << "Para obtener más información acerca de un comando, escriba -h después del comando.\n";
         std::cout << std::left;
@@ -123,13 +140,17 @@ public:
 
     bool running = true;
 
-    bool read()
+    void read()
     {
         std::string input;
         //input = "   insert 10    ";
         std::getline(std::cin, input);
 
-        return parseCommand(input);
+        const std::vector<std::string> tokens = parseCommand(input);
+        if (tokens.empty())
+            return;
+
+        runCommand(tokens);
     }
 };
 
@@ -165,4 +186,6 @@ int main()
         std::cout << ">> ";
         cmd.read();
     }
+
+    return 0;
 }
