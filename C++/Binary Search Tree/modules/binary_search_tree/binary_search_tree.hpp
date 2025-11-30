@@ -36,19 +36,31 @@ public:
     explicit BinarySearchTree(const std::string& filename);
     ~BinarySearchTree();
 
+    // Performance: O(log n) where n is the size of the tree
+    // log n due to the algorithm and the data structure used
+    // Assumes a complete tree
+    // Note: "insert" and "remove" implementation are O(2log n) due to searching if the value already exist in the tree.
     bool insert(int key);
     bool remove(int key);
     Node* search(int key) const;
 
+    // Performance: O(n) where n is the size of the tree
+    // It iterates through the whole tree
     std::size_t height() const;
     std::size_t size() const;
 
+    // Performance: O(n) where n is the size of the tree
+    // It iterates through the whole tree
     void displayInOrder() const;
     void displayPreOrder() const;
     void displayPostOrder() const;
 
+    // Performance: O(n) where n is the depth of the node
+    // It iterates through the whole tree
     void displayPathToNode(const Node* node) const;
 
+    // Performance: O(n) where n is the size of the tree
+    // It iterates through the whole tree
     bool load(const std::string& filename);
     bool save(const std::string& filename) const;
 };
