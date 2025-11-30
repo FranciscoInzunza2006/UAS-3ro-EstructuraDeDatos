@@ -150,6 +150,7 @@ std::size_t BinarySearchTree::height(const Node* node)
 void BinarySearchTree::displayInOrder() const
 {
     displayInOrder(root);
+    std::cout << std::endl;
 }
 
 void BinarySearchTree::displayInOrder(const Node* node)
@@ -165,6 +166,7 @@ void BinarySearchTree::displayInOrder(const Node* node)
 void BinarySearchTree::displayPreOrder() const
 {
     displayPreOrder(root);
+    std::cout << std::endl;
 }
 
 void BinarySearchTree::displayPreOrder(const Node* node)
@@ -180,6 +182,7 @@ void BinarySearchTree::displayPreOrder(const Node* node)
 void BinarySearchTree::displayPostOrder() const
 {
     displayPostOrder(root);
+    std::cout << std::endl;
 }
 
 void BinarySearchTree::displayPostOrder(const Node* node)

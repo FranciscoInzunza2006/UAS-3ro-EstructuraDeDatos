@@ -126,7 +126,7 @@ void CommandLine::processInput()
     }
     catch (const std::invalid_argument& e)
     {
-        std::cout << RED << " Invalid stuff going on" << RESET << '\n';
+        std::cout << RED << "Valor invalido ingresado." << RESET << '\n';
     }
     catch (const std::exception& e)
     {
