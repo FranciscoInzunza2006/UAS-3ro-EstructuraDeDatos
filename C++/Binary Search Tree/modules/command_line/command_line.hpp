@@ -4,15 +4,26 @@
 
 #pragma once
 
+#include "command.hpp"
 
 class CommandLine
 {
-    bool runCommand();
-    bool parseCommand();
+    std::vector<Command> commands;
 
-    public:
-    CommandLine() = default;
-    ~CommandLine() = default;
+    void executeCommand(const Tokens& tokens);
 
-    bool read();
+    void printGeneralHelp() const;
+
+    static Tokens tokenize(std::string_view input);
+
+    const Command* findCommand(std::string_view token) const;
+
+public:
+    bool running = true;
+
+    explicit CommandLine(std::vector<Command> commands) : commands(std::move(commands))
+    {
+    }
+
+    void processInput();
 };

@@ -6,6 +6,8 @@ add_library(BST
 )
 
 add_library(CommandLine
+        command_line/command.cpp
+        command_line/command.hpp
         command_line/command_line.cpp
         command_line/command_line.hpp
 )
