@@ -156,13 +156,17 @@ public:
         if (tokens.empty())
             return;
 
+        constexpr auto RED = "\033[0;31m";
+        constexpr auto RESET = "\033[0m";
         try
         {
             runCommand(tokens);
-        } catch (const std::exception& e)
+        } catch (const std::invalid_argument& e)
         {
-            constexpr auto RED = "\033[0;31m";
-            constexpr auto RESET = "\033[0m";
+            std::cout << RED << " Invalid stuff going on" << RESET << '\n';
+        }
+        catch (const std::exception& e)
+        {
             std::cout << RED << e.what() << RESET << '\n';
         }
 
