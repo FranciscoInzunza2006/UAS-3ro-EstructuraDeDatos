@@ -3,6 +3,7 @@
 //
 
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -74,17 +75,29 @@ class CommandLine
         const std::vector<std::string> tokens = split(input);
 
         constexpr int COMMAND = 0;
-
+        constexpr int HELP = 1;
         if (tokens[COMMAND] == "exit")
         {
             running = false;
             return true;
         }
 
+        if (tokens[COMMAND] == "help")
+        {
+            printHelp();
+            return false;
+        }
+
         for (const Command& command : commands)
         {
             if (command.command.first == tokens[COMMAND])
             {
+                if (tokens[HELP] == "-h")
+                {
+                    command.printHelp();
+                    return true;
+                }
+
                 command.callback();
                 return true;
             }
@@ -93,6 +106,16 @@ class CommandLine
         return true;
     }
 
+    void printHelp()
+    {
+        std::cout << "Para obtener más información acerca de un comando, escriba -h después del comando.\n";
+        std::cout << std::left;
+        for (const auto & command : commands)
+        {
+            std::cout << std::setw(15) << command.command.first << command.command.second << '\n';
+        }
+        std::cout << std::right;
+    }
 public:
     explicit CommandLine(const std::vector<Command>& commands) : commands(commands)
     {
@@ -125,7 +148,9 @@ int main()
         Command({"search", "Busca un número en el árbol y muestra su ruta."}, &foo, {
             {"Valor", "El valor que se va a buscar."}
         }),
-        Command({"delete", "Elimina un número del árbol."}, &foo),
+        Command({"delete", "Elimina un número del árbol."}, &foo, {
+                {"Valor", "El valor que se va a eliminar, debe estár en el árbol"}
+        }),
         Command({"inorder", "Inserta un número en el árbol."}, &foo),
         Command({"preorder", "Inserta un número en el árbol."}, &foo),
         Command({"postorder", "Inserta un número en el árbol."}, &foo),
