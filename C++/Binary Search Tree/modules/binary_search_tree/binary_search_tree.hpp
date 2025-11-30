@@ -27,6 +27,8 @@ class BinarySearchTree
     static void displayPreOrder(const Node* node);
     static void displayPostOrder(const Node* node);
 
+    static void displayPathToNode(const Node* current_node, const Node* node);
+
     static void save(const Node* node, std::ofstream& file);
 
 public:
@@ -44,6 +46,8 @@ public:
     void displayInOrder() const;
     void displayPreOrder() const;
     void displayPostOrder() const;
+
+    void displayPathToNode(const Node* node) const;
 
     bool load(const std::string& filename);
     bool save(const std::string& filename) const;

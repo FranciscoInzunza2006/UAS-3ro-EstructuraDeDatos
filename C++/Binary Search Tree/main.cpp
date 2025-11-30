@@ -35,11 +35,14 @@ int main()
             {
                 const int val = std::stoi(tokens[0]);
 
-                //TODO: Show node path
                 const Node* node = tree.search(val);
-                std::cout << (node != nullptr
-                                  ? "Está en el árbol."
-                                  : "El valor no está en el árbol.") << '\n';
+                if (node == nullptr)
+                {
+                    std::cout << "El valor no está en el árbol.\n";
+                    return;
+                }
+
+                tree.displayPathToNode(node);
             }
 
         ),

@@ -195,6 +195,20 @@ void BinarySearchTree::displayPostOrder(const Node* node)
     }
 }
 
+void BinarySearchTree::displayPathToNode(const Node* node) const
+{
+    displayPathToNode(root, node);
+}
+
+void BinarySearchTree::displayPathToNode(const Node* current_node, const Node* node)
+{
+    if (node == nullptr) return;
+
+    std::cout << current_node->key << "   ";
+    if (node->key < current_node->key) displayPathToNode(current_node->left, node);
+    if (node->key > current_node->key) displayPathToNode(current_node->right, node);
+}
+
 //endregion
 
 //region IN OUT Files
