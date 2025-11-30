@@ -32,5 +32,5 @@ public:
     Command(CommandInfo&& info, const std::vector<CommandInfo>& arguments,
             Action&& action) : info(std::move(info)), args(arguments), action(std::move(action))
     {
-    };
+    }
 };
