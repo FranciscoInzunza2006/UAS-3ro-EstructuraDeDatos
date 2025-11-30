@@ -8,34 +8,42 @@
 #include <utility>
 #include <vector>
 
-typedef std::pair<std::string, std::string_view> StringPair;
+
+using Tokens = std::vector<std::string>;
+
+struct CommandInfo
+{
+    std::string name;
+    std::string description;
+};
 
 class Command
 {
 public:
-    StringPair command;
-    std::function<void(std::vector<std::string>)> callback;
-    std::vector<StringPair> params;
+    std::function<void(Tokens)> callback;
+    CommandInfo info;
+    std::vector<CommandInfo> arguments;
 
     void printHelp() const
     {
-        std::cout << command.first << ' ';
-        for (const auto & param : params)
+        std::cout << info.name << ' ';
+        for (const auto& param : arguments)
         {
-            std::cout << '<' << param.first << "> ";
+            std::cout << '<' << param.name << "> ";
         }
-        std::cout << '\n' << command.second << '\n';
+        std::cout << '\n' << info.description << '\n';
 
-        for (const auto & param : params)
+        for (const auto& param : arguments)
         {
-            std::cout << "\t" << param.first << " : " << param.second << "\n";
+            std::cout << "\t" << param.name << " : " << param.description << "\n";
         }
     }
 
     Command() = default;
 
-    Command(StringPair command, std::function<void(std::vector<std::string>)> callback, const std::vector<StringPair>& params = {}) :
-        command(std::move(command)), callback(std::move(callback)), params(params)
+    Command(std::function<void(Tokens)> callback, CommandInfo info,
+            const std::vector<CommandInfo>& arguments = {}) :
+        callback(std::move(callback)), info(std::move(info)), arguments(arguments)
     {
     };
 };
@@ -44,12 +52,69 @@ class CommandLine
 {
     std::vector<Command> commands;
 
-    static std::vector<std::string> split(const std::string_view str)
+    void executeCommand(const Tokens& tokens)
     {
-        std::vector<std::string> tokens;
+        const std::string_view command_token = tokens[0];
+        if (command_token == "exit")
+        {
+            running = false;
+            return;
+        }
+
+        if (command_token == "help")
+        {
+            if (tokens.size() == 1)
+            {
+                printGeneralHelp();
+                return;
+            }
+
+            if (tokens.size() > 2)
+            {
+                throw std::runtime_error("Too many arguments");
+            }
+
+            if (const auto command = findCommand(tokens[1]); command != nullptr)
+            {
+                command->printHelp();
+                return;
+            }
+
+            throw std::runtime_error("Unknown command");
+        }
+
+        if (const auto command = findCommand(command_token); command != nullptr)
+        {
+            if (command->arguments.size() != tokens.size() - 1)
+            {
+                throw std::runtime_error("Wrong argument count");
+            }
+
+            const auto args = std::vector<std::string>(tokens.begin() + 1, tokens.end());
+            command->callback(args);
+
+            return;
+        }
+        throw std::runtime_error("Unknown command");
+    }
+
+    void printGeneralHelp() const
+    {
+        std::cout << "Para obtener más información acerca de un comando, escriba help seguido del nombre de comando.\n";
+        std::cout << std::left;
+        for (const auto& command : commands)
+        {
+            std::cout << std::setw(15) << command.info.name << ' ' <<  command.info.description << '\n';
+        }
+        std::cout << std::right;
+    }
+
+    static Tokens tokenize(const std::string_view input)
+    {
+        Tokens tokens;
 
         bool in_word = false;
-        for (const char c : str)
+        for (const char c : input)
         {
             if (c == ' ')
             {
@@ -67,92 +132,29 @@ class CommandLine
         return tokens;
     }
 
-    const Command* getCommand(const std::string_view token) const
+    const Command* findCommand(const std::string_view token) const
     {
-        for (const auto & cmd : commands)
+        for (const auto& cmd : commands)
         {
-            if (cmd.command.first == token)
+            if (cmd.info.name == token)
                 return &cmd;
         }
 
-
         return nullptr;
     }
-
-    void runCommand(const std::vector<std::string>& tokens)
-    {
-        const std::string_view command_token = tokens[0];
-        if (command_token == "exit")
-        {
-            running = false;
-            return;
-        }
-
-        if (command_token == "help")
-        {
-            if (tokens.size() == 1)
-            {
-                printHelp();
-                return;
-            }
-
-            if (tokens.size() > 2)
-            {
-                throw std::runtime_error("Too many arguments");
-            }
-
-            if (const auto command = getCommand(tokens[1]); command != nullptr)
-            {
-                command->printHelp();
-                return;
-            }
-
-            throw std::runtime_error("Unknown command");
-        }
-
-        if (const auto command = getCommand(command_token); command != nullptr)
-        {
-            if (command->params.size() != tokens.size() - 1)
-            {
-                throw std::runtime_error("Wrong argument count");
-            }
-
-            command->callback(tokens);
-            return;
-        }
-        throw std::runtime_error("Unknown command");
-    }
-
-    static std::vector<std::string> parseCommand(const std::string_view input)
-    {
-        //const std::vector<std::string> tokens = split(input);
-        return split(input);
-    }
-
-    void printHelp() const
-    {
-        std::cout << "Para obtener más información acerca de un comando, escriba -h después del comando.\n";
-        std::cout << std::left;
-        for (const auto & command : commands)
-        {
-            std::cout << std::setw(15) << command.command.first << command.command.second << '\n';
-        }
-        std::cout << std::right;
-    }
 public:
+    bool running = true;
+
     explicit CommandLine(const std::vector<Command>& commands) : commands(commands)
     {
     }
 
-    bool running = true;
-
-    void read()
+    void processInput()
     {
         std::string input;
-        //input = "   insert 10    ";
         std::getline(std::cin, input);
 
-        const std::vector<std::string> tokens = parseCommand(input);
+        const auto tokens = tokenize(input);
         if (tokens.empty())
             return;
 
@@ -160,8 +162,9 @@ public:
         constexpr auto RESET = "\033[0m";
         try
         {
-            runCommand(tokens);
-        } catch (const std::invalid_argument& e)
+            executeCommand(tokens);
+        }
+        catch (const std::invalid_argument& e)
         {
             std::cout << RED << " Invalid stuff going on" << RESET << '\n';
         }
@@ -169,7 +172,6 @@ public:
         {
             std::cout << RED << e.what() << RESET << '\n';
         }
-
     }
 };
 
@@ -180,38 +182,41 @@ void foo(...)
 
 int square(const int a)
 {
-    return a*a;
+    return a * a;
 }
 
 int main()
 {
-    const std::vector commands = {
-        Command({"insert", "Inserta un número en el árbol."}, [](const std::vector<std::string>& tokens)
-        {
-            int val = std::stoi(tokens[1]);
-            std::cout << "Square: " << square(val) << '\n';
-        }, {
-            {"Valor", "El valor que se va a ingresar, no debe estár en el árbol."}
-        }),
-        Command({"search", "Busca un número en el árbol y muestra su ruta."}, &foo, {
-            {"Valor", "El valor que se va a buscar."}
-        }),
-        Command({"delete", "Elimina un número del árbol."}, &foo, {
-                {"Valor", "El valor que se va a eliminar, debe estár en el árbol"}
-        }),
-        Command({"inorder", "Inserta un número en el árbol."}, &foo),
-        Command({"preorder", "Inserta un número en el árbol."}, &foo),
-        Command({"postorder", "Inserta un número en el árbol."}, &foo),
-        Command({"height", "Inserta un número en el árbol."}, &foo),
-        Command({"size", "Inserta un número en el árbol."}, &foo),
-        Command({"export", "Inserta un número en el árbol."}, &foo),
+    const std::vector commands{
+        Command(
+            [](const Tokens& tokens)
+            {
+                const int val = std::stoi(tokens[1]);
+                std::cout << "Square: " << square(val) << '\n';
+            },
+            {"insert", "Inserta un número en el árbol."},
+            {{"Valor", "El valor que se va a ingresar, no debe estár en el árbol."}}
+        ),
+
+        Command(&foo, {"search", "Busca un número en el árbol y muestra su ruta."}, {
+                    {"Valor", "El valor que se va a buscar."}
+                }),
+        Command(&foo, {"delete", "Elimina un número del árbol."}, {
+                    {"Valor", "El valor que se va a eliminar, debe estár en el árbol"}
+                }),
+        Command(&foo, {"inorder", "Inserta un número en el árbol."}),
+        Command(&foo, {"preorder", "Inserta un número en el árbol."}),
+        Command(&foo, {"postorder", "Inserta un número en el árbol."}),
+        Command(&foo, {"height", "Inserta un número en el árbol."}),
+        Command(&foo, {"size", "Inserta un número en el árbol."}),
+        Command(&foo, {"export", "Inserta un número en el árbol."}),
     };
     CommandLine cmd(commands);
 
     while (cmd.running)
     {
         std::cout << ">> ";
-        cmd.read();
+        cmd.processInput();
     }
 
     return 0;
