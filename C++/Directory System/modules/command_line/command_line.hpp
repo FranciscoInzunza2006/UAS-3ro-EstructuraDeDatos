@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "command.hpp"
+#include "file.hpp"
 
 class CommandLine
 {
