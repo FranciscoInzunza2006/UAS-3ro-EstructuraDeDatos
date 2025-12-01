@@ -17,22 +17,17 @@ public:
     std::string name;
     Folder* father;
 
-    // static File::create(const std::string& name, Folder* father = nullptr)
-    // {
-    //     new File(name, father)
-    // }
+    void showPath() const;
+    void move(Folder* new_father);
 
     // Constructors
     explicit File(std::string  name, Folder* father = nullptr);
-    virtual ~File() = default;
+    virtual ~File();
 
     virtual bool isFolder()
     {
         return false;
     }
-
-    void showPath() const;
-    void move(Folder* new_father);
 };
 
 class Folder : public File
@@ -42,22 +37,17 @@ class Folder : public File
     public:
     std::vector<File*> children;
 
-    bool isFolder() override
-    {
-        return true;
-    }
+    void removeChild(File* file);
 
     void showContents() const;
 
     // Constructors
     explicit Folder(const std::string& name, Folder* father = nullptr) : File(name, father) {}
 
-    ~Folder() override
+    ~Folder() override;
+
+    bool isFolder() override
     {
-        std::cerr << name << " destroyed.\n";
-        for (const File* child : children)
-        {
-            delete child;
-        }
+        return true;
     }
 };

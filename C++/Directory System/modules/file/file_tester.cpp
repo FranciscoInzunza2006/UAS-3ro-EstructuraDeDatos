@@ -38,6 +38,10 @@ int main()
     planeta_verguetta->move(minecraft_folder);
     root->showContents();
 
+    games_folder->removeChild(terraria_folder);
+    delete terraria_folder;
+    root->showContents();
+
     delete root;
     return 0;
 }
