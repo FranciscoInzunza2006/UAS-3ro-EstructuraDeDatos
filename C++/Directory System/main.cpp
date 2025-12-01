@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#include "command_line.hpp"
+
 class Node
 {
 public:
@@ -81,6 +83,7 @@ public:
 };
 
 
+
 int main()
 {
     Node* tree{
@@ -103,6 +106,22 @@ int main()
     };
     tree->printTree();
     delete tree;
+
+    std::vector<Command> commands{
+        Command(
+            {"mkdir", "Crea una carpeta"},
+            {{"Nombre(s)", "El nombre de la carpeta, se pueden crear multiples carpetas al mismo tiempo si se separan con espacios"}},
+                [](Tokens tokens{
+                }
+
+            )
+    }
+
+    auto cmd = CommandLine(commands);
+    while (cmd.running)
+    {
+
+    }
 
     return 0;
 }

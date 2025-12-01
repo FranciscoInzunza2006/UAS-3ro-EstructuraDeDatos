@@ -6,3 +6,4 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(modules)
 
 add_executable(Directory_System main.cpp)
+target_link_libraries(Directory_System PRIVATE CommandLine)
