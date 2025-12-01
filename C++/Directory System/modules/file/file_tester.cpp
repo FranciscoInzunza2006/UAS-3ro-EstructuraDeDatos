@@ -28,6 +28,11 @@ int main()
 
     root->showContents();
 
+    mods_folder->showPath();
+    mods_folder->showContents();
+
+    mods_folder->children[0]->showPath();
+
     delete root;
     return 0;
 }

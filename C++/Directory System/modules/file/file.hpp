@@ -11,7 +11,7 @@ class Folder;
 
 class File
 {
-std::string getPath(std::string s);
+    static std::string getPath(const File* file, std::string& s);
 
 public:
     std::string name;
@@ -23,7 +23,7 @@ public:
     // }
 
     // Constructors
-    explicit File(const std::string& name, Folder* father = nullptr);
+    explicit File(std::string  name, Folder* father = nullptr);
     virtual ~File() = default;
 
     virtual bool isFolder()
@@ -31,13 +31,14 @@ public:
         return false;
     }
 
-    void showPath();
+    void showPath() const;
     void move(Folder* new_father);
 };
 
 class Folder : public File
 {
-    void printSubtree(const std::string& prefix);
+    void printSubtree(const std::string& prefix) const;
+
     public:
     std::vector<File*> children;
 
@@ -46,10 +47,11 @@ class Folder : public File
         return true;
     }
 
-    void showContents();
+    void showContents() const;
 
     // Constructors
-    explicit Folder(const std::string& name, Folder* father = nullptr) : File(name, father) {};
+    explicit Folder(const std::string& name, Folder* father = nullptr) : File(name, father) {}
+
     ~Folder() override
     {
         std::cerr << name << " destroyed.\n";

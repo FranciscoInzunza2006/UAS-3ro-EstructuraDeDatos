@@ -6,29 +6,33 @@
 
 #include <iostream>
 #include <memory>
+#include <utility>
 
-// std::string File::getPath(std::string s)
-// {
-//     if (father != nullptr) return father->getPath(s);
-//     return name + "/";
-// }
+std::string File::getPath(const File* file, std::string& s)
+{
+    if (file->father != nullptr)
+        s = getPath(file->father, s) + "/";
+    return s + file->name;
+}
 
-File::File(const std::string& name, Folder* father) : name(name), father(father)
+void File::showPath() const
+{
+    std::string path;
+    std::cout << getPath(this, path) << std::endl;
+}
+
+File::File(std::string  name, Folder* father) : name(std::move(name)), father(father)
 {
     if (father == nullptr) return;
     father->children.push_back(this);
 }
 
-void File::showPath()
-{
-    return;
-}
-
 void File::move(Folder* new_father)
 {
+
 }
 
-void Folder::printSubtree(const std::string& prefix)
+void Folder::printSubtree(const std::string& prefix) const
 {
     const size_t n = children.size();
     for (size_t i = 0; i < n; ++i)
@@ -48,7 +52,7 @@ void Folder::printSubtree(const std::string& prefix)
     }
 }
 
-void Folder::showContents()
+void Folder::showContents() const
 {
     std::cout << name << "\n";
     printSubtree("");
