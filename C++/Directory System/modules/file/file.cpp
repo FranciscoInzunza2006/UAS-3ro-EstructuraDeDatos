@@ -29,7 +29,21 @@ File::File(std::string  name, Folder* father) : name(std::move(name)), father(fa
 
 void File::move(Folder* new_father)
 {
+    if (father == new_father) return;
 
+    std::vector<File*>& brothers = father->children;
+    if (brothers.size() > 1)
+    {
+        std::size_t i;
+        for (i = 0; i < brothers.size(); i++)
+            if (brothers[i] == this)
+                break;
+        std::swap(brothers[i], brothers.back());
+    }
+    brothers.pop_back();
+
+    father = new_father;
+    new_father->children.push_back(this);
 }
 
 void Folder::printSubtree(const std::string& prefix) const

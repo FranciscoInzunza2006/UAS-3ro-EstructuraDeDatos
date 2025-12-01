@@ -26,12 +26,17 @@ int main()
     new Folder("Musica", root);
     new Folder("Videos", root);
 
+    auto planeta_verguetta = new File("Planeta Verguetta.zip", root);
+
     root->showContents();
 
     mods_folder->showPath();
     mods_folder->showContents();
 
     mods_folder->children[0]->showPath();
+
+    planeta_verguetta->move(minecraft_folder);
+    root->showContents();
 
     delete root;
     return 0;
