@@ -25,6 +25,10 @@ public:
 
     void printHelp() const;
 
+    Command(CommandInfo&& info, const Action& action) : info(std::move(info)), args({}), action(action)
+    {
+    }
+
     Command(CommandInfo&& info, Action&& action) : info(std::move(info)), args({}), action(std::move(action))
     {
     }

@@ -4,6 +4,7 @@
 
 #pragma once
 #include "command.hpp"
+#include "command_line.hpp"
 #include "file.hpp"
 
 class DirectorySystem
@@ -13,7 +14,7 @@ class DirectorySystem
 
     File* current_directory = root;
 
-    //CommandLine cmd;
+    CommandLine cmd;
     void createFile(const Tokens& tokens);
     void makeDirectory(const Tokens& tokens);
     void moveFile(const Tokens& tokens);
@@ -26,6 +27,7 @@ class DirectorySystem
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
+    std::vector<Command>&& createCommands();
     public:
     DirectorySystem();
     ~DirectorySystem();

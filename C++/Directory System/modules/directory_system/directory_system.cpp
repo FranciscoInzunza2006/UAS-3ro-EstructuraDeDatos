@@ -3,55 +3,24 @@
 //
 
 #include "directory_system.hpp"
+#include "command.hpp"
 
-void DirectorySystem::createFile(const Tokens& tokens)
+std::vector<Command>&& DirectorySystem::createCommands()
+{
+    return std::vector{
+        Command(
+            {"mkdir", "Creates a new directory"},
+            {{"Name(s)", "One or many(space separated) names for the new directories."}},
+            [this](const Tokens& tokens) { makeDirectory(tokens); }
+        )
+    };
+};
+
+DirectorySystem::DirectorySystem() : cmd(std::move(createCommands()))
 {
 }
 
-void DirectorySystem::makeDirectory(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::moveFile(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::renameFile(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::searchFile(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::deleteFile(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::showFiles(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::showPath(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::saveFile(const Tokens& tokens)
-{
-}
-
-void DirectorySystem::loadFile(const Tokens& tokens)
-{
-}
-
-
-DirectorySystem::DirectorySystem()
-{
-}
-
-DirectorySystem::~DirectorySystem()
-{
-}
+DirectorySystem::~DirectorySystem() = default;
 
 void DirectorySystem::run()
 {

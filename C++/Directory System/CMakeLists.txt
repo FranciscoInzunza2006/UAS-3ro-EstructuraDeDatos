@@ -3,6 +3,8 @@ project(Directory_System)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_compile_options(-Wall -Wextra -pedantic)
+
 add_subdirectory(modules)
 
 add_executable(main main.cpp)

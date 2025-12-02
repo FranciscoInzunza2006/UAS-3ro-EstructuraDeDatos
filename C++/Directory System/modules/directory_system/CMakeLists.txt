@@ -1,5 +1,5 @@
 
-add_library(DirectorySystem directory_system.cpp directory_system.hpp)
+add_library(DirectorySystem directory_system.cpp directory_system_commands.cpp directory_system.hpp)
 target_link_libraries(DirectorySystem
         PRIVATE CommandLine
         PRIVATE File
