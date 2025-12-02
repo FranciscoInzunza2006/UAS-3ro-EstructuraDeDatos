@@ -84,6 +84,14 @@ void Folder::showContents() const
     std::cout << "\n";
 }
 
+File* Folder::search(const std::string_view name) const
+{
+    for (const auto child : children)
+        if (child->name == name) return child;
+
+    return nullptr;
+}
+
 void Folder::removeChild(const File* file)
 {
     const auto iterator = std::find(children.begin(), children.end(), file);

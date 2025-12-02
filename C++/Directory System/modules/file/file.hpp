@@ -36,6 +36,7 @@ class Folder : public File
     public:
     std::vector<File*> children;
 
+    File* search(std::string_view name) const;
     void removeChild(const File* file);
 
     void showContents() const;

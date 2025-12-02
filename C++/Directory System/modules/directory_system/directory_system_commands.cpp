@@ -2,6 +2,8 @@
 // Created by Franc on 01/12/2025.
 //
 
+#include <iostream>
+
 #include "directory_system.hpp"
 #include "file.hpp"
 
@@ -13,7 +15,9 @@ void DirectorySystem::makeDirectory(const Tokens& tokens)
 {
     for (const auto& token : tokens)
     {
-        new Folder(token, root);
+        const auto [folder, name] = parsePath(token);
+        const auto new_folder = new Folder(name, folder);
+        std::cout << '\"' << new_folder->getPath() << "\" created.\n";
     }
 }
 

@@ -28,6 +28,7 @@ class DirectorySystem
     void loadFile(const Tokens& tokens);
 
     std::vector<Command> createCommands();
+    std::pair<Folder*, std::string> parsePath(std::string path) const;
     public:
     DirectorySystem();
     ~DirectorySystem();
