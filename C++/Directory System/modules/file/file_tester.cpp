@@ -42,6 +42,9 @@ int main()
     delete terraria_folder;
     root->showContents();
 
+    minecraft_folder->move(mods_folder);
+    root->showContents();
+
     delete root;
     return 0;
 }

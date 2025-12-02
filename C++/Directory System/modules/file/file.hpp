@@ -4,6 +4,7 @@
 
 #pragma once
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -37,7 +38,7 @@ class Folder : public File
     public:
     std::vector<File*> children;
 
-    void removeChild(File* file);
+    void removeChild(const File* file);
 
     void showContents() const;
 

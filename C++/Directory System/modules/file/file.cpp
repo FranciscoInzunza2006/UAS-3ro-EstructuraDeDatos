@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <algorithm>
 
 std::string File::getPath(const File* file, std::string& s)
 {
@@ -21,7 +22,7 @@ void File::showPath() const
     std::cout << getPath(this, path) << std::endl;
 }
 
-File::File(std::string  name, Folder* father) : name(std::move(name)), father(father)
+File::File(std::string name, Folder* father) : name(std::move(name)), father(father)
 {
     if (father == nullptr) return;
     father->children.push_back(this);
@@ -38,11 +39,22 @@ void File::move(Folder* new_father)
 {
     if (father == new_father) return;
 
+    // Check if it's a sub-folder
+    const Folder* f = new_father;
+    while (f != nullptr)
+    {
+        if (f != this)
+        {
+            // TODO: Something to make clear this shouldn't happen
+            return;
+        }
+        f = f->father;
+    }
+
+    // Get adopted
     father->removeChild(this);
     father = new_father;
-
-    if (new_father != nullptr)
-        new_father->children.push_back(this);
+    new_father->children.push_back(this);
 }
 
 void Folder::printSubtree(const std::string& prefix) const
@@ -54,8 +66,8 @@ void Folder::printSubtree(const std::string& prefix) const
         const bool isLast = (i == n - 1);
 
         std::cout << prefix
-                  << (isLast ? "└── " : "├── ")
-                  << child->name << "\n";
+            << (isLast ? "└── " : "├── ")
+            << child->name << "\n";
 
         if (child->isFolder())
         {
@@ -64,6 +76,7 @@ void Folder::printSubtree(const std::string& prefix) const
         }
     }
 }
+
 void Folder::showContents() const
 {
     std::cout << name << "\n";
@@ -71,9 +84,9 @@ void Folder::showContents() const
     std::cout << "\n";
 }
 
-void Folder::removeChild(File* file)
+void Folder::removeChild(const File* file)
 {
-    const auto iterator = std::ranges::find(children.begin(), children.end(), file);
+    const auto iterator = std::find(children.begin(), children.end(), file);
     if (iterator != children.end())
     {
         *iterator = children.back();
