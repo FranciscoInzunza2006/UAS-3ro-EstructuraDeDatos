@@ -104,7 +104,7 @@ Tokens CommandLine::tokenize(const std::string_view input)
     }
 
     if (in_string)
-        throw std::invalid_argument("Unclosed quotes");
+        throw std::runtime_error("Unclosed quotes in input");
 
     return tokens;
 }

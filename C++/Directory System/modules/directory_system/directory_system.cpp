@@ -47,6 +47,9 @@ std::pair<Folder*, std::string> DirectorySystem::parsePath(std::string path) con
         path.erase(0, 1);
     }
 
+    if (path.empty())
+        goto end;
+
     do
     {
         const std::string DELIMITER = "/";
@@ -54,35 +57,42 @@ std::pair<Folder*, std::string> DirectorySystem::parsePath(std::string path) con
         if (token_length == std::string::npos)
             token_length = path.length();
 
-        name = path.substr(0, token_length);
+        const std::string token = path.substr(0, token_length);
+        path.erase(0, token_length + DELIMITER.length());
         File* a;
-        if (name == "..")
+        if (token == "..")
         {
             if (container_folder->father != nullptr)
                 container_folder = container_folder->father;
-            goto consume;
+            continue;
         }
-        if (name == ".") goto consume;
+        if (token == ".") continue;
 
-        a = container_folder->search(name);
+        a = container_folder->search(token);
         if (a == nullptr)
         {
-            // TODO: Throw or something
-            goto consume;
-        }
-
-        if (!a->isFolder())
-        {
+            if (!path.empty())
+                throw std::runtime_error("\"" + token + "\" No such file or directory.");
+            name = token;
             break;
         }
 
-        container_folder = static_cast<Folder*>(a);
+        if (a->isFolder())
+        {
+            container_folder = static_cast<Folder*>(a);
+        }
+        else if (!path.empty())
+        {
+            if (token.back() != '/')
+                throw std::runtime_error(a->name + " isn't a directory.");
 
-    consume:
-        path.erase(0, token_length + DELIMITER.length());
+            name = token;
+            name.pop_back();
+        }
     }
     while (!path.empty());
 
+    end:
     return std::pair{container_folder, name};
 }
 

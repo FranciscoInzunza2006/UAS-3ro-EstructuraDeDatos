@@ -60,5 +60,10 @@ void DirectorySystem::loadFile(const Tokens& tokens)
 void DirectorySystem::changeWorkingDirectory(const Tokens& tokens)
 {
     const auto [folder, name] = parsePath(tokens[0]);
+
+    // Due to the way the parse works if the last thing is a file name or a
+    // not existing directory the name will have something in it.
+    if (!name.empty()) throw std::runtime_error("\"" + name + "\" is not a directory.");
+
     current_directory = folder;
 }
