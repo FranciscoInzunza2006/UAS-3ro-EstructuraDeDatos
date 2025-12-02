@@ -23,6 +23,12 @@ std::vector<Command> DirectorySystem::createCommands()
             [this](const Tokens& tokens) { createFile(tokens); }
         ),
         Command(
+            {"rm", "Deletes a file or directory."},
+            {{"name(s)", "One or many(space separated) names of the files to delete."}},
+            [this](const Tokens& tokens) { deleteFile(tokens); },
+            true
+        ),
+        Command(
             {"cd", "Changes the console working directory."},
             {{"Path", "Path"}},
             [this](const Tokens& tokens) { changeWorkingDirectory(tokens); }

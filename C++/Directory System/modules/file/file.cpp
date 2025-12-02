@@ -43,7 +43,7 @@ void File::move(Folder* new_father)
     const Folder* f = new_father;
     while (f != nullptr)
     {
-        if (f != this)
+        if (f == this)
         {
             // TODO: Something to make clear this shouldn't happen
             return;

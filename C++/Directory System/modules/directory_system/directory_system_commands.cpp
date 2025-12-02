@@ -38,6 +38,20 @@ void DirectorySystem::searchFile(const Tokens& tokens)
 
 void DirectorySystem::deleteFile(const Tokens& tokens)
 {
+    for (const auto& token : tokens)
+    {
+        const auto [folder, name] = parsePath(token);
+
+        // FIXME: Doesn't works on directories (check for empty name)
+        if (File* file = folder->search(name))
+        {
+            file->move(trash_bin);
+            std::cout << '\"' << name << "\" deleted.\n";
+        } else
+        {
+            std::cout << '\"' << name << "\" not found.\n";
+        }
+    }
 }
 
 void DirectorySystem::showFiles(const Tokens& tokens)
