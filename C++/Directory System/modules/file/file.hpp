@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+class File;
 class Folder;
 
 class File

@@ -3,6 +3,7 @@
 //
 
 #include "directory_system.hpp"
+#include "file.hpp"
 
 void DirectorySystem::createFile(const Tokens& tokens)
 {
@@ -10,6 +11,7 @@ void DirectorySystem::createFile(const Tokens& tokens)
 
 void DirectorySystem::makeDirectory(const Tokens& tokens)
 {
+    new Folder(tokens[0], root);
 }
 
 void DirectorySystem::moveFile(const Tokens& tokens)
