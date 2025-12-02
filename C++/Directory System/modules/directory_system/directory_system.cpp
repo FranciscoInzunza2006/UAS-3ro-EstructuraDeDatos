@@ -3,9 +3,12 @@
 //
 
 #include "directory_system.hpp"
+
+#include <iostream>
+
 #include "command.hpp"
 
-std::vector<Command>&& DirectorySystem::createCommands()
+std::vector<Command> DirectorySystem::createCommands()
 {
     return std::vector{
         Command(
@@ -16,7 +19,7 @@ std::vector<Command>&& DirectorySystem::createCommands()
     };
 };
 
-DirectorySystem::DirectorySystem() : cmd(std::move(createCommands()))
+DirectorySystem::DirectorySystem() : cmd(createCommands())
 {
 }
 
@@ -24,4 +27,12 @@ DirectorySystem::~DirectorySystem() = default;
 
 void DirectorySystem::run()
 {
+    while (cmd.running)
+    {
+        current_directory->showPath();
+
+        std::cout << ">> ";
+        cmd.processInput();
+        std::cout << std::endl;
+    }
 }

@@ -27,7 +27,7 @@ class DirectorySystem
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
-    std::vector<Command>&& createCommands();
+    std::vector<Command> createCommands();
     public:
     DirectorySystem();
     ~DirectorySystem();
