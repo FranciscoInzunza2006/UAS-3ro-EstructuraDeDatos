@@ -12,7 +12,7 @@ class DirectorySystem
     Folder* const root = new Folder("ROOT");
     Folder* const trash_bin = new Folder("BIN", root);
 
-    File* current_directory = root;
+    Folder* current_directory = root;
 
     CommandLine cmd;
     void createFile(const Tokens& tokens);

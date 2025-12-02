@@ -22,6 +22,7 @@ public:
     CommandInfo info;
     std::vector<CommandInfo> args;
     Action action;
+    bool variadic = false; // Takes undefined amount of arguments
 
     void printHelp() const;
 
@@ -35,6 +36,12 @@ public:
 
     Command(CommandInfo&& info, const std::vector<CommandInfo>& arguments,
             Action&& action) : info(std::move(info)), args(arguments), action(std::move(action))
+    {
+    }
+
+    Command(CommandInfo&& info, const std::vector<CommandInfo>& arguments,
+            Action&& action, const bool is_variadic) : info(std::move(info)), args(arguments),
+                                                       action(std::move(action)), variadic(is_variadic)
     {
     }
 };

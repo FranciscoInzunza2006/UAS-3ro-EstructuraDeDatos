@@ -14,8 +14,14 @@ std::vector<Command> DirectorySystem::createCommands()
         Command(
             {"mkdir", "Creates a new directory"},
             {{"Name(s)", "One or many(space separated) names for the new directories."}},
-            [this](const Tokens& tokens) { makeDirectory(tokens); }
-        )
+            [this](const Tokens& tokens) { makeDirectory(tokens);},
+            true
+        ),
+        Command( // TODO: Show passed path contents
+            {"dir", "Shows current directory contents"},
+            {{"Path", "Path"}},
+            [this](const Tokens& tokens) { showFiles(tokens); }
+        ),
     };
 };
 

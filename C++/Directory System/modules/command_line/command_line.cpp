@@ -47,7 +47,7 @@ void CommandLine::executeCommand(const Tokens& tokens)
             return;
         }
 
-        if (command->args.size() != tokens.size() - 1)
+        if (!command->variadic && command->args.size() != tokens.size() - 1)
         {
             throw std::runtime_error(
                 "Wrong number of arguments for command '" + std::string(command_token) +
@@ -79,12 +79,19 @@ Tokens CommandLine::tokenize(const std::string_view input)
 {
     Tokens tokens;
 
+    bool in_string = false;
     bool in_word = false;
     for (const char c : input)
     {
-        if (c == ' ')
+        if (c == ' ' && !in_string)
         {
             in_word = false;
+            continue;
+        }
+
+        if (c == '"')
+        {
+            in_string = !in_string;
             continue;
         }
 
@@ -95,6 +102,10 @@ Tokens CommandLine::tokenize(const std::string_view input)
         }
         tokens.back().push_back(c);
     }
+
+    if (in_string)
+        throw std::invalid_argument("Unclosed quotes");
+
     return tokens;
 }
 
@@ -114,7 +125,15 @@ void CommandLine::processInput()
     std::string input;
     std::getline(std::cin, input);
 
-    const auto tokens = tokenize(input);
+    Tokens tokens;
+    try
+    {
+        tokens = tokenize(input);
+    } catch (const std::invalid_argument& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+
     if (tokens.empty())
         return;
 

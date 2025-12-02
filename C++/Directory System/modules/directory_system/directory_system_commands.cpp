@@ -11,7 +11,10 @@ void DirectorySystem::createFile(const Tokens& tokens)
 
 void DirectorySystem::makeDirectory(const Tokens& tokens)
 {
-    new Folder(tokens[0], root);
+    for (const auto& token : tokens)
+    {
+        new Folder(token, root);
+    }
 }
 
 void DirectorySystem::moveFile(const Tokens& tokens)
@@ -32,6 +35,7 @@ void DirectorySystem::deleteFile(const Tokens& tokens)
 
 void DirectorySystem::showFiles(const Tokens& tokens)
 {
+    current_directory->showContents();
 }
 
 void DirectorySystem::showPath(const Tokens& tokens)
