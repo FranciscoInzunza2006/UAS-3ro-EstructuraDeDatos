@@ -16,7 +16,7 @@ public:
     std::string name;
     Folder* father;
 
-    void showPath() const;
+    std::string getPath() const;
     void move(Folder* new_father);
 
     // Constructors

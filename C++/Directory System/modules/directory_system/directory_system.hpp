@@ -10,7 +10,7 @@
 class DirectorySystem
 {
     Folder* const root = new Folder("ROOT");
-    Folder* const trash_bin = new Folder("BIN");
+    Folder* const trash_bin = new Folder("BIN", root);
 
     File* current_directory = root;
 

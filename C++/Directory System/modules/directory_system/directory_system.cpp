@@ -29,9 +29,7 @@ void DirectorySystem::run()
 {
     while (cmd.running)
     {
-        current_directory->showPath();
-
-        std::cout << ">> ";
+        std::cout << current_directory->getPath() <<  "/> ";
         cmd.processInput();
         std::cout << std::endl;
     }

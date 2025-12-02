@@ -16,10 +16,10 @@ std::string File::getPath(const File* file, std::string& s)
     return s + file->name;
 }
 
-void File::showPath() const
+std::string File::getPath() const
 {
-    std::string path;
-    std::cout << getPath(this, path) << std::endl;
+    std::string s;
+    return getPath(this, s);
 }
 
 File::File(std::string name, Folder* father) : name(std::move(name)), father(father)

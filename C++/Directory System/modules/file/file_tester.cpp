@@ -2,6 +2,8 @@
 // Created by Franc on 01/12/2025.
 //
 
+#include <iostream>
+
 #include "file.hpp"
 
 int main()
@@ -30,10 +32,10 @@ int main()
 
     root->showContents();
 
-    mods_folder->showPath();
+    std::cout << mods_folder->getPath() << '\n';
     mods_folder->showContents();
 
-    mods_folder->children[0]->showPath();
+    std::cout << mods_folder->children[0]->getPath() << '\n';
 
     planeta_verguetta->move(minecraft_folder);
     root->showContents();
