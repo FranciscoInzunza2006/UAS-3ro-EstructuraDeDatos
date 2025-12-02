@@ -1,0 +1,37 @@
+//
+// Created by Franc on 01/12/2025.
+//
+
+#pragma once
+#include "command.hpp"
+#include "file.hpp"
+
+class DirectorySystem
+{
+    Folder* const root = new Folder("ROOT");
+    Folder* const trash_bin = new Folder("BIN");
+
+    File* current_directory = root;
+
+    //CommandLine cmd;
+    void createFile(const Tokens& tokens);
+    void makeDirectory(const Tokens& tokens);
+    void moveFile(const Tokens& tokens);
+    void renameFile(const Tokens& tokens);
+    void searchFile(const Tokens& tokens);
+    void deleteFile(const Tokens& tokens);
+    void showFiles(const Tokens& tokens);
+    void showPath(const Tokens& tokens);
+
+    void saveFile(const Tokens& tokens);
+    void loadFile(const Tokens& tokens);
+
+    public:
+    DirectorySystem();
+    ~DirectorySystem();
+
+    void run();
+};
+
+
+
