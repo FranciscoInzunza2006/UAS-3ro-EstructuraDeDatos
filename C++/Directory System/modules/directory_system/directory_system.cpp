@@ -13,9 +13,19 @@ std::vector<Command> DirectorySystem::createCommands()
     return std::vector{
         Command(
             {"mkdir", "Creates a new directory"},
-            {{"Name(s)", "One or many(space separated) names for the new directories."}},
+            {{"name(s)", "One or many(space separated) names for the new directories."}},
             [this](const Tokens& tokens) { makeDirectory(tokens); },
             true
+        ),
+        Command(
+            {"touch", "Creates a empty file"},
+            {{"path", "The path of the new file"}},
+            [this](const Tokens& tokens) { createFile(tokens); }
+        ),
+        Command(
+            {"cd", "Changes the console working directory."},
+            {{"Path", "Path"}},
+            [this](const Tokens& tokens) { changeWorkingDirectory(tokens); }
         ),
         Command( // TODO: Show passed path contents
             {"dir", "Shows current directory contents"},
@@ -68,9 +78,10 @@ std::pair<Folder*, std::string> DirectorySystem::parsePath(std::string path) con
 
         container_folder = static_cast<Folder*>(a);
 
-        consume:
+    consume:
         path.erase(0, token_length + DELIMITER.length());
-    } while (!path.empty());
+    }
+    while (!path.empty());
 
     return std::pair{container_folder, name};
 }
@@ -86,6 +97,13 @@ DirectorySystem::DirectorySystem() : cmd(createCommands())
     new Folder("3D models", root);
 
     new File("Homework.pdf", trash_bin);
+
+    Folder* c = new Folder("C", new Folder("B", new Folder("A", root)));
+    for (int i = 0; i < 5; i++)
+        new File(std::to_string(i) + ".txt", c);
+
+
+    root->showContents();
 }
 
 DirectorySystem::~DirectorySystem() = default;

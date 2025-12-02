@@ -9,6 +9,9 @@
 
 void DirectorySystem::createFile(const Tokens& tokens)
 {
+    const auto [folder, name] = parsePath(tokens[0]);
+    const auto new_file = new File(name, folder);
+    std::cout << '\"' << new_file->getPath() << "\" created.\n";
 }
 
 void DirectorySystem::makeDirectory(const Tokens& tokens)
@@ -52,4 +55,10 @@ void DirectorySystem::saveFile(const Tokens& tokens)
 
 void DirectorySystem::loadFile(const Tokens& tokens)
 {
+}
+
+void DirectorySystem::changeWorkingDirectory(const Tokens& tokens)
+{
+    const auto [folder, name] = parsePath(tokens[0]);
+    current_directory = folder;
 }

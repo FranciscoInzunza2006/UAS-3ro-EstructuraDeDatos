@@ -27,6 +27,8 @@ class DirectorySystem
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
+    void changeWorkingDirectory(const Tokens& tokens);
+
     std::vector<Command> createCommands();
     std::pair<Folder*, std::string> parsePath(std::string path) const;
     public:
