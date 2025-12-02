@@ -19,9 +19,10 @@ std::vector<Command> DirectorySystem::createCommands()
         ),
         Command( // TODO: Show passed path contents
             {"dir", "Shows current directory contents"},
-            {{"Path", "Path"}},
-            [this](const Tokens& tokens) { showFiles(tokens); }
-        ),
+            {{"Path", "Path", true}},
+            [this](const Tokens& tokens) { showFiles(tokens); },
+            true
+        )
     };
 };
 

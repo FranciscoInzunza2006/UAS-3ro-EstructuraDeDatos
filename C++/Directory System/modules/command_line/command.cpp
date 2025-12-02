@@ -11,7 +11,10 @@ void Command::printHelp() const
     std::cout << info.name << ' ';
     for (const auto& arg : args)
     {
-        std::cout << '<' << arg.name << "> ";
+        if (!arg.optional)
+            std::cout << arg.name << ' ';
+        else
+            std::cout << '<' << arg.name << "> ";
     }
     std::cout << '\n' << info.description << '\n';
 
