@@ -41,38 +41,48 @@ std::pair<Folder*, std::string> DirectorySystem::parsePath(std::string path) con
     Folder* container_folder = current_directory;
     std::string name;
 
-    if (path[0] == '/')
+    if (!path.empty() && path[0] == '/')
     {
         container_folder = root;
         path.erase(0, 1);
     }
 
-    if (path.empty())
-        goto end;
-
-    do
+    std::vector<std::string> tokens;
     {
-        const std::string DELIMITER = "/";
-        std::size_t token_length = path.find(DELIMITER);
-        if (token_length == std::string::npos)
-            token_length = path.length();
+        size_t start = 0;
+        while (start < path.size())
+        {
+            size_t end = path.find('/', start);
+            if (end == std::string::npos) end = path.size();
+            tokens.push_back(path.substr(start, end - start));
+            start = end + 1;
+        }
+    }
 
-        const std::string token = path.substr(0, token_length);
-        path.erase(0, token_length + DELIMITER.length());
-        File* a;
+    for (size_t i = 0; i < tokens.size(); ++i)
+    {
+        const std::string& token = tokens[i];
+
+        // FIXME: This token.empty() might become problematic
+        if (token.empty() || token == ".")
+            continue;
+
         if (token == "..")
         {
             if (container_folder->father != nullptr)
                 container_folder = container_folder->father;
             continue;
         }
-        if (token == ".") continue;
 
-        a = container_folder->search(token);
+        bool is_last = (i == tokens.size() - 1);
+        File* a = container_folder->search(token);
+
         if (a == nullptr)
         {
-            if (!path.empty())
+            if (!is_last)
                 throw std::runtime_error("\"" + token + "\" No such file or directory.");
+
+            // final component is the new name (mkdir, touch, etc.)
             name = token;
             break;
         }
@@ -81,19 +91,17 @@ std::pair<Folder*, std::string> DirectorySystem::parsePath(std::string path) con
         {
             container_folder = static_cast<Folder*>(a);
         }
-        else if (!path.empty())
+        else
         {
-            if (token.back() != '/')
+            if (!is_last)
                 throw std::runtime_error(a->name + " isn't a directory.");
 
+            // file as last component -> its name
             name = token;
-            name.pop_back();
         }
     }
-    while (!path.empty());
 
-    end:
-    return std::pair{container_folder, name};
+    return { container_folder, name };
 }
 
 DirectorySystem::DirectorySystem() : cmd(createCommands())
@@ -101,6 +109,7 @@ DirectorySystem::DirectorySystem() : cmd(createCommands())
     // Some basic structure for testing
     const auto documents = new Folder("Documents", root);
     new File("Homework v2.pdf", documents);
+    new Folder("CBTIS 45°", documents);
 
     new Folder("Images", root);
     new Folder("Videos", root);
