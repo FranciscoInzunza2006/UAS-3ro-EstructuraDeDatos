@@ -14,6 +14,8 @@ class DirectorySystem
 
     Folder* current_directory = root;
 
+    Parser
+
     CommandLine cmd;
     void createFile(const Tokens& tokens);
     void makeDirectory(const Tokens& tokens);
@@ -30,10 +32,20 @@ class DirectorySystem
     void changeWorkingDirectory(const Tokens& tokens);
 
     std::vector<Command> createCommands();
-    std::pair<Folder*, std::string> parsePath(std::string path) const;
+    //std::pair<Folder*, std::string> parsePath(std::string path) const;
     public:
     DirectorySystem();
     ~DirectorySystem();
+
+    class PathParser
+    {
+        const DirectorySystem& system;
+    public:
+        explicit PathParser(const DirectorySystem& dir_system) : system(dir_system) {};
+
+        static std::vector<std::string> tokenize(const std::string& str);
+        std::pair<Folder*, std::string> parse(const std::string& path) const;
+    };
 
     void run();
 };

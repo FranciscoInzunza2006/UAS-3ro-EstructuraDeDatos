@@ -42,74 +42,6 @@ std::vector<Command> DirectorySystem::createCommands()
     };
 }
 
-std::pair<Folder*, std::string> DirectorySystem::parsePath(std::string path) const
-{
-    Folder* container_folder = current_directory;
-    std::string name;
-
-    if (!path.empty() && path[0] == '/')
-    {
-        container_folder = root;
-        path.erase(0, 1);
-    }
-
-    std::vector<std::string> tokens;
-    {
-        size_t start = 0;
-        while (start < path.size())
-        {
-            size_t end = path.find('/', start);
-            if (end == std::string::npos) end = path.size();
-            tokens.push_back(path.substr(start, end - start));
-            start = end + 1;
-        }
-    }
-
-    for (size_t i = 0; i < tokens.size(); ++i)
-    {
-        const std::string& token = tokens[i];
-
-        // FIXME: This token.empty() might become problematic
-        if (token.empty() || token == ".")
-            continue;
-
-        if (token == "..")
-        {
-            if (container_folder->father != nullptr)
-                container_folder = container_folder->father;
-            continue;
-        }
-
-        bool is_last = (i == tokens.size() - 1);
-        File* a = container_folder->search(token);
-
-        if (a == nullptr)
-        {
-            if (!is_last)
-                throw std::runtime_error("\"" + token + "\" No such file or directory.");
-
-            // final component is the new name (mkdir, touch, etc.)
-            name = token;
-            break;
-        }
-
-        if (a->isFolder())
-        {
-            container_folder = static_cast<Folder*>(a);
-        }
-        else
-        {
-            if (!is_last)
-                throw std::runtime_error(a->name + " isn't a directory.");
-
-            // file as last component -> its name
-            name = token;
-        }
-    }
-
-    return { container_folder, name };
-}
-
 DirectorySystem::DirectorySystem() : cmd(createCommands())
 {
     // Some basic structure for testing
@@ -142,3 +74,82 @@ void DirectorySystem::run()
         std::cout << std::endl;
     }
 }
+
+Tokens DirectorySystem::PathParser::tokenize(const std::string& str)
+{
+    Tokens tokens;
+
+    size_t start = 0;
+    while (start < str.size())
+    {
+        size_t end = str.find('/', start);
+        if (end == std::string::npos) end = str.size();
+        tokens.push_back(str.substr(start, end - start));
+        start = end + 1;
+    }
+
+    return tokens;
+}
+
+std::pair<Folder*, std::string> DirectorySystem::PathParser::parse(const std::string& str) const
+{
+    Folder* container_folder = system.current_directory;
+    std::string name;
+
+    const Tokens tokens = tokenize(str);
+    std::size_t i = 0;
+
+    // If the first token is empty then it was root (ej: /A/B)
+    if (tokens[0].empty())
+    {
+        container_folder = system.root;
+        i++;
+    }
+
+    for (; i < tokens.size(); ++i)
+    {
+        const std::string& token = tokens[i];
+
+        // FIXME: This token.empty() might become problematic
+        if (token.empty() || token == ".")
+            continue;
+
+        if (token == "..")
+        {
+            if (container_folder->father != nullptr)
+                container_folder = container_folder->father;
+            continue;
+        }
+
+        const bool is_last = (i == tokens.size() - 1);
+        File* a = container_folder->search(token);
+
+        if (a == nullptr)
+        {
+            if (!is_last)
+                throw std::runtime_error("\"" + token + "\" No such file or directory.");
+
+            // final component is the new name (mkdir, touch, etc.)
+            name = token;
+            break;
+        }
+
+        if (a->isFolder())
+        {
+            container_folder = static_cast<Folder*>(a); // NOLINT(*-pro-type-static-cast-downcast)
+        }
+        else
+        {
+            if (!is_last)
+                throw std::runtime_error(a->name + " isn't a directory.");
+
+            // file as last component -> its name
+            name = token;
+        }
+    }
+
+
+    return {container_folder, name};
+}
+
+
