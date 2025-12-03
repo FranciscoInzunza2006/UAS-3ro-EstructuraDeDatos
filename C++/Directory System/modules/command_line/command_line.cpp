@@ -8,6 +8,8 @@
 #include <vector>
 #include "command_line.hpp"
 
+
+
 void CommandLine::executeCommand(const Tokens& tokens)
 {
     const std::string_view command_token = tokens[0];
@@ -75,7 +77,18 @@ void CommandLine::printGeneralHelp() const
     std::cout << std::right;
 }
 
-Tokens CommandLine::tokenize(const std::string_view input)
+const Command* CommandLine::findCommand(const std::string_view token) const
+{
+    for (const auto& cmd : commands)
+    {
+        if (cmd.info.name == token)
+            return &cmd;
+    }
+
+    return nullptr;
+}
+
+Tokens CommandLine::Tokenizer::tokenize(const std::string_view input)
 {
     Tokens tokens;
 
@@ -109,17 +122,6 @@ Tokens CommandLine::tokenize(const std::string_view input)
     return tokens;
 }
 
-const Command* CommandLine::findCommand(const std::string_view token) const
-{
-    for (const auto& cmd : commands)
-    {
-        if (cmd.info.name == token)
-            return &cmd;
-    }
-
-    return nullptr;
-}
-
 void CommandLine::processInput()
 {
     std::string input;
@@ -128,7 +130,7 @@ void CommandLine::processInput()
     Tokens tokens;
     try
     {
-        tokens = tokenize(input);
+        tokens = Tokenizer::tokenize(input);
     } catch (const std::invalid_argument& e)
     {
         std::cout << e.what() << std::endl;
