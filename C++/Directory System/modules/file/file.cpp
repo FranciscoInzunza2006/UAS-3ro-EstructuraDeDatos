@@ -30,7 +30,7 @@ File::File(std::string name, Folder* father) : name(std::move(name)), father(fat
 
 File::~File()
 {
-    std::cerr << name << " destroyed.\n";
+    //std::cerr << name << " destroyed.\n";
     if (father == nullptr) return;
     father->removeChild(this);
 }
@@ -45,8 +45,7 @@ void File::move(Folder* new_father)
     {
         if (f == this)
         {
-            // TODO: Something to make clear this shouldn't happen
-            return;
+            throw std::invalid_argument(new_father->name + " is a descendant of " + name);
         }
         f = f->father;
     }
