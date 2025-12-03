@@ -153,3 +153,19 @@ TEST_F(PathParserTester, parseNothing)
     EXPECT_EQ(folder, system.getWorkingDirectory());
     EXPECT_EQ(name, "");
 }
+
+TEST_F(PathParserTester, parseNonExistant)
+{
+    const std::string input = "A/B/X/C";
+    const Tokens tokens = parser.tokenize(input);
+
+    EXPECT_THROW(parser.parse(tokens), std::runtime_error);
+}
+
+TEST_F(PathParserTester, parseFileUsedAsDirectory)
+{
+    const std::string input = "File 4.txt/Another folder";
+    const Tokens tokens = parser.tokenize(input);
+
+    EXPECT_THROW(parser.parse(tokens), std::invalid_argument);
+}

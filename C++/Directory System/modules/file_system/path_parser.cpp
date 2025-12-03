@@ -7,7 +7,7 @@
 // Path parser stuff
 Tokens PathParser::tokenize(const std::string& path)
 {
-    Tokens tokens;
+    Tokens tokens{};
 
     size_t start = 0;
     while (start < path.size())
@@ -17,6 +17,8 @@ Tokens PathParser::tokenize(const std::string& path)
         tokens.push_back(path.substr(start, end - start));
         start = end + 1;
     }
+
+    if (tokens.empty()) return {""};
 
     return tokens;
 }
@@ -69,7 +71,7 @@ std::pair<Folder*, std::string> PathParser::parse(const Tokens& path_tokens) con
         else
         {
             if (!is_last)
-                throw std::runtime_error(a->name + " isn't a directory.");
+                throw std::invalid_argument(a->name + " isn't a directory.");
 
             // file as last component -> its name
             name = token;
