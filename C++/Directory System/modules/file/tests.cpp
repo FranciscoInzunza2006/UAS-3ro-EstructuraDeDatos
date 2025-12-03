@@ -1,9 +1,9 @@
 #include "file.hpp"
 #include <gtest/gtest.h>
 
-/// ChatGPT generated the Most of the tests
+/// ChatGPT generated most of the tests
 
-class FileTester : public testing::Test
+class DirectorySystemTester : public testing::Test
 {
 protected:
     Folder* root{};
@@ -41,17 +41,17 @@ protected:
     }
 
 public:
-    ~FileTester() override= default;
+    ~DirectorySystemTester() override= default;
 };
 
 // Tree Structure
-TEST_F(FileTester, subtreePrinting_doesNotCrash)
+TEST_F(DirectorySystemTester, subtreePrinting_doesNotCrash)
 {
     EXPECT_NO_THROW(root->showContents());
 }
 
 // Path
-TEST_F(FileTester, getPath_basic)
+TEST_F(DirectorySystemTester, getPath_basic)
 {
     ASSERT_EQ(a->getPath(), "/A");
     ASSERT_EQ(b->getPath(), "/A/B");
@@ -61,13 +61,13 @@ TEST_F(FileTester, getPath_basic)
     ASSERT_EQ(f1->getPath(), "/1/2/File 1.txt");
 }
 
-TEST_F(FileTester, getPath_rootFile)
+TEST_F(DirectorySystemTester, getPath_rootFile)
 {
     ASSERT_EQ(fextra->getPath(), "/File.txt");
 }
 
 // Searching
-TEST_F(FileTester, search)
+TEST_F(DirectorySystemTester, search)
 {
     ASSERT_NE(root, nullptr);
 
@@ -76,7 +76,7 @@ TEST_F(FileTester, search)
     EXPECT_NE(root->search("File.txt"), nullptr);
 }
 
-TEST_F(FileTester, search_deep)
+TEST_F(DirectorySystemTester, search_deep)
 {
     EXPECT_NE(root->search("C"), nullptr);
     EXPECT_NE(a->search("C"), nullptr);
@@ -85,7 +85,7 @@ TEST_F(FileTester, search_deep)
     EXPECT_EQ(root->search("NonExistent"), nullptr);
 }
 
-TEST_F(FileTester, search_after_structure_mutations)
+TEST_F(DirectorySystemTester, search_after_structure_mutations)
 {
     b->move(root);
     c->move(_2);
@@ -102,7 +102,7 @@ TEST_F(FileTester, search_after_structure_mutations)
 }
 
 // Moving
-TEST_F(FileTester, move_simple)
+TEST_F(DirectorySystemTester, move_simple)
 {
     ASSERT_EQ(fextra->father, root);
 
@@ -112,7 +112,7 @@ TEST_F(FileTester, move_simple)
     EXPECT_EQ(root->search("File.txt"), nullptr);
 }
 
-TEST_F(FileTester, move_between_branches)
+TEST_F(DirectorySystemTester, move_between_branches)
 {
     ASSERT_EQ(f1->father, _2);
 
@@ -122,7 +122,7 @@ TEST_F(FileTester, move_between_branches)
     EXPECT_EQ(_2->search("File 1.txt"), nullptr);
 }
 
-TEST_F(FileTester, movingIntoDescendant)
+TEST_F(DirectorySystemTester, movingIntoDescendant)
 {
     // Move A into C (illegal, C is descendant of A)
     EXPECT_THROW(a->move(c), std::invalid_argument);
@@ -133,7 +133,7 @@ TEST_F(FileTester, movingIntoDescendant)
     EXPECT_NE(a->search("C"), nullptr); // Ensure original structure intact
 }
 
-TEST_F(FileTester, move_subtree_and_check_contents)
+TEST_F(DirectorySystemTester, move_subtree_and_check_contents)
 {
     // Move B under root (bringing C along)
     b->move(root);
@@ -148,7 +148,7 @@ TEST_F(FileTester, move_subtree_and_check_contents)
     EXPECT_NE(_1->search("C"), nullptr);
 }
 
-TEST_F(FileTester, move_folder_with_many_children)
+TEST_F(DirectorySystemTester, move_folder_with_many_children)
 {
     // Add more files under _1
     std::vector<File*> extraFiles;
@@ -170,7 +170,7 @@ TEST_F(FileTester, move_folder_with_many_children)
         EXPECT_NE(_1->search(f->name), nullptr);
 }
 
-TEST_F(FileTester, movingToSamePlace)
+TEST_F(DirectorySystemTester, movingToSamePlace)
 {
     ASSERT_EQ(a->father, root);
 
@@ -179,7 +179,7 @@ TEST_F(FileTester, movingToSamePlace)
     EXPECT_NE(root->search("A"), nullptr);
 }
 
-TEST_F(FileTester, children_integrity_after_moves)
+TEST_F(DirectorySystemTester, children_integrity_after_moves)
 {
     f1->move(root);
     f2->move(root);
@@ -190,7 +190,7 @@ TEST_F(FileTester, children_integrity_after_moves)
     EXPECT_EQ(_2->search("File 2.txt"), nullptr);
 }
 
-TEST_F(FileTester, repeated_moves_file)
+TEST_F(DirectorySystemTester, repeated_moves_file)
 {
     ASSERT_EQ(f1->father, _2);
 
@@ -209,7 +209,7 @@ TEST_F(FileTester, repeated_moves_file)
     EXPECT_EQ(_1->search("File 1.txt"), nullptr);
 }
 
-TEST_F(FileTester, repeated_moves_folder)
+TEST_F(DirectorySystemTester, repeated_moves_folder)
 {
     ASSERT_EQ(c->father, b);
 
@@ -227,7 +227,7 @@ TEST_F(FileTester, repeated_moves_folder)
     EXPECT_EQ(_1->search("C"), nullptr);
 }
 
-TEST_F(FileTester, chain_move_back_and_forth)
+TEST_F(DirectorySystemTester, chain_move_back_and_forth)
 {
     // Back and forth multiple times
     for (int i = 0; i < 10; ++i)
@@ -243,7 +243,7 @@ TEST_F(FileTester, chain_move_back_and_forth)
 }
 
 // Removing
-TEST_F(FileTester, remove)
+TEST_F(DirectorySystemTester, remove)
 {
     ASSERT_NE(root, nullptr);
     const std::size_t children_count = root->children.size();
@@ -254,7 +254,7 @@ TEST_F(FileTester, remove)
     EXPECT_EQ(children_count-1, root->children.size());
 }
 
-TEST_F(FileTester, remove_folder)
+TEST_F(DirectorySystemTester, remove_folder)
 {
     ASSERT_NE(a->father, nullptr);
 
@@ -268,7 +268,7 @@ TEST_F(FileTester, remove_folder)
               std::find(a->father->children.begin(), a->father->children.end(), a));
 }
 
-TEST_F(FileTester, deletion_cascades)
+TEST_F(DirectorySystemTester, deletion_cascades)
 {
     // Delete subtree /A
     delete a;
@@ -281,7 +281,7 @@ TEST_F(FileTester, deletion_cascades)
     EXPECT_NO_THROW(root->showContents());
 }
 
-TEST_F(FileTester, remove_child_after_moves)
+TEST_F(DirectorySystemTester, remove_child_after_moves)
 {
     f1->move(root);
     f2->move(root);
@@ -297,7 +297,7 @@ TEST_F(FileTester, remove_child_after_moves)
     EXPECT_NE(root->search("A"), nullptr);
 }
 
-TEST_F(FileTester, deleting_folder_after_many_operations)
+TEST_F(DirectorySystemTester, deleting_folder_after_many_operations)
 {
     c->move(root);
     f1->move(a);
