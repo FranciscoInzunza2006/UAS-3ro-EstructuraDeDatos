@@ -65,12 +65,13 @@ public:
 class FileSystemUI
 {
 public:
-    FileSystem system;
+    FileSystem system = FileSystem();
     CommandLine cmd;
     PathParser path_parser = PathParser(&system);
 
     void run();
 
+    ~FileSystemUI() = default;
 private:
     std::pair<Folder*, std::string> parsePath(const std::string& path) const
     {

@@ -25,5 +25,5 @@ add_executable(main main.cpp)
 target_link_libraries(main
         PRIVATE CommandLine
         PRIVATE File
-        PRIVATE DirectorySystem
+        PRIVATE FileSystem
 )
