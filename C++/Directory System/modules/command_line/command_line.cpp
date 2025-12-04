@@ -142,10 +142,10 @@ void CommandLine::processInput(const std::string_view input)
     {
         executeCommand(tokens);
     }
-    catch (const std::invalid_argument&)
-    {
-        std::cout << RED << "Valor invalido ingresado." << RESET << '\n';
-    }
+    // catch (const std::invalid_argument&)
+    // {
+    //     std::cout << RED << "Valor invalido ingresado." << RESET << '\n';
+    // }
     catch (const std::exception& e)
     {
         std::cout << RED << e.what() << RESET << '\n';
