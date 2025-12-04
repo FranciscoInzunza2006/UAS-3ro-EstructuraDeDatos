@@ -122,11 +122,8 @@ Tokens CommandLine::Tokenizer::tokenize(const std::string_view input)
     return tokens;
 }
 
-void CommandLine::processInput()
+void CommandLine::processInput(const std::string_view input)
 {
-    std::string input;
-    std::getline(std::cin, input);
-
     Tokens tokens;
     try
     {

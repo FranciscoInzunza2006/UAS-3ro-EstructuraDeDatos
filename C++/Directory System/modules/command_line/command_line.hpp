@@ -19,7 +19,7 @@ class CommandLine
 public:
     bool running = true;
 
-    void processInput();
+    void processInput(std::string_view input);
 
     class Tokenizer
     {

@@ -14,7 +14,7 @@ using Tokens = std::vector<std::string>;
 class FileSystem
 {
 public:
-    Folder* root_directory = new Folder("ROOT");
+    Folder* root_directory = new Folder("");
     Folder* trash_bin = new Folder("BIN", root_directory);
 
     void setWorkingDirectory(Folder* new_working_directory)
@@ -43,21 +43,21 @@ private:
 // Or a pointer to the containing folder and a name (To create new entries)
 class ParsingResult
 {
-    public:
+public:
     File* file = nullptr;
     std::string name;
 
-    bool exists () const
+    bool exists() const
     {
         return file != nullptr && name.empty();
     }
 
-    bool isContainerAndName () const
+    bool isContainerAndName() const
     {
         return file != nullptr && !name.empty();
     }
 
-    bool isFolder () const
+    bool isFolder() const
     {
         return exists() && file->isFolder();
     }
@@ -80,8 +80,11 @@ class FileSystemCommands
 {
     FileSystem* system{};
     PathParser path_parser;
+
 public:
-    explicit FileSystemCommands(FileSystem* system) : system(system), path_parser(PathParser(system)) {}
+    explicit FileSystemCommands(FileSystem* system) : system(system), path_parser(PathParser(system))
+    {
+    }
 
     void createFile(const Tokens& tokens);
     void makeDirectory(const Tokens& tokens);
@@ -89,13 +92,14 @@ public:
     void renameFile(const Tokens& tokens);
     void searchFile(const Tokens& tokens);
     void removeFile(const Tokens& tokens);
-    void listEntries(const Tokens& tokens);
+    void listEntries(const Tokens& tokens) const;
     void showPath(const Tokens& tokens);
 
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
     void changeDirectory(const Tokens& tokens);
+
     ParsingResult resolvePath(const std::string& path) const
     {
         return path_parser.parse(PathParser::tokenize(path));
@@ -106,12 +110,14 @@ class FileSystemUI
 {
 public:
     FileSystem system = FileSystem();
+    FileSystemCommands commands = FileSystemCommands(&system);
     CommandLine cmd;
-    FileSystemCommands commands;
 
     void run();
 
+    FileSystemUI();
     ~FileSystemUI() = default;
+
 private:
     std::vector<Command> createCommands();
 };
