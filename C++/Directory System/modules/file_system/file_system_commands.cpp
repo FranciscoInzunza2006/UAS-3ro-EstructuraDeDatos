@@ -38,7 +38,11 @@ std::vector<Command> FileSystemUI::createCommands()
             {{"Path", "Path", true}},
             [this](const Tokens& tokens) { commands.listEntries(tokens); },
             true
-        )
+        ),
+        Command(
+            {"cls", "Cleans the screen."},
+            [](const Tokens&){std::system("cls");}
+            )
     };
 }
 
