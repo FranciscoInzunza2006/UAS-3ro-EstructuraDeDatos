@@ -11,9 +11,9 @@
 
 std::string File::getPath(const File* file, std::string& s)
 {
-    if (file->father != nullptr)
-        s = getPath(file->father, s) + "/";
-    return s + file->name;
+    if (file->parent != nullptr)
+        s = getPath(file->parent, s) + "/";
+    return s + file->filename;
 }
 
 std::string File::getPath() const
@@ -22,22 +22,22 @@ std::string File::getPath() const
     return getPath(this, s);
 }
 
-File::File(std::string name, Folder* father) : name(std::move(name)), father(father)
+File::File(std::string name, Folder* father) : filename(std::move(name)), parent(father)
 {
     if (father == nullptr) return;
-    father->children.push_back(this);
+    father->entries.push_back(this);
 }
 
 File::~File()
 {
     //std::cerr << name << " destroyed.\n";
-    if (father == nullptr) return;
-    father->removeChild(this);
+    if (parent == nullptr) return;
+    parent->removeEntry(this);
 }
 
-void File::move(Folder* new_father)
+void File::moveTo(Folder* new_father)
 {
-    if (father == new_father) return;
+    if (parent == new_father) return;
 
     // Check if it's a sub-folder
     const Folder* f = new_father;
@@ -45,28 +45,28 @@ void File::move(Folder* new_father)
     {
         if (f == this)
         {
-            throw std::invalid_argument(new_father->name + " is a descendant of " + name);
+            throw std::invalid_argument(new_father->filename + " is a descendant of " + filename);
         }
-        f = f->father;
+        f = f->parent;
     }
 
     // Get adopted
-    father->removeChild(this);
-    father = new_father;
-    new_father->children.push_back(this);
+    parent->removeEntry(this);
+    parent = new_father;
+    new_father->entries.push_back(this);
 }
 
 void Folder::printSubtree(const std::string& prefix) const
 {
-    const size_t n = children.size();
+    const size_t n = entries.size();
     for (size_t i = 0; i < n; ++i)
     {
-        File* child = children[i];
+        File* child = entries[i];
         const bool isLast = (i == n - 1);
 
         std::cout << prefix
             << (isLast ? "└── " : "├── ")
-            << child->name << "\n";
+            << child->filename << "\n";
 
         if (child->isFolder())
         {
@@ -78,32 +78,32 @@ void Folder::printSubtree(const std::string& prefix) const
 
 void Folder::showContents() const
 {
-    std::cout << name << "\n";
+    std::cout << filename << "\n";
     printSubtree("");
     std::cout << "\n";
 }
 
-File* Folder::search(const std::string_view name) const
+File* Folder::findEntry(const std::string_view name) const
 {
-    for (const auto child : children)
-        if (child->name == name) return child;
+    for (const auto child : entries)
+        if (child->filename == name) return child;
 
     return nullptr;
 }
 
-void Folder::removeChild(const File* file)
+void Folder::removeEntry(const File* file)
 {
-    const auto iterator = std::find(children.begin(), children.end(), file);
-    if (iterator != children.end())
+    const auto iterator = std::find(entries.begin(), entries.end(), file);
+    if (iterator != entries.end())
     {
-        *iterator = children.back();
-        children.pop_back();
+        *iterator = entries.back();
+        entries.pop_back();
     }
 }
 
 Folder::~Folder()
 {
-    for (const File* child : children)
+    for (const File* child : entries)
     {
         delete child;
     }

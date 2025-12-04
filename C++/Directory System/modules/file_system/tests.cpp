@@ -24,18 +24,18 @@ protected:
 
     void SetUp() override
     {
-        a = new Folder("A", system.root);
+        a = new Folder("A", system.root_directory);
         b = new Folder("B", a);
         c = new Folder("C", b);
         f0 = new File("File 0.txt", c);
 
-        d = new Folder("D", system.root);
+        d = new Folder("D", system.root_directory);
         e = new Folder("E", d);
 
         f1 = new File("File 1.txt", e);
         f2 = new File("File 2.txt", e);
         f3 = new File("File 3.txt", e);
-        f4 = new File("File 4.txt", system.root);
+        f4 = new File("File 4.txt", system.root_directory);
     }
 
     void TearDown() override
@@ -61,7 +61,7 @@ class FileSystemCommandsTester : public FileSystemTester
 // Tree Structure
 TEST_F(FileSystemTester, printTestStructure)
 {
-    EXPECT_NO_THROW(system.root->showContents());
+    EXPECT_NO_THROW(system.root_directory->showContents());
 }
 
 //region Path parser
@@ -126,7 +126,7 @@ TEST_F(PathParserTester, parseNested)
     const ParsingResult result = parser.parse(tokens);
 
     EXPECT_EQ(result.file, f1);
-    EXPECT_EQ(result.file->name, f1->name);
+    EXPECT_EQ(result.file->filename, f1->filename);
 }
 
 TEST_F(PathParserTester, parseRelative)
@@ -138,7 +138,7 @@ TEST_F(PathParserTester, parseRelative)
     const ParsingResult result = parser.parse(tokens);
 
     EXPECT_EQ(result.file, f1);
-    EXPECT_EQ(result.file->name, "File 1.txt");
+    EXPECT_EQ(result.file->filename, "File 1.txt");
 }
 
 TEST_F(PathParserTester, parseAbsolute)
@@ -150,7 +150,7 @@ TEST_F(PathParserTester, parseAbsolute)
     const ParsingResult result = parser.parse(tokens);
 
     EXPECT_EQ(result.file, f0);
-    EXPECT_EQ(result.file->name, "File 0.txt");
+    EXPECT_EQ(result.file->filename, "File 0.txt");
 }
 
 TEST_F(PathParserTester, parseNothing)

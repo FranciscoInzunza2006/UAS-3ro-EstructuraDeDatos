@@ -32,7 +32,7 @@ ParsingResult PathParser::parse(const Tokens& path_tokens) const
     // If the first token is empty then it was root (ej: /A/B)
     if (path_tokens[0].empty())
     {
-        container_directory = system->root;
+        container_directory = system->root_directory;
         i++;
     }
 
@@ -46,13 +46,13 @@ ParsingResult PathParser::parse(const Tokens& path_tokens) const
 
         if (token == "..")
         {
-            if (container_directory->father != nullptr)
-                container_directory = container_directory->father;
+            if (container_directory->parent != nullptr)
+                container_directory = container_directory->parent;
             continue;
         }
 
         const bool is_last = (i == path_tokens.size() - 1);
-        File* a = container_directory->search(token);
+        File* a = container_directory->findEntry(token);
 
         if (a == nullptr)
         {
@@ -71,7 +71,7 @@ ParsingResult PathParser::parse(const Tokens& path_tokens) const
         else
         {
             if (!is_last)
-                throw std::invalid_argument(a->name + " isn't a directory.");
+                throw std::invalid_argument(a->filename + " isn't a directory.");
 
             // file as last component -> its name
             name = token;
@@ -79,7 +79,7 @@ ParsingResult PathParser::parse(const Tokens& path_tokens) const
     }
 
     File* file = container_directory;
-    File* a = container_directory->search(name);
+    File* a = container_directory->findEntry(name);
     if (a != nullptr)
     {
         file = a;

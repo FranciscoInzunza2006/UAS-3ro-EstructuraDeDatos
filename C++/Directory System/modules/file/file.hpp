@@ -13,17 +13,17 @@ class File
     static std::string getPath(const File* file, std::string& s);
 
 public:
-    std::string name;
-    Folder* father;
+    std::string filename;
+    Folder* parent;
 
     std::string getPath() const;
-    void move(Folder* new_father);
+    void moveTo(Folder* new_father);
 
     // Constructors
     explicit File(std::string  name, Folder* father = nullptr);
-    virtual ~File();
+    virtual ~File(); // Remove from parent
 
-    virtual bool isFolder()
+    virtual bool isFolder() const
     {
         return false;
     }
@@ -34,19 +34,19 @@ class Folder : public File
     void printSubtree(const std::string& prefix) const;
 
     public:
-    std::vector<File*> children;
+    std::vector<File*> entries;
 
-    File* search(std::string_view name) const;
-    void removeChild(const File* file);
+    File* findEntry(std::string_view name) const;
+    void removeEntry(const File* file);
 
     void showContents() const;
 
     // Constructors
     explicit Folder(const std::string& name, Folder* father = nullptr) : File(name, father) {}
 
-    ~Folder() override;
+    ~Folder() override; // Destroy tree
 
-    bool isFolder() override
+    bool isFolder() const override
     {
         return true;
     }

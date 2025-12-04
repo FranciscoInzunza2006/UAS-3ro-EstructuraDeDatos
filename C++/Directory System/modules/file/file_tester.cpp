@@ -35,16 +35,16 @@ int main()
     std::cout << mods_folder->getPath() << '\n';
     mods_folder->showContents();
 
-    std::cout << mods_folder->children[0]->getPath() << '\n';
+    std::cout << mods_folder->entries[0]->getPath() << '\n';
 
-    planeta_verguetta->move(minecraft_folder);
+    planeta_verguetta->moveTo(minecraft_folder);
     root->showContents();
 
-    games_folder->removeChild(terraria_folder);
+    games_folder->removeEntry(terraria_folder);
     delete terraria_folder;
     root->showContents();
 
-    minecraft_folder->move(mods_folder);
+    minecraft_folder->moveTo(mods_folder);
     root->showContents();
 
     delete root;

@@ -14,17 +14,17 @@ using Tokens = std::vector<std::string>;
 class FileSystem
 {
 public:
-    Folder* root = new Folder("ROOT");
-    Folder* trash_bin = new Folder("BIN", root);
+    Folder* root_directory = new Folder("ROOT");
+    Folder* trash_bin = new Folder("BIN", root_directory);
 
     void setWorkingDirectory(Folder* new_working_directory)
     {
         if (current_directory == new_working_directory) return;
 
         const Folder* dir = new_working_directory;
-        while (dir != nullptr && dir != root)
+        while (dir != nullptr && dir != root_directory)
         {
-            dir = dir->father;
+            dir = dir->parent;
         }
 
         if (dir == nullptr)
@@ -36,7 +36,7 @@ public:
     Folder* getWorkingDirectory() const { return current_directory; }
 
 private:
-    Folder* current_directory = root;
+    Folder* current_directory = root_directory;
 };
 
 // Is a pointer to the file/folder (to search for entries)
@@ -88,15 +88,15 @@ public:
     void moveFile(const Tokens& tokens);
     void renameFile(const Tokens& tokens);
     void searchFile(const Tokens& tokens);
-    void deleteFile(const Tokens& tokens);
-    void showFiles(const Tokens& tokens);
+    void removeFile(const Tokens& tokens);
+    void listEntries(const Tokens& tokens);
     void showPath(const Tokens& tokens);
 
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
-    void changeWorkingDirectory(const Tokens& tokens);
-    ParsingResult parsePath(const std::string& path) const
+    void changeDirectory(const Tokens& tokens);
+    ParsingResult resolvePath(const std::string& path) const
     {
         return path_parser.parse(PathParser::tokenize(path));
     }

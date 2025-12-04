@@ -71,81 +71,81 @@ TEST_F(FileSystemTester, search)
 {
     ASSERT_NE(root, nullptr);
 
-    EXPECT_NE(root->search("A"), nullptr);
-    EXPECT_NE(root->search("1"), nullptr);
-    EXPECT_NE(root->search("File.txt"), nullptr);
+    EXPECT_NE(root->findEntry("A"), nullptr);
+    EXPECT_NE(root->findEntry("1"), nullptr);
+    EXPECT_NE(root->findEntry("File.txt"), nullptr);
 }
 
 TEST_F(FileSystemTester, search_deep)
 {
-    EXPECT_NE(root->search("C"), nullptr);
-    EXPECT_NE(a->search("C"), nullptr);
-    EXPECT_NE(b->search("C"), nullptr);
+    EXPECT_NE(root->findEntry("C"), nullptr);
+    EXPECT_NE(a->findEntry("C"), nullptr);
+    EXPECT_NE(b->findEntry("C"), nullptr);
 
-    EXPECT_EQ(root->search("NonExistent"), nullptr);
+    EXPECT_EQ(root->findEntry("NonExistent"), nullptr);
 }
 
 TEST_F(FileSystemTester, search_after_structure_mutations)
 {
-    b->move(root);
-    c->move(e);
-    f3->move(root);
-    f4->move(a);
+    b->moveTo(root);
+    c->moveTo(e);
+    f3->moveTo(root);
+    f4->moveTo(a);
 
-    EXPECT_NE(root->search("B"), nullptr);
-    EXPECT_NE(e->search("C"), nullptr);
-    EXPECT_NE(root->search("File 3.txt"), nullptr);
-    EXPECT_NE(a->search("File.txt"), nullptr);
+    EXPECT_NE(root->findEntry("B"), nullptr);
+    EXPECT_NE(e->findEntry("C"), nullptr);
+    EXPECT_NE(root->findEntry("File 3.txt"), nullptr);
+    EXPECT_NE(a->findEntry("File.txt"), nullptr);
 
-    EXPECT_EQ(b->search("C"), nullptr);
-    EXPECT_EQ(d->search("File.txt"), nullptr);
+    EXPECT_EQ(b->findEntry("C"), nullptr);
+    EXPECT_EQ(d->findEntry("File.txt"), nullptr);
 }
 
 // Moving
 TEST_F(FileSystemTester, move_simple)
 {
-    ASSERT_EQ(f4->father, root);
+    ASSERT_EQ(f4->parent, root);
 
-    f4->move(d);
-    EXPECT_EQ(f4->father, d);
-    EXPECT_NE(d->search("File.txt"), nullptr);
-    EXPECT_EQ(root->search("File.txt"), nullptr);
+    f4->moveTo(d);
+    EXPECT_EQ(f4->parent, d);
+    EXPECT_NE(d->findEntry("File.txt"), nullptr);
+    EXPECT_EQ(root->findEntry("File.txt"), nullptr);
 }
 
 TEST_F(FileSystemTester, move_between_branches)
 {
-    ASSERT_EQ(f1->father, e);
+    ASSERT_EQ(f1->parent, e);
 
-    f1->move(a);
-    EXPECT_EQ(f1->father, a);
-    EXPECT_NE(a->search("File 1.txt"), nullptr);
-    EXPECT_EQ(e->search("File 1.txt"), nullptr);
+    f1->moveTo(a);
+    EXPECT_EQ(f1->parent, a);
+    EXPECT_NE(a->findEntry("File 1.txt"), nullptr);
+    EXPECT_EQ(e->findEntry("File 1.txt"), nullptr);
 }
 
 TEST_F(FileSystemTester, movingIntoDescendant)
 {
     // Move A into C (illegal, C is descendant of A)
-    EXPECT_THROW(a->move(c), std::invalid_argument);
+    EXPECT_THROW(a->moveTo(c), std::invalid_argument);
 
     // Should NOT have moved
-    EXPECT_EQ(a->father, root);
-    EXPECT_NE(root->search("A"), nullptr);
-    EXPECT_NE(a->search("C"), nullptr); // Ensure original structure intact
+    EXPECT_EQ(a->parent, root);
+    EXPECT_NE(root->findEntry("A"), nullptr);
+    EXPECT_NE(a->findEntry("C"), nullptr); // Ensure original structure intact
 }
 
 TEST_F(FileSystemTester, move_subtree_and_check_contents)
 {
     // Move B under root (bringing C along)
-    b->move(root);
-    EXPECT_EQ(b->father, root);
-    EXPECT_NE(root->search("B"), nullptr);
-    EXPECT_NE(b->search("C"), nullptr);
+    b->moveTo(root);
+    EXPECT_EQ(b->parent, root);
+    EXPECT_NE(root->findEntry("B"), nullptr);
+    EXPECT_NE(b->findEntry("C"), nullptr);
 
     // Then move C elsewhere
-    c->move(d);
-    EXPECT_EQ(c->father, d);
-    EXPECT_EQ(b->search("C"), nullptr);
-    EXPECT_NE(d->search("C"), nullptr);
+    c->moveTo(d);
+    EXPECT_EQ(c->parent, d);
+    EXPECT_EQ(b->findEntry("C"), nullptr);
+    EXPECT_NE(d->findEntry("C"), nullptr);
 }
 
 TEST_F(FileSystemTester, move_folder_with_many_children)
@@ -156,75 +156,75 @@ TEST_F(FileSystemTester, move_folder_with_many_children)
     for (int i = 0; i < 20; ++i)
         extraFiles.push_back(new File("F" + std::to_string(i), d));
 
-    const size_t originalCount = d->children.size();
+    const size_t originalCount = d->entries.size();
 
     // Move entire folder _1 (containing 2, f1, f2, f3, and 20 extra files)
-    d->move(a);
+    d->moveTo(a);
 
-    EXPECT_EQ(d->father, a);
-    EXPECT_EQ(d->children.size(), originalCount);
-    EXPECT_NE(a->search("1"), nullptr);
+    EXPECT_EQ(d->parent, a);
+    EXPECT_EQ(d->entries.size(), originalCount);
+    EXPECT_NE(a->findEntry("1"), nullptr);
 
     // All those files should still belong to _1
     for (auto* f : extraFiles)
-        EXPECT_NE(d->search(f->name), nullptr);
+        EXPECT_NE(d->findEntry(f->filename), nullptr);
 }
 
 TEST_F(FileSystemTester, movingToSamePlace)
 {
-    ASSERT_EQ(a->father, root);
+    ASSERT_EQ(a->parent, root);
 
-    a->move(root); // Should be no-op
-    EXPECT_EQ(a->father, root);
-    EXPECT_NE(root->search("A"), nullptr);
+    a->moveTo(root); // Should be no-op
+    EXPECT_EQ(a->parent, root);
+    EXPECT_NE(root->findEntry("A"), nullptr);
 }
 
 TEST_F(FileSystemTester, children_integrity_after_moves)
 {
-    f1->move(root);
-    f2->move(root);
+    f1->moveTo(root);
+    f2->moveTo(root);
 
-    EXPECT_EQ(root->search("File 1.txt"), f1);
-    EXPECT_EQ(root->search("File 2.txt"), f2);
-    EXPECT_EQ(e->search("File 1.txt"), nullptr);
-    EXPECT_EQ(e->search("File 2.txt"), nullptr);
+    EXPECT_EQ(root->findEntry("File 1.txt"), f1);
+    EXPECT_EQ(root->findEntry("File 2.txt"), f2);
+    EXPECT_EQ(e->findEntry("File 1.txt"), nullptr);
+    EXPECT_EQ(e->findEntry("File 2.txt"), nullptr);
 }
 
 TEST_F(FileSystemTester, repeated_moves_file)
 {
-    ASSERT_EQ(f1->father, e);
+    ASSERT_EQ(f1->parent, e);
 
-    f1->move(a);
-    EXPECT_EQ(f1->father, a);
-    EXPECT_NE(a->search("File 1.txt"), nullptr);
+    f1->moveTo(a);
+    EXPECT_EQ(f1->parent, a);
+    EXPECT_NE(a->findEntry("File 1.txt"), nullptr);
 
-    f1->move(d);
-    EXPECT_EQ(f1->father, d);
-    EXPECT_NE(d->search("File 1.txt"), nullptr);
-    EXPECT_EQ(a->search("File 1.txt"), nullptr);
+    f1->moveTo(d);
+    EXPECT_EQ(f1->parent, d);
+    EXPECT_NE(d->findEntry("File 1.txt"), nullptr);
+    EXPECT_EQ(a->findEntry("File 1.txt"), nullptr);
 
-    f1->move(root);
-    EXPECT_EQ(f1->father, root);
-    EXPECT_NE(root->search("File 1.txt"), nullptr);
-    EXPECT_EQ(d->search("File 1.txt"), nullptr);
+    f1->moveTo(root);
+    EXPECT_EQ(f1->parent, root);
+    EXPECT_NE(root->findEntry("File 1.txt"), nullptr);
+    EXPECT_EQ(d->findEntry("File 1.txt"), nullptr);
 }
 
 TEST_F(FileSystemTester, repeated_moves_folder)
 {
-    ASSERT_EQ(c->father, b);
+    ASSERT_EQ(c->parent, b);
 
-    c->move(root);
-    EXPECT_EQ(c->father, root);
-    EXPECT_NE(root->search("C"), nullptr);
+    c->moveTo(root);
+    EXPECT_EQ(c->parent, root);
+    EXPECT_NE(root->findEntry("C"), nullptr);
 
-    c->move(d);
-    EXPECT_EQ(c->father, d);
-    EXPECT_NE(d->search("C"), nullptr);
+    c->moveTo(d);
+    EXPECT_EQ(c->parent, d);
+    EXPECT_NE(d->findEntry("C"), nullptr);
 
-    c->move(a);
-    EXPECT_EQ(c->father, a);
-    EXPECT_NE(a->search("C"), nullptr);
-    EXPECT_EQ(d->search("C"), nullptr);
+    c->moveTo(a);
+    EXPECT_EQ(c->parent, a);
+    EXPECT_NE(a->findEntry("C"), nullptr);
+    EXPECT_EQ(d->findEntry("C"), nullptr);
 }
 
 TEST_F(FileSystemTester, chain_move_back_and_forth)
@@ -232,13 +232,13 @@ TEST_F(FileSystemTester, chain_move_back_and_forth)
     // Back and forth multiple times
     for (int i = 0; i < 10; ++i)
     {
-        f1->move(a);
-        EXPECT_EQ(f1->father, a);
-        EXPECT_NE(a->search("File 1.txt"), nullptr);
+        f1->moveTo(a);
+        EXPECT_EQ(f1->parent, a);
+        EXPECT_NE(a->findEntry("File 1.txt"), nullptr);
 
-        f1->move(e);
-        EXPECT_EQ(f1->father, e);
-        EXPECT_NE(e->search("File 1.txt"), nullptr);
+        f1->moveTo(e);
+        EXPECT_EQ(f1->parent, e);
+        EXPECT_NE(e->findEntry("File 1.txt"), nullptr);
     }
 }
 
@@ -246,26 +246,26 @@ TEST_F(FileSystemTester, chain_move_back_and_forth)
 TEST_F(FileSystemTester, remove)
 {
     ASSERT_NE(root, nullptr);
-    const std::size_t children_count = root->children.size();
+    const std::size_t children_count = root->entries.size();
 
-    auto* ap = dynamic_cast<Folder*>(root->search("A"));
+    auto* ap = dynamic_cast<Folder*>(root->findEntry("A"));
     ASSERT_NE(ap, nullptr);
-    root->removeChild(ap);
-    EXPECT_EQ(children_count-1, root->children.size());
+    root->removeEntry(ap);
+    EXPECT_EQ(children_count-1, root->entries.size());
 }
 
 TEST_F(FileSystemTester, remove_folder)
 {
-    ASSERT_NE(a->father, nullptr);
+    ASSERT_NE(a->parent, nullptr);
 
-    const std::size_t count_before = a->father->children.size();
-    a->father->removeChild(a);
-    EXPECT_EQ(a->father->children.size(), count_before - 1);
+    const std::size_t count_before = a->parent->entries.size();
+    a->parent->removeEntry(a);
+    EXPECT_EQ(a->parent->entries.size(), count_before - 1);
 
     // A still exists but is detached
-    EXPECT_EQ(root->search("A"), nullptr);
-    EXPECT_EQ(a->father->children.end(),
-              std::find(a->father->children.begin(), a->father->children.end(), a));
+    EXPECT_EQ(root->findEntry("A"), nullptr);
+    EXPECT_EQ(a->parent->entries.end(),
+              std::find(a->parent->entries.begin(), a->parent->entries.end(), a));
 }
 
 TEST_F(FileSystemTester, deletion_cascades)
@@ -274,7 +274,7 @@ TEST_F(FileSystemTester, deletion_cascades)
     delete a;
 
     // A must be removed from root
-    EXPECT_EQ(root->search("A"), nullptr);
+    EXPECT_EQ(root->findEntry("A"), nullptr);
 
     // B and C should have been destroyed internally
     // Not checking destruction messages, but ensure structure is stable
@@ -283,32 +283,32 @@ TEST_F(FileSystemTester, deletion_cascades)
 
 TEST_F(FileSystemTester, remove_child_after_moves)
 {
-    f1->move(root);
-    f2->move(root);
+    f1->moveTo(root);
+    f2->moveTo(root);
 
-    const size_t before = root->children.size();
+    const size_t before = root->entries.size();
 
-    root->removeChild(f1);
-    EXPECT_EQ(root->children.size(), before - 1);
-    EXPECT_EQ(root->search("File 1.txt"), nullptr);
+    root->removeEntry(f1);
+    EXPECT_EQ(root->entries.size(), before - 1);
+    EXPECT_EQ(root->findEntry("File 1.txt"), nullptr);
 
     // Ensure others remain intact
-    EXPECT_NE(root->search("File 2.txt"), nullptr);
-    EXPECT_NE(root->search("A"), nullptr);
+    EXPECT_NE(root->findEntry("File 2.txt"), nullptr);
+    EXPECT_NE(root->findEntry("A"), nullptr);
 }
 
 TEST_F(FileSystemTester, deleting_folder_after_many_operations)
 {
-    c->move(root);
-    f1->move(a);
-    f2->move(root);
-    f3->move(b);
-    e->move(root);
+    c->moveTo(root);
+    f1->moveTo(a);
+    f2->moveTo(root);
+    f3->moveTo(b);
+    e->moveTo(root);
 
     EXPECT_NO_THROW(delete a);  // Delete subtree A
 
-    EXPECT_EQ(root->search("A"), nullptr);
-    EXPECT_EQ(root->search("File 1.txt"), nullptr); // was under A after move
-    EXPECT_NE(root->search("File 2.txt"), nullptr); // unaffected
-    EXPECT_NE(b->search("File 3.txt"), nullptr);    // unaffected
+    EXPECT_EQ(root->findEntry("A"), nullptr);
+    EXPECT_EQ(root->findEntry("File 1.txt"), nullptr); // was under A after move
+    EXPECT_NE(root->findEntry("File 2.txt"), nullptr); // unaffected
+    EXPECT_NE(b->findEntry("File 3.txt"), nullptr);    // unaffected
 }
