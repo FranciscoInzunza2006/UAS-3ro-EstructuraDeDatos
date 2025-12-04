@@ -39,6 +39,25 @@ private:
     Folder* current_directory = root;
 };
 
+// Is a pointer to the file/folder (to search for entries)
+// Or a pointer to the containing folder and a name (To create new entries)
+class ParsingResult
+{
+    public:
+    File* file = nullptr;
+    std::string name;
+
+    bool exists () const
+    {
+        return file != nullptr && name.empty();
+    }
+
+    bool isFolder () const
+    {
+        return file != nullptr && file->isFolder();
+    }
+};
+
 class PathParser
 {
     FileSystem* system;
@@ -49,17 +68,7 @@ public:
     }
 
     static Tokens tokenize(const std::string& path);
-    std::pair<Folder*, std::string> parse(const Tokens& path_tokens) const;
-
-    static bool isFolder(const std::pair<Folder*, std::string>& thingy)
-    {
-        return thingy.second.empty();
-    }
-
-    static bool isFileOrName(const std::pair<Folder*, std::string>& thingy)
-    {
-        return !thingy.second.empty();
-    }
+    ParsingResult parse(const Tokens& path_tokens) const;
 };
 
 class FileSystemCommands
@@ -82,9 +91,9 @@ public:
     void loadFile(const Tokens& tokens);
 
     void changeWorkingDirectory(const Tokens& tokens);
-    std::pair<Folder*, std::string> parsePath(const std::string& path) const
+    ParsingResult parsePath(const std::string& path) const
     {
-        return path_parser.parse(path_parser.tokenize(path));
+        return path_parser.parse(PathParser::tokenize(path));
     }
 };
 

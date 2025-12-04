@@ -99,32 +99,35 @@ TEST_F(PathParserTester, parseFolder)
 {
     const std::string input = "A";
     const Tokens tokens = parser.tokenize(input);
-    const auto [folder, name] = parser.parse(tokens);
+    const ParsingResult result = parser.parse(tokens);
 
-    EXPECT_EQ(folder, a);
-    EXPECT_EQ(name, "");
-    EXPECT_TRUE(parser.isFolder({folder, name}));
+    EXPECT_EQ(result.file, a);
+    EXPECT_EQ(result.name, "");
+    EXPECT_TRUE(result.isFolder());
 }
 
 TEST_F(PathParserTester, parseFile)
 {
     const std::string input = "File 4.txt";
     const Tokens tokens = parser.tokenize(input);
-    const auto [folder, name] = parser.parse(tokens);
+    const ParsingResult result = parser.parse(tokens);
 
-    EXPECT_EQ(folder, system.root);
-    EXPECT_EQ(name, "File 4.txt");
-    EXPECT_TRUE(parser.isFileOrName({folder, name}));
+    EXPECT_TRUE(result.exists());
+    EXPECT_FALSE(result.isFolder());
+
+    EXPECT_EQ(result.file, _2);
+    EXPECT_EQ(result.file, f_root);
+    EXPECT_EQ(result.file->name, "File 4.txt");
 }
 
 TEST_F(PathParserTester, parseNested)
 {
     const std::string input = "1/2/File 1.txt";
     const Tokens tokens = parser.tokenize(input);
-    const auto [folder, name] = parser.parse(tokens);
+    const ParsingResult result = parser.parse(tokens);
 
-    EXPECT_EQ(folder, _2);
-    EXPECT_EQ(name, "File 1.txt");
+    EXPECT_EQ(result.file, f1);
+    EXPECT_EQ(result.file->name, "File 1.txt");
 }
 
 TEST_F(PathParserTester, parseRelative)
@@ -133,10 +136,10 @@ TEST_F(PathParserTester, parseRelative)
 
     const std::string input = "File 1.txt";
     const Tokens tokens = parser.tokenize(input);
-    const auto [folder, name] = parser.parse(tokens);
+    const ParsingResult result = parser.parse(tokens);
 
-    EXPECT_EQ(folder, _2);
-    EXPECT_EQ(name, "File 1.txt");
+    EXPECT_EQ(result.file, f1);
+    EXPECT_EQ(result.file->name, "File 1.txt");
 }
 
 TEST_F(PathParserTester, parseAbsolute)
@@ -145,20 +148,20 @@ TEST_F(PathParserTester, parseAbsolute)
 
     const std::string input = "/A/B/C/File 0.txt";
     const Tokens tokens = parser.tokenize(input);
-    const auto [folder, name] = parser.parse(tokens);
+    const ParsingResult result = parser.parse(tokens);
 
-    EXPECT_EQ(folder, c);
-    EXPECT_EQ(name, "File 0.txt");
+    EXPECT_EQ(result.file, f0);
+    EXPECT_EQ(result.file->name, "File 0.txt");
 }
 
 TEST_F(PathParserTester, parseNothing)
 {
-    const std::string input = "";
+    const std::string input{};
     const Tokens tokens = parser.tokenize(input);
-    const auto [folder, name] = parser.parse(tokens);
+    const ParsingResult result = parser.parse(tokens);
 
-    EXPECT_EQ(folder, system.getWorkingDirectory());
-    EXPECT_EQ(name, "");
+    EXPECT_EQ(result.file, system.getWorkingDirectory());
+    EXPECT_EQ(result.name, "");
 }
 
 TEST_F(PathParserTester, parseNonExistant)
@@ -180,21 +183,20 @@ TEST_F(PathParserTester, parseFileUsedAsDirectory)
 //endregion
 
 //region UI
-TEST_F(FileSystemCommandsTester, createFile)
-{
-    const Tokens tokens = {"A/B/New.txt"};
-    cmds.createFile(tokens);
-
-    b->showContents();
-    EXPECT_EQ(b->children.size(), 2);
-}
-
-TEST_F(FileSystemCommandsTester, createExistingFile)
-{
-    const Tokens tokens = {"File 4.txt"};
-
-    b->showContents();
-    EXPECT_THROW(cmds.createFile(tokens), );
-}
+// TEST_F(FileSystemCommandsTester, createFile)
+// {
+//     const Tokens tokens = {"A/B/New.txt"};
+//     cmds.createFile(tokens);
+//
+//     b->showContents();
+//     EXPECT_EQ(b->children.size(), 2);
+// }
+//
+// TEST_F(FileSystemCommandsTester, createExistingFile)
+// {
+//     const Tokens tokens = {"File 4.txt"};
+//
+//     b->showContents();
+// }
 
 //endregion

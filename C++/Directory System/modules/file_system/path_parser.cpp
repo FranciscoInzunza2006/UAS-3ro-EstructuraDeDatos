@@ -23,11 +23,11 @@ Tokens PathParser::tokenize(const std::string& path)
     return tokens;
 }
 
-std::pair<Folder*, std::string> PathParser::parse(const Tokens& path_tokens) const
+ParsingResult PathParser::parse(const Tokens& path_tokens) const
 {
+    Folder* container_directory = system->getWorkingDirectory();
     std::string name;
     std::size_t i = 0;
-    Folder* container_directory = system->getWorkingDirectory();
 
     // If the first token is empty then it was root (ej: /A/B)
     if (path_tokens[0].empty())
@@ -78,5 +78,13 @@ std::pair<Folder*, std::string> PathParser::parse(const Tokens& path_tokens) con
         }
     }
 
-    return {container_directory, name};
+    File* file = container_directory;
+    File* a = container_directory->search(name);
+    if (a != nullptr)
+    {
+        file = a;
+        name.clear();
+    }
+
+    return {file, name};
 }
