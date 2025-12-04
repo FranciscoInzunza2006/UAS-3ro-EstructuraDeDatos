@@ -29,6 +29,22 @@ std::vector<Command> FileSystemUI::createCommands()
             true
         ),
         Command(
+            {"ren", "Renames a file or directory."},
+            {
+                {"OldName", "Path to the file."},
+                {"NewName", "New name of the file."}
+            },
+            [this](const Tokens& tokens) { commands.renameFile(tokens); }
+        ),
+        Command(
+            {"mv", "Moves a file or directory to a new location."},
+            {
+                {"OldPath", "Path to the file."},
+                {"NewPath", "New path of the file."}
+            },
+            [this](const Tokens& tokens) { commands.moveFile(tokens); }
+        ),
+        Command(
             {"cd", "Changes the console working directory."},
             {{"Path", "Path"}},
             [this](const Tokens& tokens) { commands.changeDirectory(tokens); }
@@ -41,8 +57,8 @@ std::vector<Command> FileSystemUI::createCommands()
         ),
         Command(
             {"cls", "Cleans the screen."},
-            [](const Tokens&){std::system("cls");}
-            )
+            [](const Tokens&) { std::system("cls"); }
+        )
     };
 }
 
@@ -81,18 +97,46 @@ void FileSystemCommands::makeDirectory(const Tokens& tokens)
         std::cout << '\"' << new_folder->getPath() << "\" created.\n";
     }
 }
-//
-// void FileSystemCommands::moveFile(const Tokens& tokens)
-// {
-// }
-//
-// void FileSystemCommands::renameFile(const Tokens& tokens)
-// {
-// }
-//
-// void FileSystemCommands::searchFile(const Tokens& tokens)
-// {
-// }
+
+void FileSystemCommands::moveFile(const Tokens& tokens)
+{
+    const std::string& file = tokens[0];
+    ParsingResult old_file = resolvePath(file);
+    if (!old_file.exists()) throw std::runtime_error(file + " not found.");
+
+    const std::string& new_location = tokens[1];
+    ParsingResult location = resolvePath(new_location);
+    if (!location.exists()) throw std::runtime_error(new_location + " does not exist.");
+    if (!location.isFolder()) throw std::runtime_error(new_location + " new location must be a folder.");
+
+    const std::string new_path = new_location + "/" + file;
+    ParsingResult new_file = resolvePath(new_path);
+    if (new_file.exists()) throw std::runtime_error(new_path + " already exists.");
+
+    auto* const new_container_folder = static_cast<Folder*>(location.file);
+    old_file.file->moveTo(new_container_folder);
+}
+
+// TODO: Name validation (can put illegal characters on the name or nothing at all)
+void FileSystemCommands::renameFile(const Tokens& tokens)
+{
+    const std::string& file_path = tokens[0];
+
+    ParsingResult file = resolvePath(file_path);
+    if (!file.exists()) throw std::runtime_error(file_path + " not found.");
+
+    const std::string& new_name = tokens[1];
+    const std::string new_path = file.file->parent->getPath() + "/" + new_name;
+
+    const ParsingResult new_file = resolvePath(new_path);
+    if (new_file.exists()) throw std::runtime_error(new_name + " already exists.");
+
+    file.file->filename = new_name;
+}
+
+void FileSystemCommands::searchFile(const Tokens& tokens)
+{
+}
 
 void FileSystemCommands::removeFile(const Tokens& tokens)
 {
@@ -100,7 +144,7 @@ void FileSystemCommands::removeFile(const Tokens& tokens)
     {
         const auto path = resolvePath(token);
 
-        if (!path.exists()) throw std::runtime_error("\"" + token +  "\" does not exist.");
+        if (!path.exists()) throw std::runtime_error("\"" + token + "\" does not exist.");
 
         // FIXME: Doesn't works on directories (check for empty name)
         path.file->moveTo(system->trash_bin);
@@ -126,6 +170,7 @@ void FileSystemCommands::listEntries(const Tokens& tokens) const
     auto* const container_folder = static_cast<Folder*>(path.file);
     container_folder->showContents();
 }
+
 //
 // void FileSystemCommands::showPath(const Tokens& tokens)
 // {
