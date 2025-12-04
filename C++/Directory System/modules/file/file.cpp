@@ -62,15 +62,17 @@ void Folder::printSubtree(const std::string& prefix) const
     for (size_t i = 0; i < n; ++i)
     {
         File* child = entries[i];
-        const bool isLast = (i == n - 1);
+        const bool is_last = (i == n - 1);
+        const bool is_folder = child->isFolder();
+        const auto color = is_folder ? COLOR_FOLDER : COLOR_FILE;
 
-        std::cout << prefix
-            << (isLast ? "└── " : "├── ")
-            << child->filename << "\n";
+        std::cout << COLOR_RESET << prefix
+            << (is_last ? "└── " : "├── ")
+            << color << child->filename << "\n";
 
-        if (child->isFolder())
+        if (is_folder)
         {
-            std::string childPrefix = prefix + (isLast ? "    " : "│   ");
+            std::string childPrefix = prefix + (is_last ? "    " : "│   ");
             static_cast<Folder*>(child)->printSubtree(childPrefix);
         }
     }
@@ -78,9 +80,9 @@ void Folder::printSubtree(const std::string& prefix) const
 
 void Folder::showContents() const
 {
-    std::cout << filename << "\n";
+    std::cout << COLOR_FOLDER << filename << "\n";
     printSubtree("");
-    std::cout << "\n";
+    std::cout << COLOR_RESET << "\n";
 }
 
 File* Folder::findEntry(const std::string_view name) const

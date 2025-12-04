@@ -5,6 +5,10 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "color.hpp"
+
+constexpr auto COLOR_FILE = COLOR_YELLOW;
+constexpr auto COLOR_FOLDER = COLOR_CYAN;
 
 class Folder;
 
