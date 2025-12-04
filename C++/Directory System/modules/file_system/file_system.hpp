@@ -52,9 +52,14 @@ class ParsingResult
         return file != nullptr && name.empty();
     }
 
+    bool isContainerAndName () const
+    {
+        return file != nullptr && !name.empty();
+    }
+
     bool isFolder () const
     {
-        return file != nullptr && file->isFolder();
+        return exists() && file->isFolder();
     }
 };
 

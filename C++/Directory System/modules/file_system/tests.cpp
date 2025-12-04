@@ -12,30 +12,30 @@ protected:
     Folder* b{};
     Folder* c{};
 
-    Folder* _1{};
-    Folder* _2{};
+    Folder* d{};
+    Folder* e{};
 
     File* f0{};
     File* f1{};
     File* f2{};
     File* f3{};
 
-    File* f_root{};
+    File* f4{};
 
     void SetUp() override
     {
         a = new Folder("A", system.root);
         b = new Folder("B", a);
         c = new Folder("C", b);
-        f1 = new File("File 0.txt", c);
+        f0 = new File("File 0.txt", c);
 
-        _1 = new Folder("1", system.root);
-        _2 = new Folder("2", _1);
+        d = new Folder("D", system.root);
+        e = new Folder("E", d);
 
-        f1 = new File("File 1.txt", _2);
-        f2 = new File("File 2.txt", _2);
-        f3 = new File("File 3.txt", _2);
-        f_root = new File("File 4.txt", system.root);
+        f1 = new File("File 1.txt", e);
+        f2 = new File("File 2.txt", e);
+        f3 = new File("File 3.txt", e);
+        f4 = new File("File 4.txt", system.root);
     }
 
     void TearDown() override
@@ -115,24 +115,23 @@ TEST_F(PathParserTester, parseFile)
     EXPECT_TRUE(result.exists());
     EXPECT_FALSE(result.isFolder());
 
-    EXPECT_EQ(result.file, _2);
-    EXPECT_EQ(result.file, f_root);
-    EXPECT_EQ(result.file->name, "File 4.txt");
+    EXPECT_EQ(result.file, f4);
+    EXPECT_EQ(result.name, "");
 }
 
 TEST_F(PathParserTester, parseNested)
 {
-    const std::string input = "1/2/File 1.txt";
+    const std::string input = "D/E/File 1.txt";
     const Tokens tokens = parser.tokenize(input);
     const ParsingResult result = parser.parse(tokens);
 
     EXPECT_EQ(result.file, f1);
-    EXPECT_EQ(result.file->name, "File 1.txt");
+    EXPECT_EQ(result.file->name, f1->name);
 }
 
 TEST_F(PathParserTester, parseRelative)
 {
-    system.setWorkingDirectory(_2);
+    system.setWorkingDirectory(e);
 
     const std::string input = "File 1.txt";
     const Tokens tokens = parser.tokenize(input);
@@ -144,7 +143,7 @@ TEST_F(PathParserTester, parseRelative)
 
 TEST_F(PathParserTester, parseAbsolute)
 {
-    system.setWorkingDirectory(_2);
+    system.setWorkingDirectory(e);
 
     const std::string input = "/A/B/C/File 0.txt";
     const Tokens tokens = parser.tokenize(input);
@@ -178,6 +177,31 @@ TEST_F(PathParserTester, parseFileUsedAsDirectory)
     const Tokens tokens = parser.tokenize(input);
 
     EXPECT_THROW(parser.parse(tokens), std::invalid_argument);
+}
+
+TEST_F(PathParserTester, resultsExists)
+{
+    const std::string input = "File 4.txt";
+    const Tokens tokens = parser.tokenize(input);
+    const ParsingResult result = parser.parse(tokens);
+
+    EXPECT_TRUE(result.exists());
+    EXPECT_FALSE(result.isFolder());
+    EXPECT_EQ(result.file, f4);
+    EXPECT_EQ(result.name, "");
+}
+
+TEST_F(PathParserTester, resultsNonExistant)
+{
+    const std::string input = "Non existant.txt";
+    const Tokens tokens = parser.tokenize(input);
+    const ParsingResult result = parser.parse(tokens);
+
+    EXPECT_FALSE(result.exists());
+    EXPECT_FALSE(result.isFolder());
+
+    EXPECT_EQ(result.file, system.getWorkingDirectory());
+    EXPECT_EQ(result.name, input);
 }
 
 //endregion
