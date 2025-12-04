@@ -21,6 +21,7 @@ protected:
     File* f3{};
 
     File* f_root{};
+
     void SetUp() override
     {
         a = new Folder("A", system.root);
@@ -51,13 +52,19 @@ protected:
     PathParser parser = PathParser(&system);
 };
 
+class FileSystemCommandsTester : public FileSystemTester
+{
+    protected:
+    FileSystemCommands cmds = FileSystemCommands(&system);
+};
+
 // Tree Structure
 TEST_F(FileSystemTester, printTestStructure)
 {
     EXPECT_NO_THROW(system.root->showContents());
 }
 
-// Path parser
+//region Path parser
 TEST_F(PathParserTester, tokenize)
 {
     const std::string input = "A/B/C/";
@@ -169,3 +176,25 @@ TEST_F(PathParserTester, parseFileUsedAsDirectory)
 
     EXPECT_THROW(parser.parse(tokens), std::invalid_argument);
 }
+
+//endregion
+
+//region UI
+TEST_F(FileSystemCommandsTester, createFile)
+{
+    const Tokens tokens = {"A/B/New.txt"};
+    cmds.createFile(tokens);
+
+    b->showContents();
+    EXPECT_EQ(b->children.size(), 2);
+}
+
+TEST_F(FileSystemCommandsTester, createExistingFile)
+{
+    const Tokens tokens = {"File 4.txt"};
+
+    b->showContents();
+    EXPECT_THROW(cmds.createFile(tokens), );
+}
+
+//endregion

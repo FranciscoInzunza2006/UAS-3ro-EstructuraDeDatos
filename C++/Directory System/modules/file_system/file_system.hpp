@@ -62,25 +62,13 @@ public:
     }
 };
 
-class FileSystemUI
+class FileSystemCommands
 {
+    FileSystem* system{};
+    PathParser path_parser;
 public:
-    FileSystem system = FileSystem();
-    CommandLine cmd;
-    PathParser path_parser = PathParser(&system);
+    explicit FileSystemCommands(FileSystem* system) : system(system), path_parser(PathParser(system)) {}
 
-    void run();
-
-    ~FileSystemUI() = default;
-private:
-    std::pair<Folder*, std::string> parsePath(const std::string& path) const
-    {
-        return path_parser.parse(path_parser.tokenize(path));
-    }
-
-    std::vector<Command> createCommands();
-
-    // Functions for the command line
     void createFile(const Tokens& tokens);
     void makeDirectory(const Tokens& tokens);
     void moveFile(const Tokens& tokens);
@@ -94,4 +82,22 @@ private:
     void loadFile(const Tokens& tokens);
 
     void changeWorkingDirectory(const Tokens& tokens);
+    std::pair<Folder*, std::string> parsePath(const std::string& path) const
+    {
+        return path_parser.parse(path_parser.tokenize(path));
+    }
+};
+
+class FileSystemUI
+{
+public:
+    FileSystem system = FileSystem();
+    CommandLine cmd;
+    FileSystemCommands commands;
+
+    void run();
+
+    ~FileSystemUI() = default;
+private:
+    std::vector<Command> createCommands();
 };
