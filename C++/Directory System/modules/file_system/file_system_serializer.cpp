@@ -6,8 +6,6 @@
 
 void FileSystemSerializer::serializeItem(File* file, std::string& foo)
 {
-    foo: {
-    }
     foo += "\"" + file->filename + "\": ";
     if (!file->isFolder())
     {
@@ -15,9 +13,15 @@ void FileSystemSerializer::serializeItem(File* file, std::string& foo)
         return;
     }
 
-    foo += "{\n";
     Folder* folder = dynamic_cast<Folder*>(file);
     const std::size_t entries_count = folder->entries.size();
+    if (entries_count == 0)
+    {
+        foo += "{}";
+        return;
+    }
+
+    foo += "{\n";
     for (std::size_t i = 0; i < entries_count; i++)
     {
         serializeItem(folder->entries[i], foo);
