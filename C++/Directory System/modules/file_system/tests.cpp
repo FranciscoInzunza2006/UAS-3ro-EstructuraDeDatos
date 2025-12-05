@@ -219,6 +219,16 @@ TEST_F(FileSystemSerializerTester, printSerialization)
     std::cout << serializer.serialize();
 }
 
+TEST_F(FileSystemSerializerTester, load)
+{
+    std::string json = serializer.serialize();
+
+    FileSystem fs = FileSystem();
+    FileSystemSerializer::load(fs, json);
+
+    fs.root_directory->showContents();
+}
+
 //endregion
 
 //region UI

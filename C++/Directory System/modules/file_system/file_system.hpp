@@ -50,7 +50,7 @@ class FileSystemSerializer
 
     // To JSON
     std::string serialize();
-    void load(std::string json);
+    static void load(FileSystem& system, std::string json);
 };
 
 // Is a pointer to the file/folder (to search for entries)
