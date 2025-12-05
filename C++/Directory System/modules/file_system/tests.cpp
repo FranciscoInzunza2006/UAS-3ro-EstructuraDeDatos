@@ -58,6 +58,12 @@ class FileSystemCommandsTester : public FileSystemTester
     FileSystemCommands cmds = FileSystemCommands(&system);
 };
 
+class FileSystemSerializerTester : public FileSystemTester
+{
+protected:
+    FileSystemSerializer serializer = FileSystemSerializer(system);
+};
+
 // Tree Structure
 TEST_F(FileSystemTester, printTestStructure)
 {
@@ -202,6 +208,15 @@ TEST_F(PathParserTester, resultsNonExistant)
 
     EXPECT_EQ(result.file, system.getWorkingDirectory());
     EXPECT_EQ(result.name, input);
+}
+
+//endregion
+
+//region Serializer
+
+TEST_F(FileSystemSerializerTester, printSerialization)
+{
+    std::cout << serializer.serialize();
 }
 
 //endregion

@@ -39,6 +39,20 @@ private:
     Folder* current_directory = root_directory;
 };
 
+class FileSystemSerializer
+{
+    FileSystem& system;
+
+    void serializeItem(File* file, std::string& foo);
+
+    public:
+    explicit FileSystemSerializer(FileSystem& system) : system(system) {}
+
+    // To JSON
+    std::string serialize();
+    void load(std::string json);
+};
+
 // Is a pointer to the file/folder (to search for entries)
 // Or a pointer to the containing folder and a name (To create new entries)
 class ParsingResult

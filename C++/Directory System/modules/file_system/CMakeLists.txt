@@ -3,6 +3,7 @@ add_library(FileSystem
         file_system.hpp
         file_system.cpp
         file_system_commands.cpp
+        file_system_serializer.cpp
         path_parser.cpp
 )
 target_link_libraries(FileSystem
