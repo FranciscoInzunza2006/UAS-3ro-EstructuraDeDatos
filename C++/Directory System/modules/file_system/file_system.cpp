@@ -13,7 +13,7 @@ FileSystemUI::FileSystemUI() : cmd(createCommands())
     // Some basic structure for testing
     const auto documents = new Folder("Documents", system.root_directory);
     new File("Homework v2.pdf", documents);
-    new Folder("CBTIS 45°", documents);
+    new Folder("CBTIS 45", documents);
 
     new Folder("Images", system.root_directory);
     new Folder("Videos", system.root_directory);

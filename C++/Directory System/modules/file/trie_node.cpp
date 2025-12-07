@@ -20,7 +20,7 @@ namespace trie_node
             const auto index = static_cast<unsigned char>(c);
             if (index >= RANGE)
             {
-                throw std::runtime_error("Value " + std::to_string(c) + " out of range.");
+                throw std::runtime_error("Value " + std::to_string(index) + " out of range.");
             }
 
             // Check if the node exists for the

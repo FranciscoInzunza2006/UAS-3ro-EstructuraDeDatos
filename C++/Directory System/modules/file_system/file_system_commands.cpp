@@ -49,6 +49,16 @@ std::vector<Command> FileSystemUI::createCommands()
             {{"Path", "Path"}},
             [this](const Tokens& tokens) { commands.changeDirectory(tokens); }
         ),
+        Command(
+            {"save", "Saves the folder structure to a JSON in the given path."},
+            {{"Path", "Path"}},
+            [this](const Tokens& tokens) { commands.saveFile(tokens); }
+        ),
+        Command(
+            {"load", "Loads the folder structure from JSON in the given path."},
+            {{"Path", "Path"}},
+            [this](const Tokens& tokens) { commands.loadFile(tokens); }
+        ),
         Command( // TODO: Show passed path contents
             {"dir", "Shows current directory contents"},
             {{"Path", "Path", true}},
@@ -169,6 +179,41 @@ void FileSystemCommands::listEntries(const Tokens& tokens) const
 
     auto* const container_folder = static_cast<Folder*>(path.file);
     container_folder->showContents();
+}
+
+void FileSystemCommands::saveFile(const Tokens& tokens)
+{
+    const std::string& filename = tokens[0];
+
+    std::ofstream file;
+    file.open(filename);
+    if (!file.is_open()) throw std::runtime_error("Can't open file.");
+
+    FileSystemSerializer serializer(*system);
+    file << serializer.serialize();
+
+    file.close();
+    std::cout << filename << " saved.\n";
+}
+
+void FileSystemCommands::loadFile(const Tokens& tokens)
+{
+    const std::string& filename = tokens[0];
+
+    std::ifstream file;
+    file.open(filename);
+    if (!file.is_open()) throw std::runtime_error("Can't open file.");
+
+    std::string content;
+    file.seekg(0, std::ios::end);
+    content.reserve(file.tellg());
+    file.seekg(0, std::ios::beg);
+    content.assign(std::istreambuf_iterator(file), std::istreambuf_iterator<char>());
+
+    FileSystemSerializer::load(*system, content);
+
+    file.close();
+    std::cout << filename << " loaded.\n";
 }
 
 //
