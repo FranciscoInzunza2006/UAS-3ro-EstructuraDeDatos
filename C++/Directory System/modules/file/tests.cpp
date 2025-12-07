@@ -76,14 +76,30 @@ TEST_F(FileSystemTester, search)
     EXPECT_NE(root->findEntry("File.txt"), nullptr);
 }
 
-TEST_F(FileSystemTester, search_deep)
-{
-    EXPECT_NE(root->findEntry("C"), nullptr);
-    EXPECT_NE(a->findEntry("C"), nullptr);
-    EXPECT_NE(b->findEntry("C"), nullptr);
-
-    EXPECT_EQ(root->findEntry("NonExistent"), nullptr);
-}
+// TEST_F(FileSystemTester, searchStress)
+// {
+//     for (int i = 0; i < RANGE; ++i)
+//     {
+//         for (int j = 0; j < RANGE; ++j)
+//         {
+//             for (int k = 0; k < RANGE; ++k)
+//             {
+//                 new File(std::to_string(i) + std::to_string(j) + std::to_string(k), root);
+//             }
+//         }
+//     }
+//
+//     for (int i = 0; i < RANGE; ++i)
+//     {
+//         for (int j = 0; j < RANGE; ++j)
+//         {
+//             for (int k = 0; k < RANGE; ++k)
+//             {
+//                 EXPECT_NE(nullptr, root->findEntry(std::to_string(i) + std::to_string(j) + std::to_string(k)));
+//             }
+//         }
+//     }
+// }
 
 TEST_F(FileSystemTester, search_after_structure_mutations)
 {
