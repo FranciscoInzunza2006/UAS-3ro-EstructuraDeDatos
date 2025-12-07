@@ -65,6 +65,10 @@ std::vector<Command> FileSystemUI::createCommands()
             [this](const Tokens& tokens) { commands.listEntries(tokens); },
             true
         ),
+        Command( // TODO: Show passed path contents
+    {"clear-trash", "Clears the trash bin"},
+    [this](const Tokens& tokens) { commands.clearTrash(tokens); }
+),
         Command(
             {"cls", "Cleans the screen."},
             [](const Tokens&) { std::system("cls"); }
@@ -214,6 +218,21 @@ void FileSystemCommands::loadFile(const Tokens& tokens)
 
     file.close();
     std::cout << filename << " loaded.\n";
+}
+
+void FileSystemCommands::clearTrash(const Tokens& tokens)
+{
+    if (system->trash_bin->entries.empty())
+    {
+        std::cout << "The trash bin is empty.\n";
+        return;
+    }
+
+    for (const auto & trash : system->trash_bin->entries)
+    {
+        delete trash;
+    }
+    std::cout << "Trash emptied.\n";
 }
 
 //

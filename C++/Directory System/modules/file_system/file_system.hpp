@@ -112,6 +112,7 @@ public:
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
+    void clearTrash(const Tokens& tokens);
     void changeDirectory(const Tokens& tokens);
 
     ParsingResult resolvePath(const std::string& path) const
