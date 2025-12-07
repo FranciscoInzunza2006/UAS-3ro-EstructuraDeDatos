@@ -1,5 +1,5 @@
 
-add_library(File file.cpp file.hpp)
+add_library(File file.cpp file.hpp trie_node.hpp trie_node.cpp)
 target_link_libraries(File
         PUBLIC Color
 )

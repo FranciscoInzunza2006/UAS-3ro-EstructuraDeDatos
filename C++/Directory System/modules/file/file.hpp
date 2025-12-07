@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "color.hpp"
+#include "trie_node.hpp"
 
 constexpr auto COLOR_FILE = COLOR_YELLOW;
 constexpr auto COLOR_FOLDER = COLOR_CYAN;
@@ -35,10 +36,14 @@ public:
 
 class Folder : public File
 {
+    trie_node::TrieNode* index = new trie_node::TrieNode();
+
     void printSubtree(const std::string& prefix) const;
 
     public:
     std::vector<File*> entries;
+
+    void addEntry(File* entry);
 
     File* findEntry(std::string_view name) const;
     void removeEntry(const File* file);

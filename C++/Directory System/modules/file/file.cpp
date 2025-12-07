@@ -25,7 +25,7 @@ std::string File::getPath() const
 File::File(std::string name, Folder* father) : filename(std::move(name)), parent(father)
 {
     if (father == nullptr) return;
-    father->entries.push_back(this);
+    father->addEntry(this);
 }
 
 File::~File()
@@ -54,6 +54,12 @@ void File::moveTo(Folder* new_father)
     parent->removeEntry(this);
     parent = new_father;
     new_father->entries.push_back(this);
+}
+
+void Folder::addEntry(File* new_file)
+{
+    entries.push_back(new_file);
+    trie_node::insert(index, new_file->filename);
 }
 
 void Folder::printSubtree(const std::string& prefix) const
@@ -87,6 +93,10 @@ void Folder::showContents() const
 
 File* Folder::findEntry(const std::string_view name) const
 {
+    // Check if it exists using the index
+    if (!trie_node::search(index, name.data()))
+        return nullptr;
+
     for (const auto child : entries)
         if (child->filename == name) return child;
 
@@ -109,4 +119,6 @@ Folder::~Folder()
     {
         delete child;
     }
+
+    delete index;
 }
