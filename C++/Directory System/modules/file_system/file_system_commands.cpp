@@ -49,6 +49,10 @@ std::vector<Command> FileSystemUI::createCommands()
             {{"Path", "Path"}},
             [this](const Tokens& tokens) { commands.changeDirectory(tokens); }
         ),
+        Command({"search", "Checks if a file or folder exists at the path given."},
+            {{"Path", "Path"}},
+            [this](const Tokens& tokens) { commands.searchFile(tokens); }
+        ),
         Command(
             {"save", "Saves the folder structure to a JSON in the given path."},
             {{"Path", "Path"}},
@@ -66,9 +70,9 @@ std::vector<Command> FileSystemUI::createCommands()
             true
         ),
         Command( // TODO: Show passed path contents
-    {"clear-trash", "Clears the trash bin"},
-    [this](const Tokens& tokens) { commands.clearTrash(tokens); }
-),
+            {"clear-trash", "Clears the trash bin"},
+            [this](const Tokens& tokens) { commands.clearTrash(tokens); }
+        ),
         Command(
             {"cls", "Cleans the screen."},
             [](const Tokens&) { std::system("cls"); }
@@ -129,6 +133,8 @@ void FileSystemCommands::moveFile(const Tokens& tokens)
 
     auto* const new_container_folder = static_cast<Folder*>(location.file);
     old_file.file->moveTo(new_container_folder);
+
+    std::cout << "Moved.\n";
 }
 
 // TODO: Name validation (can put illegal characters on the name or nothing at all)
@@ -146,10 +152,16 @@ void FileSystemCommands::renameFile(const Tokens& tokens)
     if (new_file.exists()) throw std::runtime_error(new_name + " already exists.");
 
     file.file->filename = new_name;
+    std::cout << "File renamed.\n";
 }
 
 void FileSystemCommands::searchFile(const Tokens& tokens)
 {
+    std::string file_path = tokens[0];
+    ParsingResult file = resolvePath(file_path);
+    if (!file.exists()) throw std::runtime_error(file_path + " not found.");
+
+    std::cout << "File found.\n";
 }
 
 void FileSystemCommands::removeFile(const Tokens& tokens)
@@ -228,7 +240,7 @@ void FileSystemCommands::clearTrash(const Tokens& tokens)
         return;
     }
 
-    for (const auto & trash : system->trash_bin->entries)
+    for (const auto& trash : system->trash_bin->entries)
     {
         delete trash;
     }
