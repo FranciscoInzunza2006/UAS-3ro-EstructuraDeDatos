@@ -11,6 +11,8 @@
 constexpr auto COLOR_FILE = COLOR_YELLOW;
 constexpr auto COLOR_FOLDER = COLOR_CYAN;
 
+// FIXME: Update index on all operations
+
 class Folder;
 
 class File
@@ -20,6 +22,9 @@ class File
 public:
     std::string filename;
     Folder* parent;
+
+    // Weird variable to save restore path when deleted in the file system
+    std::string restore_path{};
 
     std::string getPath() const;
     void moveTo(Folder* new_father);

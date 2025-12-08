@@ -106,13 +106,14 @@ public:
     void renameFile(const Tokens& tokens);
     void searchFile(const Tokens& tokens);
     void removeFile(const Tokens& tokens);
+    void restoreFile(const Tokens& tokens);
     void listEntries(const Tokens& tokens) const;
     void showAbsolutePath(const Tokens& tokens) const;
 
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
 
-    void clearTrash(const Tokens& tokens);
+    void clearTrash(const Tokens&);
     void changeDirectory(const Tokens& tokens);
 
     ParsingResult resolvePath(const std::string& path) const

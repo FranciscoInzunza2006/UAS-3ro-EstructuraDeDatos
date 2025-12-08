@@ -53,7 +53,7 @@ void File::moveTo(Folder* new_father)
     // Get adopted
     parent->removeEntry(this);
     parent = new_father;
-    new_father->entries.push_back(this);
+    parent->addEntry(this);
 }
 
 void Folder::addEntry(File* new_file)

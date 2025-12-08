@@ -50,8 +50,8 @@ std::vector<Command> FileSystemUI::createCommands()
             [this](const Tokens& tokens) { commands.changeDirectory(tokens); }
         ),
         Command({"search", "Checks if a file or folder exists at the path given."},
-            {{"Path", "Path"}},
-            [this](const Tokens& tokens) { commands.searchFile(tokens); }
+                {{"Path", "Path"}},
+                [this](const Tokens& tokens) { commands.searchFile(tokens); }
         ),
         Command(
             {"save", "Saves the folder structure to a JSON in the given path."},
@@ -74,6 +74,11 @@ std::vector<Command> FileSystemUI::createCommands()
             {{"Path", "Path", true}},
             [this](const Tokens& tokens) { commands.showAbsolutePath(tokens); },
             true
+        ),
+        Command(
+            {"restore", "Restore the file of the trash bin at the path it used to be."},
+            {{"File", "Path of the file (inside the BIN folder)"}},
+            [this](const Tokens& tokens) { commands.restoreFile(tokens); }
         ),
         Command(
             {"clear-trash", "Clears the trash bin"},
@@ -179,9 +184,25 @@ void FileSystemCommands::removeFile(const Tokens& tokens)
         if (!path.exists()) throw std::runtime_error("\"" + token + "\" does not exist.");
 
         // FIXME: Doesn't works on directories (check for empty name)
+        path.file->restore_path = path.file->parent->getPath();
         path.file->moveTo(system->trash_bin);
         std::cout << '\"' << path.file->filename << "\" deleted.\n";
     }
+}
+
+void FileSystemCommands::restoreFile(const Tokens& tokens)
+{
+    const std::string& file_path = tokens[0];
+    const ParsingResult result = resolvePath("/BIN/" + file_path);
+
+    if (!result.exists()) throw std::runtime_error(file_path + " not found in trash bin.");
+
+    File* file = result.file;;
+    const ParsingResult restore_path = resolvePath(file->restore_path);
+    if (!restore_path.exists()) throw std::runtime_error("\"" + file->restore_path + "\" Restore path not found.");
+
+    file->moveTo(static_cast<Folder*>(restore_path.file));
+    std::cout << file_path << " restored.\n";
 }
 
 void FileSystemCommands::listEntries(const Tokens& tokens) const
@@ -254,7 +275,7 @@ void FileSystemCommands::loadFile(const Tokens& tokens)
     std::cout << filename << " loaded.\n";
 }
 
-void FileSystemCommands::clearTrash(const Tokens& tokens)
+void FileSystemCommands::clearTrash(const Tokens&)
 {
     if (system->trash_bin->entries.empty())
     {
