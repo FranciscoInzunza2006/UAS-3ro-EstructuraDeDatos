@@ -67,6 +67,8 @@ std::string FileSystemUI::customGetLine()
 
     auto autocomplete = [&input, this, updateLine]()
     {
+        if (input.empty()) return;
+
         // If first word command
         // If not god knows
         bool is_command = false;
@@ -82,12 +84,24 @@ std::string FileSystemUI::customGetLine()
 
         if (is_command)
         {
+            auto cmds = cmd.getCommands();
+            for (const auto& c : cmds)
+            {
+                auto name = c.info.name;
+
+                // Is prefix
+                if (input == name.substr(0, input.size()))
+                {
+                    updateLine(name + " ");
+                    break;
+                }
+            }
         } else
         {
             updateLine(input + system.getWorkingDirectory()->entries[0]->filename);
         }
 
-        std::cout << "\n--" << word << "\nIs command: " << is_command << '\n';
+        //std::cout << "\n--" << word << "\nIs command: " << is_command << '\n';
     };
 
     int c{};

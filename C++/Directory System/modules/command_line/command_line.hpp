@@ -21,6 +21,8 @@ public:
 
     void processInput(std::string_view input);
 
+    const std::vector<Command>& getCommands() const { return commands; }
+
     class Tokenizer
     {
     public:
