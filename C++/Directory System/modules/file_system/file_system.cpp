@@ -38,6 +38,7 @@ std::string FileSystemUI::customGetLine()
     input.reserve(32);
     std::size_t cursor_position = 0;
     std::size_t history_index = command_history.size();
+    std::size_t file_index = 0;
 
     auto updateLine = [&input, &cursor_position](const std::string& new_line)
     {
@@ -98,10 +99,23 @@ std::string FileSystemUI::customGetLine()
             }
         } else
         {
-            updateLine(input + system.getWorkingDirectory()->entries[0]->filename);
+            const std::string argument = input.substr(word_start+1);
+            if (argument.empty()) return;
+
+            // std::cout << "\nArg: " << argument << '\n';
+            for (const auto& entry : system.getWorkingDirectory()->entries)
+            {
+                // Is prefix
+                if (argument == entry->filename.substr(0, argument.size()))
+                {
+                    updateLine(input.substr(0, word_start+1) + entry->filename + " ");
+                    break;
+                }
+            }
+
         }
 
-        //std::cout << "\n--" << word << "\nIs command: " << is_command << '\n';
+        // std::cout << "\n--" << word << "\nIs command: " << is_command << '\n';
     };
 
     int c{};
