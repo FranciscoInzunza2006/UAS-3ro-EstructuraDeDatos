@@ -29,6 +29,7 @@ namespace trie_node
     };
 
     void insert(TrieNode* root, const std::string& key);
+    void remove(TrieNode* root, const std::string& key);
     bool search(TrieNode* root, const std::string& key);
     bool isPrefix(TrieNode* root, const std::string& prefix);
 

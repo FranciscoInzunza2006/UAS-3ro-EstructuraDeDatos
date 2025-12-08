@@ -45,18 +45,15 @@ namespace trie_node
         curr->isLeaf = true;
     }
 
-    // Method to search a key in the Trie
-    bool search(TrieNode* root, const std::string& key)
+    void remove(TrieNode* root, const std::string& key)
     {
         if (root == nullptr)
         {
-            return false;
+            return;
         }
 
-        // Initialize the curr pointer with the root node
         TrieNode* curr = root;
 
-        // Iterate across the length of the string
         for (char c : key)
         {
             const auto index = static_cast<unsigned char>(c);
@@ -65,47 +62,78 @@ namespace trie_node
                 throw std::runtime_error("Value " + std::to_string(c) + " out of range.");
             }
 
-            // Check if the node exists for the
-            // current character in the Trie
             if (curr->children[index] == nullptr)
-                return false;
+                break;
 
-            // Move the curr pointer to the
-            // already existing node for the
-            // current character
             curr = curr->children[index];
         }
 
-        // Return true if the word exists
-        // and is marked as ending
-        return curr->isLeaf;
+        curr->isLeaf = false;
     }
 
-    // Method to check if a prefix exists in the Trie
-    bool isPrefix(TrieNode* root, const std::string& prefix)
+
+// Method to search a key in the Trie
+bool search(TrieNode* root, const std::string& key)
+{
+    if (root == nullptr)
     {
-        // Initialize the curr pointer with the root node
-        TrieNode* curr = root;
+        return false;
+    }
 
-        // Iterate across the length of the prefix string
-        for (char c : prefix)
+    // Initialize the curr pointer with the root node
+    TrieNode* curr = root;
+
+    // Iterate across the length of the string
+    for (char c : key)
+    {
+        const auto index = static_cast<unsigned char>(c);
+        if (index >= RANGE)
         {
-            const auto index = static_cast<unsigned char>(c);
-            if (index >= RANGE)
-            {
-                throw std::runtime_error("Value " + std::to_string(c) + " out of range.");
-            }
-
-            // Check if the node exists for the current character in the Trie
-            if (curr->children[index] == nullptr)
-                return false;
-
-            // Move the curr pointer to the already existing node
-            // for the current character
-            curr = curr->children[index];
+            throw std::runtime_error("Value " + std::to_string(c) + " out of range.");
         }
 
-        // If we reach here, the prefix exists in the Trie
-        return true;
+        // Check if the node exists for the
+        // current character in the Trie
+        if (curr->children[index] == nullptr)
+            return false;
+
+        // Move the curr pointer to the
+        // already existing node for the
+        // current character
+        curr = curr->children[index];
     }
+
+    // Return true if the word exists
+    // and is marked as ending
+    return curr->isLeaf;
+}
+
+// Method to check if a prefix exists in the Trie
+bool isPrefix(TrieNode* root, const std::string& prefix)
+{
+    // Initialize the curr pointer with the root node
+    TrieNode* curr = root;
+
+    // Iterate across the length of the prefix string
+    for (char c : prefix)
+    {
+        const auto index = static_cast<unsigned char>(c);
+        if (index >= RANGE)
+        {
+            throw std::runtime_error("Value " + std::to_string(c) + " out of range.");
+        }
+
+        // Check if the node exists for the current character in the Trie
+        if (curr->children[index] == nullptr)
+            return false;
+
+        // Move the curr pointer to the already existing node
+        // for the current character
+        curr = curr->children[index];
+    }
+
+    // If we reach here, the prefix exists in the Trie
+    return true;
+}
+
 }

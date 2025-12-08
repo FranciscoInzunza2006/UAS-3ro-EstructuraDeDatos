@@ -110,6 +110,7 @@ void Folder::removeEntry(const File* file)
     {
         *iterator = entries.back();
         entries.pop_back();
+        trie_node::remove(index, file->filename);
     }
 }
 
