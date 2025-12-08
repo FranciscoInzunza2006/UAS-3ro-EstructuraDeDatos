@@ -38,7 +38,7 @@ std::string FileSystemUI::customGetLine()
     input.reserve(32);
     std::size_t cursor_position = 0;
     std::size_t history_index = command_history.size();
-    std::size_t file_index = 0;
+    //std::size_t file_index = 0;
 
     auto updateLine = [&input, &cursor_position](const std::string& new_line)
     {
@@ -102,8 +102,11 @@ std::string FileSystemUI::customGetLine()
             const std::string argument = input.substr(word_start+1);
             if (argument.empty()) return;
 
+            const Folder* wd = system.getWorkingDirectory();
+            if (!wd->existsPrefix(argument)) return;
+
             // std::cout << "\nArg: " << argument << '\n';
-            for (const auto& entry : system.getWorkingDirectory()->entries)
+            for (const auto& entry : wd->entries)
             {
                 // Is prefix
                 if (argument == entry->filename.substr(0, argument.size()))
@@ -112,7 +115,6 @@ std::string FileSystemUI::customGetLine()
                     break;
                 }
             }
-
         }
 
         // std::cout << "\n--" << word << "\nIs command: " << is_command << '\n';

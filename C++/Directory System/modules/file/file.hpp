@@ -48,6 +48,11 @@ class Folder : public File
     File* findEntry(std::string_view name) const;
     void removeEntry(const File* file);
 
+    bool existsPrefix(const std::string& prefix) const
+    {
+        return trie_node::isPrefix(index, prefix);
+    }
+
     void showContents() const;
 
     // Constructors
