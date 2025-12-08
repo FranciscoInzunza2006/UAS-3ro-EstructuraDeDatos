@@ -63,13 +63,19 @@ std::vector<Command> FileSystemUI::createCommands()
             {{"Path", "Path"}},
             [this](const Tokens& tokens) { commands.loadFile(tokens); }
         ),
-        Command( // TODO: Show passed path contents
-            {"dir", "Shows current directory contents"},
+        Command(
+            {"dir", "Shows directory contents"},
             {{"Path", "Path", true}},
             [this](const Tokens& tokens) { commands.listEntries(tokens); },
             true
         ),
-        Command( // TODO: Show passed path contents
+        Command(
+            {"path", "Shows the absolute path of the given file or current directory"},
+            {{"Path", "Path", true}},
+            [this](const Tokens& tokens) { commands.showAbsolutePath(tokens); },
+            true
+        ),
+        Command(
             {"clear-trash", "Clears the trash bin"},
             [this](const Tokens& tokens) { commands.clearTrash(tokens); }
         ),
@@ -195,6 +201,22 @@ void FileSystemCommands::listEntries(const Tokens& tokens) const
 
     auto* const container_folder = static_cast<Folder*>(path.file);
     container_folder->showContents();
+}
+
+void FileSystemCommands::showAbsolutePath(const Tokens& tokens) const
+{
+    if (tokens.empty())
+    {
+        std::cout << system->getWorkingDirectory()->getPath() << '\n';
+        return;
+    }
+
+    if (tokens.size() > 1) throw std::runtime_error("Too many arguments");
+
+    const ParsingResult path = resolvePath(tokens[0]);
+
+    if (!path.exists()) throw std::runtime_error("File does not exist.");
+    std::cout << path.file->getPath() << '\n';
 }
 
 void FileSystemCommands::saveFile(const Tokens& tokens)

@@ -107,7 +107,7 @@ public:
     void searchFile(const Tokens& tokens);
     void removeFile(const Tokens& tokens);
     void listEntries(const Tokens& tokens) const;
-    void showPath(const Tokens& tokens);
+    void showAbsolutePath(const Tokens& tokens) const;
 
     void saveFile(const Tokens& tokens);
     void loadFile(const Tokens& tokens);
