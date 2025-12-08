@@ -39,11 +39,6 @@ std::string FileSystemUI::customGetLine()
     std::size_t cursor_position = 0;
     std::size_t history_index = command_history.size();
 
-    auto autocomplete = [&](std::string& s)
-    {
-
-    };
-
     auto updateLine = [&input, &cursor_position](const std::string& new_line)
     {
         const std::size_t size = input.size();
@@ -68,6 +63,23 @@ std::string FileSystemUI::customGetLine()
         input = new_line;
         cursor_position = new_line.size();
         std::cout << new_line;
+    };
+
+    auto autocomplete = [&input]()
+    {
+        // If first word command
+        // If not god knows
+        bool is_command = false;
+
+        std::size_t word_start = input.find_last_of(' ');
+        if (word_start == std::string::npos)
+        {
+            is_command = true;
+            word_start = 0;
+        }
+
+        std::string word = input.substr(word_start, input.size() - word_start);
+        std::cout << "\n--" << word << "\nIs command: " << is_command << '\n';
     };
 
     int c{};
@@ -126,7 +138,7 @@ std::string FileSystemUI::customGetLine()
             break;
 
         case '\t':
-                autocomplete(input);
+                autocomplete();
             break;
 
         case '\b':
