@@ -44,13 +44,13 @@ std::string FileSystemSerializer::serialize()
     output.reserve(256);
 
     output += "{\n";
-    serializeItem(system.root_directory, output);
+    serializeItem(system->root_directory, output);
     output += "\n}";
 
     return output;
 }
 
-void FileSystemSerializer::load(FileSystem& system, std::string json)
+void FileSystemSerializer::load(FileSystem* system, const std::string& json)
 {
     /// IDEAS:
     /// Ignore first char and last bracket
@@ -59,6 +59,7 @@ void FileSystemSerializer::load(FileSystem& system, std::string json)
     /// Pop when closing bracket
     /// When null is found create file
 
+    FileSystem sys = FileSystem();
     std::stack<Folder*> folders{};
     std::istringstream json_stream{json};
 
@@ -73,7 +74,9 @@ void FileSystemSerializer::load(FileSystem& system, std::string json)
 
                 // Avoid segfault do to the extra brackets at start and end
                 if (folders.empty())
-                    return;
+                {
+                    goto ret;
+                }
 
                 if (json_stream.peek() == '\n')
                     json_stream.ignore();
@@ -101,13 +104,13 @@ void FileSystemSerializer::load(FileSystem& system, std::string json)
         {
             if (key == "")
             {
-                folders.push(system.root_directory);
+                folders.push(sys.root_directory);
                 continue;
             }
 
             if (key == "BIN")
             {
-                folders.push(system.trash_bin);
+                folders.push(sys.trash_bin);
                 continue;
             }
 
@@ -120,8 +123,11 @@ void FileSystemSerializer::load(FileSystem& system, std::string json)
         new File(key, folders.top());
     }
 
+    ret:
     if (!folders.empty())
     {
         throw std::runtime_error("Error when loading json");
     }
+
+    *system = sys;
 }

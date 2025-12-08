@@ -227,7 +227,7 @@ void FileSystemCommands::saveFile(const Tokens& tokens)
     file.open(filename);
     if (!file.is_open()) throw std::runtime_error("Can't open file.");
 
-    FileSystemSerializer serializer(*system);
+    FileSystemSerializer serializer(system);
     file << serializer.serialize();
 
     file.close();
@@ -248,7 +248,7 @@ void FileSystemCommands::loadFile(const Tokens& tokens)
     file.seekg(0, std::ios::beg);
     content.assign(std::istreambuf_iterator(file), std::istreambuf_iterator<char>());
 
-    FileSystemSerializer::load(*system, content);
+    FileSystemSerializer::load(system, content);
 
     file.close();
     std::cout << filename << " loaded.\n";

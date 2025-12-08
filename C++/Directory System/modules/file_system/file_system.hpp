@@ -41,16 +41,16 @@ private:
 
 class FileSystemSerializer
 {
-    FileSystem& system;
+    FileSystem* system;
 
     void serializeItem(File* file, std::string& foo);
 
     public:
-    explicit FileSystemSerializer(FileSystem& system) : system(system) {}
+    explicit FileSystemSerializer(FileSystem* system) : system(system) {}
 
     // To JSON
     std::string serialize();
-    static void load(FileSystem& system, std::string json);
+    static void load(FileSystem* system, const std::string& json);
 };
 
 // Is a pointer to the file/folder (to search for entries)

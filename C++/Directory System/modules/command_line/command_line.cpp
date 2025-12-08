@@ -128,7 +128,7 @@ void CommandLine::processInput(const std::string_view input)
     try
     {
         tokens = Tokenizer::tokenize(input);
-    } catch (const std::invalid_argument& e)
+    } catch (const std::exception& e)
     {
         std::cout << e.what() << std::endl;
     }
