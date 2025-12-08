@@ -131,6 +131,7 @@ public:
     void run();
 
     FileSystemUI();
+    std::string customGetLine();
     ~FileSystemUI() = default;
 
 private:
