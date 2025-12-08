@@ -217,9 +217,9 @@ void FileSystemUI::run()
     {
         std::cout << system.getWorkingDirectory()->getPath() << "/> ";
 
-        //std::string input = customGetLine();
-        std::string input;
-        std::getline(std::cin, input);
+        std::string input = customGetLine();
+        //std::string input;
+        //std::getline(std::cin, input);
 
         cmd.processInput(input);
         std::cout << std::endl;
