@@ -33,4 +33,5 @@ namespace trie_node
     bool search(TrieNode* root, const std::string& key);
     bool isPrefix(TrieNode* root, const std::string& prefix);
 
+    void print(TrieNode* node, const std::string& prefix = "");
 }

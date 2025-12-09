@@ -323,6 +323,10 @@ TEST_F(FileSystemTester, deleting_folder_after_many_operations)
     e->moveTo(root);
     root->showContents();
 
+    trie_node::print(root->getIndex());
+
+    std::cout << "B Index: \n";
+    trie_node::print(b->getIndex());
     EXPECT_NO_THROW(delete a);  // Delete subtree A
 
     EXPECT_EQ(root->findEntry("A"), nullptr);

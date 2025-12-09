@@ -58,6 +58,11 @@ class Folder : public File
         return trie_node::isPrefix(index, prefix);
     }
 
+    trie_node::TrieNode* getIndex() const
+    {
+        return index;
+    }
+
     void showContents() const;
 
     // Constructors
