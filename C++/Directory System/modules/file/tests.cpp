@@ -146,7 +146,8 @@ TEST_F(FileSystemTester, movingIntoDescendant)
     // Should NOT have moved
     EXPECT_EQ(a->parent, root);
     EXPECT_NE(root->findEntry("A"), nullptr);
-    EXPECT_NE(a->findEntry("C"), nullptr); // Ensure original structure intact
+    EXPECT_NE(a->findEntry("B"), nullptr); // Ensure original structure intact
+    EXPECT_NE(b->findEntry("C"), nullptr); // Ensure original structure intact
 }
 
 TEST_F(FileSystemTester, move_subtree_and_check_contents)
@@ -320,6 +321,7 @@ TEST_F(FileSystemTester, deleting_folder_after_many_operations)
     f2->moveTo(root);
     f3->moveTo(b);
     e->moveTo(root);
+    root->showContents();
 
     EXPECT_NO_THROW(delete a);  // Delete subtree A
 

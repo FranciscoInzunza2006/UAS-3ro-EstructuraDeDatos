@@ -61,7 +61,7 @@ class FileSystemCommandsTester : public FileSystemTester
 class FileSystemSerializerTester : public FileSystemTester
 {
 protected:
-    FileSystemSerializer serializer = FileSystemSerializer(system);
+    FileSystemSerializer serializer = FileSystemSerializer(&system);
 };
 
 // Tree Structure
